@@ -1,6 +1,6 @@
 {
   "name": "vitepress-templ-preview",
-  "version": "0.1.0-rc.0",
+  "version": "0.1.0",
   "description": "A Vitepress plugin for easily previewing templ components in Markdown.",
   "bugs": {
     "url": "https://github.com/indaco/vitepress-templ-preview/issues"
@@ -56,7 +56,6 @@
     "build:plugin": "tsup",
     "build:vue": "vue-tsc && vite build",
     "clean": "rimraf dist",
-    "format": "prettier --write .",
     "prepublish": "pnpm build"
   },
   "devDependencies": {
