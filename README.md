@@ -201,11 +201,12 @@ You can set options to it (data-* props are optionals):
 
 **Options**:
 
-| Option       | Type     | Default         | Description                                                                            |
-| :----------- | :------- | :-------------- | -------------------------------------------------------------------------------------- |
-| `projectDir` | _string_ | `templ-preview` | The path relative to the server root to the folder where the `templ` project is setup. |
-| `templDir`   | _string_ | `demos`         | The path relative to the server root to the folder where templ files are.              |
-| `outputDir`  | _string_ | `output`        | The path relative to the server root to the folder where html files will be generated. |
+| Option       | Type      | Default         | Description                                                                            |
+| :----------- | :-------- | :-------------- | -------------------------------------------------------------------------------------- |
+| `projectDir` | _string_  | `templ-preview` | The path relative to the server root to the folder where the `templ` project is setup. |
+| `templDir`   | _string_  | `demos`         | The path relative to the server root to the folder where templ files are.              |
+| `outputDir`  | _string_  | `output`        | The path relative to the server root to the folder where html files will be generated. |
+| `debug`      | _boolean_ | `false`         | If `true`, keep the `static-templ` generation script after completion.                 |
 
 ### Vue components
 

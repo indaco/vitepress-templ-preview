@@ -255,14 +255,16 @@ function checkBinaries(binaries: string[]): void {
  * @param serverRoot - The root directory of the server.
  * @param inputDir - The input directory for Templ files.
  * @param outputDir - The output directory for HTML files.
+ * @param debug - keep the `static-templ` generation script after completion.
  * @returns The command string.
  */
 function buildCommandStr(
   serverRoot: string,
   inputDir: string,
   outputDir: string,
+  debug = false,
 ): string {
-  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_PLUS_BIN} -i ${inputDir} -o ${outputDir} -g=true`;
+  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_PLUS_BIN} -i ${inputDir} -o ${outputDir} -g=true -d=${debug}`;
 }
 
 /**
