@@ -199,17 +199,19 @@ function renderTemplPreview(
   let codeContent = token.content;
 
   if (fileCache[htmlFilePath]) {
-    htmlContent = fileCache[htmlFilePath].content;
+    htmlContent = (fileCache[htmlFilePath] as CachedFile).content;
   } else {
     updateFilesCache(fileCache, htmlFilePath);
-    htmlContent = fileCache[htmlFilePath]?.content || htmlContent;
+    htmlContent =
+      (fileCache[htmlFilePath] as CachedFile)?.content || htmlContent;
   }
 
   if (fileCache[templFilePath]) {
-    codeContent = fileCache[templFilePath].content;
+    codeContent = (fileCache[templFilePath] as CachedFile).content;
   } else {
     updateFilesCache(fileCache, templFilePath);
-    codeContent = fileCache[templFilePath]?.content || codeContent;
+    codeContent =
+      (fileCache[templFilePath] as CachedFile)?.content || codeContent;
   }
 
   if (!watchedMdFiles[htmlFilePath]) {
@@ -253,7 +255,6 @@ function checkBinaries(binaries: string[]): void {
  * @param serverRoot - The root directory of the server.
  * @param inputDir - The input directory for Templ files.
  * @param outputDir - The output directory for HTML files.
- * @param embedTemplCmd - Whether to embed the Templ command in the output.
  * @returns The command string.
  */
 function buildCommandStr(
