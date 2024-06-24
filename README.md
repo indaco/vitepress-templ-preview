@@ -6,6 +6,7 @@
         <img src="https://img.shields.io/badge/license-mit-blue?style=flat-square&logo=none" alt="license" />
     </a>
 </p>
+<img title="banner" alt="preview components banner" src="./statics/images/preview_banner.png" style="border-radius: 8px; max-width: 100%; height: auto; opacity: 0.9;" />
 
 <p align="center">
   <a href="#features">Features</a> •
