@@ -26,7 +26,7 @@ This package offers a solution for [templ](https://templ.guide/) component previ
 ## Features
 
 - **Templ Syntax Highlighting**: Provides syntax highlighting for `templ` files using [shiki-templ](https://github.com/indaco/shiki-templ).
-- **Automatic Formatting and Generation**: Runs `templ fmt` and `templ generate` commands via `static-templ` at server startup, eliminating the need to run these commands manually.
+- **Automatic Generation**: Runs `templ generate` command via `static-templ` at server startup, eliminating the need to run this command manually.
 - **Hot Reloading**: Automatically triggers the `templ generate` command and command and refresh the page to display the new content.
 - **File Content Caching**: Efficiently caches file contents to improve performance and reduce redundant file reads.
 - **Flexible Vue Components**: Includes three predefined Vue components for rendering previews, with the option to use custom components.
@@ -38,7 +38,7 @@ This package offers a solution for [templ](https://templ.guide/) component previ
 To pre-render the components, [static-templ](https://github.com/nokacper24/static-templ) runs behind the scenes. Please, refer to the [README.md](https://github.com/nokacper24/static-templ/blob/main/README.md) file to know more about it.
 
 ```bash
-go install github.com/nokacper24/static-templ
+go install github.com/nokacper24/static-templ@latest
 ```
 
 ### Vitepress project
@@ -214,7 +214,7 @@ pnpm install
 Run the demo:
 
 ```bash
-pnpm dev
+pnpm demo
 ```
 
 ## API
@@ -223,12 +223,12 @@ pnpm dev
 
 **Options**:
 
-| Option       | Type      | Default         | Description                                                                            |
-| :----------- | :-------- | :-------------- | -------------------------------------------------------------------------------------- |
-| `projectDir` | _string_  | `templ-preview` | The path relative to the server root to the folder where the `templ` project is setup. |
-| `templDir`   | _string_  | `demos`         | The path relative to the server root to the folder where templ files are.              |
-| `outputDir`  | _string_  | `output`        | The path relative to the server root to the folder where html files will be generated. |
-| `debug`      | _boolean_ | `false`         | If `true`, keep the `static-templ` generation script after completion.                 |
+| Option       | Type      | Default         | Description                                                                               |
+| :----------- | :-------- | :-------------- | ----------------------------------------------------------------------------------------- |
+| `projectDir` | _string_  | `templ-preview` | The base directory where your `templ` project is located.                                 |
+| `inputDir`   | _string_  | `demos`         | The directory relative to the `projectDir` where your ".templ" files are located.         |
+| `outputDir`  | _string_  | `output`        | The directory relative to the `projectDir` where the generated HTML files will be placed. |
+| `debug`      | _boolean_ | `false`         | Whether or not to keep the `static-templ` generation script after completion.             |
 
 ### Vue components
 
