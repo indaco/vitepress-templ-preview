@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted, computed } from "vue";
-import { BundledTheme, getHighlighter } from "shiki";
+import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import ViewIcon from "./ViewIcon.vue";
 import CodeIcon from "./CodeIcon.vue";
@@ -31,7 +31,7 @@ const handleKeydown = (event: KeyboardEvent, tab: string) => {
 };
 
 onMounted(async () => {
-  const highlighter = await getHighlighter({
+  const highlighter = await createHighlighter({
     langs: [templLang],
     themes: Object.values(props.themes),
   });

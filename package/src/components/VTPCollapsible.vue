@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted } from "vue";
-import { BundledTheme, getHighlighter } from "shiki";
+import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import CodeIcon from "./CodeIcon.vue";
 import { unescapeFromJSON } from "../utils.js";
@@ -16,7 +16,7 @@ function toggleCodeSection() {
 }
 
 onMounted(async () => {
-  const highlighter = await getHighlighter({
+  const highlighter = await createHighlighter({
     langs: [templLang],
     themes: Object.values(props.themes),
   });

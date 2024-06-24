@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted } from "vue";
-import { BundledTheme, getHighlighter } from "shiki";
+import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import { unescapeFromJSON } from "../utils";
 
@@ -10,7 +10,7 @@ const props = defineProps<VTPComponentProps>();
 const highlightedCode = ref("");
 
 onMounted(async () => {
-  const highlighter = await getHighlighter({
+  const highlighter = await createHighlighter({
     langs: [templLang],
     themes: Object.values(props.themes),
   });
