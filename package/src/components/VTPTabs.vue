@@ -87,7 +87,7 @@ onMounted(async () => {
       <div
         v-if="activeTab === 'preview'"
         class="preview-content"
-        v-html="props.htmlContent"
+        v-html="unescapeFromJSON(props.htmlContent)"
       ></div>
       <div v-if="activeTab === 'code'" class="code-content">
         <div class="language-templ vp-adaptive-theme">

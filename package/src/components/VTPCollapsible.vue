@@ -39,7 +39,10 @@ onMounted(async () => {
   <div class="container">
     <h3 v-html="props.title"></h3>
     <div class="preview">
-      <div class="preview-content" v-html="props.htmlContent"></div>
+      <div
+        class="preview-content"
+        v-html="unescapeFromJSON(props.htmlContent)"
+      ></div>
     </div>
     <div class="code-section">
       <button
