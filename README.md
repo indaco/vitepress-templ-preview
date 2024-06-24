@@ -12,6 +12,7 @@
   <a href="#prerequisites">Prerequisites</a> •
   <a href="#installation">Installation</a> •
   <a href="#usage">Usage</a> •
+  <a href="#example">Example</a> •
   <a href="#api">API</a>
 </p>
 
@@ -193,6 +194,27 @@ You can set options to it (data-* props are optionals):
 />
 
 -->
+```
+
+## Example
+
+> [!TIP]
+> There is a [demo project](./demo/) to be used as reference.
+
+Clone the repos and install all the dependencies:
+
+```bash
+git clone https://github.com/indaco/vitepress-templ-preview.git
+
+cd vitepress-templ-preview
+
+pnpm install
+```
+
+Run the demo:
+
+```bash
+pnpm dev
 ```
 
 ## API

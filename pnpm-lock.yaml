@@ -8,6 +8,28 @@ importers:
 
   .:
     devDependencies:
+      prettier:
+        specifier: ^3.3.2
+        version: 3.3.2
+      prettier-plugin-packagejson:
+        specifier: ^2.5.0
+        version: 2.5.0(prettier@3.3.2)
+
+  demo:
+    dependencies:
+      vitepress-templ-preview:
+        specifier: workspace:*
+        version: link:../package
+    devDependencies:
+      shiki-templ:
+        specifier: ^0.2.3
+        version: 0.2.3(shiki@1.9.0)
+      vitepress:
+        specifier: ^1.2.3
+        version: 1.2.3(@algolia/client-search@4.23.3)(@types/node@20.14.8)(postcss@8.4.38)(search-insights@2.14.0)(typescript@5.5.2)
+
+  package:
+    devDependencies:
       '@types/markdown-it':
         specifier: ^14.1.1
         version: 14.1.1
@@ -20,12 +42,6 @@ importers:
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
-      prettier:
-        specifier: ^3.3.2
-        version: 3.3.2
-      prettier-plugin-packagejson:
-        specifier: 2.5.0
-        version: 2.5.0(prettier@3.3.2)
       publint:
         specifier: ^0.2.8
         version: 0.2.8

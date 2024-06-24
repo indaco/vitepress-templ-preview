@@ -1,84 +1,21 @@
 {
-  "name": "vitepress-templ-preview",
-  "version": "0.1.0-rc.0",
-  "description": "A Vitepress plugin for easily previewing templ components in Markdown.",
-  "bugs": {
-    "url": "https://github.com/indaco/vitepress-templ-preview/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/indaco/vitepress-templ-preview"
-  },
-  "license": "MIT",
-  "author": "indaco <github@mircoveltri.me>",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/types/plugin/index.d.ts",
-      "default": "./dist/plugin/index.esm.js"
-    },
-    "./types": {
-      "types": "./dist/types/types.d.ts"
-    },
-    "./ui": {
-      "types": "./dist/types/components/index.d.ts",
-      "default": "./dist/vitepress-templ-preview.es.js"
-    },
-    "./ui/style.css": {
-      "default": "./dist/style.css"
-    }
-  },
-  "typesVersions": {
-    ">4.0": {
-      "VTPCollapsible": [
-        "./dist/types/components/VTPCollapsible.vue.d.ts"
-      ],
-      "VTPPanel": [
-        "./dist/types/components/VTPPanel.vue.d.ts"
-      ],
-      "VTPTabs": [
-        "./dist/types/components/VTPTabs.vue.d.ts"
-      ],
-      "types": [
-        "./dist/types/types.d.ts"
-      ],
-      ".": [
-        "./dist/types/index.d.ts"
-      ]
-    }
-  },
-  "files": [
-    "dist"
-  ],
+  "name": "vitepress-templ-mono",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "pnpm clean && pnpm build:vue && pnpm build:plugin && pnpm postbuild",
-    "postbuild": "publint .",
-    "build:plugin": "tsup",
-    "build:vue": "vue-tsc && vite build",
-    "clean": "rimraf dist",
+    "build": "pnpm build:package",
+    "build:package": "pnpm --filter='vitepress-templ-preview' run build",
+    "demo": "pnpm run build && pnpm --filter='vitepress-templ-preview-demo' run docs:dev",
     "format": "prettier --write .",
-    "prepublish": "pnpm build"
+    "release": "pnpm -r publish --filter='vitepress-templ-preview'  --access public"
   },
   "devDependencies": {
-    "@types/markdown-it": "^14.1.1",
-    "@types/node": "^20.14.8",
-    "@vitejs/plugin-vue": "^5.0.5",
-    "markdown-it": "^14.1.0",
     "prettier": "^3.3.2",
-    "prettier-plugin-packagejson": "2.5.0",
-    "publint": "^0.2.8",
-    "rimraf": "^5.0.7",
-    "shiki": "^1.9.0",
-    "shiki-templ": "^0.2.3",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.2",
-    "vite": "^5.3.1",
-    "vitepress": "^1.2.3",
-    "vue": "^3.4.30",
-    "vue-tsc": "^2.0.22"
+    "prettier-plugin-packagejson": "^2.5.0"
   },
-  "peerDependencies": {
-    "shiki-templ": "^0.2.3"
-  },
-  "packageManager": "pnpm@9.3.0"
+  "packageManager": "pnpm@9.4.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=10.0.0"
+  }
 }

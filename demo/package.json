@@ -1,0 +1,23 @@
+{
+  "name": "vitepress-templ-preview-demo",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Demo project for tem",
+  "keywords": [],
+  "license": "MIT",
+  "author": "indaco <github@mircoveltri.me>",
+  "main": "index.js",
+  "scripts": {
+    "docs:build": "vitepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "vitepress-templ-preview": "workspace:*"
+  },
+  "devDependencies": {
+    "shiki-templ": "^0.2.3",
+    "vitepress": "^1.2.3"
+  },
+  "packageManager": "pnpm@9.4.0"
+}
