@@ -184,7 +184,7 @@ function renderTemplPreview(
 
   const templFilePath = path.resolve(
     serverRoot,
-    finalOptions.templDir ||
+    finalOptions.inputDir ||
       path.join(DEFAULT_PROJECT_FOLDER, DEFAULT_TEMPL_FOLDER),
     `${srcValue}.templ`,
   );
@@ -288,7 +288,7 @@ function executeAndUpdateCache(
   isFirstServerRun: boolean = true,
 ) {
   const resolvedFinalOptions: PluginOptions = {
-    templDir: path.join(finalOptions.projectDir!, finalOptions.templDir!),
+    inputDir: path.join(finalOptions.projectDir!, finalOptions.inputDir!),
     outputDir: path.join(finalOptions.projectDir!, finalOptions.outputDir!),
   };
 
@@ -307,7 +307,7 @@ function executeAndUpdateCache(
 
     const templResolvedPath = path.resolve(
       serverRoot,
-      resolvedFinalOptions.templDir!,
+      resolvedFinalOptions.inputDir!,
     );
 
     const htmlResolvedPath = path.resolve(
@@ -344,7 +344,7 @@ function executeAndUpdateCache(
 const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
   const defaultOptions: PluginOptions = {
     projectDir: DEFAULT_PROJECT_FOLDER,
-    templDir: DEFAULT_TEMPL_FOLDER,
+    inputDir: DEFAULT_TEMPL_FOLDER,
     outputDir: DEFAULT_OUTPUT_FOLDER,
   };
   const finalOptions: PluginOptions = { ...defaultOptions, ...options };
@@ -365,8 +365,9 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
 
       const cmd = buildCommandStr(
         serverRoot,
-        finalOptions.templDir!,
+        finalOptions.inputDir!,
         finalOptions.outputDir!,
+        finalOptions.debug!,
       );
       executeAndUpdateCache(
         cmd,
@@ -384,8 +385,9 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
         console.log(`[vitepress-templ-preview] File changed: ${file}`);
         const cmd = buildCommandStr(
           serverRoot,
-          finalOptions.templDir!,
+          finalOptions.inputDir!,
           finalOptions.outputDir!,
+          finalOptions.debug!,
         );
         executeAndUpdateCache(
           cmd,
@@ -424,7 +426,7 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
         md,
         serverRoot,
         finalOptions: {
-          templDir: path.join(finalOptions.projectDir!, finalOptions.templDir!),
+          inputDir: path.join(finalOptions.projectDir!, finalOptions.inputDir!),
           outputDir: path.join(
             finalOptions.projectDir!,
             finalOptions.outputDir!,
