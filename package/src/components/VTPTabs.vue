@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, nextTick, computed } from "vue";
 import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import ViewIcon from "./ViewIcon.vue";
@@ -9,7 +10,7 @@ import CodeIcon from "./CodeIcon.vue";
 const props = defineProps<VTPComponentProps>();
 
 const activeTab = ref("preview");
-const highlightedCode = ref("");
+const highlightedCode: Ref<string> = ref("");
 
 const fillColor = (tab: string) => {
   return computed(() => {
@@ -29,6 +30,15 @@ const handleKeydown = (event: KeyboardEvent, tab: string) => {
   }
 };
 
+function executeScripts(container: HTMLElement): void {
+  const scripts = container.querySelectorAll("script");
+  scripts.forEach((script) => {
+    const newScript = document.createElement("script");
+    newScript.textContent = script.textContent;
+    document.body.appendChild(newScript).parentNode?.removeChild(newScript);
+  });
+}
+
 onMounted(async () => {
   const highlighter = await createHighlighter({
     langs: [templLang],
@@ -42,6 +52,27 @@ onMounted(async () => {
       dark: BundledTheme;
     },
     defaultColor: false,
+  });
+
+  nextTick(() => {
+    const previewContent = document.querySelector(
+      ".preview-content",
+    ) as HTMLElement;
+    if (previewContent) {
+      // Observe changes to the preview-content element
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            executeScripts(mutation.target as HTMLElement);
+          }
+        });
+      });
+
+      observer.observe(previewContent, { childList: true });
+
+      // Execute scripts in initial content
+      executeScripts(previewContent);
+    }
   });
 });
 </script>

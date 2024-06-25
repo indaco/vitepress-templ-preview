@@ -8,8 +8,11 @@ hero:
   tagline: A vitepress-templ-preview plugin demo
   actions:
     - theme: brand
-      text: Templ Preview Demo
-      link: /templ-preview
+      text: Hello World Component
+      link: /hello-preview
+    - theme: alt
+      text: Button Component
+      link: /button-preview
     - theme: alt
       text: Alert Component
       link: /alert-preview

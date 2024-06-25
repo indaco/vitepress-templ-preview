@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 
 const props = defineProps<VTPComponentProps>();
 
-const highlightedCode = ref("");
+const highlightedCode: Ref<string> = ref("");
+
+function executeScripts(container: HTMLElement): void {
+  const scripts = container.querySelectorAll("script");
+  scripts.forEach((script) => {
+    const newScript = document.createElement("script");
+    newScript.textContent = script.textContent;
+    document.body.appendChild(newScript).parentNode?.removeChild(newScript);
+  });
+}
 
 onMounted(async () => {
   const highlighter = await createHighlighter({
@@ -21,6 +31,27 @@ onMounted(async () => {
       dark: BundledTheme;
     },
     defaultColor: false,
+  });
+
+  nextTick(() => {
+    const previewContent = document.querySelector(
+      ".preview-content",
+    ) as HTMLElement;
+    if (previewContent) {
+      // Observe changes to the preview-content element
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            executeScripts(mutation.target as HTMLElement);
+          }
+        });
+      });
+
+      observer.observe(previewContent, { childList: true });
+
+      // Execute scripts in initial content
+      executeScripts(previewContent);
+    }
   });
 });
 </script>

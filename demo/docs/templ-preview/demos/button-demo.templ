@@ -1,0 +1,20 @@
+package demos
+
+var buttonHandle = templ.NewOnceHandle()
+
+
+templ button(label string) {
+  @buttonHandle.Once() {
+    <script type="text/javascript">
+      function hello(event) {
+        alert("Hello World");
+      };
+    </script>
+  }
+  <button onclick="hello(this)">{label}</button>
+}
+
+templ ButtonDemo() {
+  @button("Click me")
+
+}

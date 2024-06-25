@@ -1,17 +1,27 @@
 <script setup lang="ts">
+import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import CodeIcon from "./CodeIcon.vue";
 
 const props = defineProps<VTPComponentProps>();
 
-const isCodeSectionVisible = ref(false);
-const highlightedCode = ref("");
+const isCodeSectionVisible: Ref<boolean> = ref(false);
+const highlightedCode: Ref<string> = ref("");
 
-function toggleCodeSection() {
+function toggleCodeSection(): void {
   isCodeSectionVisible.value = !isCodeSectionVisible.value;
+}
+
+function executeScripts(container: HTMLElement): void {
+  const scripts = container.querySelectorAll("script");
+  scripts.forEach((script) => {
+    const newScript = document.createElement("script");
+    newScript.textContent = script.textContent;
+    document.body.appendChild(newScript).parentNode?.removeChild(newScript);
+  });
 }
 
 onMounted(async () => {
@@ -27,6 +37,27 @@ onMounted(async () => {
       dark: BundledTheme;
     },
     defaultColor: false,
+  });
+
+  nextTick(() => {
+    const previewContent = document.querySelector(
+      ".preview-content",
+    ) as HTMLElement;
+    if (previewContent) {
+      // Observe changes to the preview-content element
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === "childList") {
+            executeScripts(mutation.target as HTMLElement);
+          }
+        });
+      });
+
+      observer.observe(previewContent, { childList: true });
+
+      // Execute scripts in initial content
+      executeScripts(previewContent);
+    }
   });
 });
 </script>
