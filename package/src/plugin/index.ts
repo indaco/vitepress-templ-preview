@@ -12,7 +12,7 @@ import { exec, spawnSync } from "node:child_process";
 import { Plugin } from "vite";
 import MarkdownIt from "markdown-it";
 import { Token } from "markdown-it/index.js";
-import { escapeForJSON } from "../utils";
+import { escapeForJSON, unescapeFromJSON } from "../utils";
 import { ThemeOptions } from "vitepress";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
@@ -40,9 +40,7 @@ const parseAttrs = (attrsString: string): TagAttrs => {
 /**
  * Generates the HTML for the templ preview component.
  * @param md - The MarkdownIt instance.
- * @param title - The title of the preview.
- * @param codeContent - The content of the code.
- * @param htmlContent - The content of the HTML file.
+ * @param props - The properties for the preview component.
  * @returns The HTML string for the templ preview component.
  */
 function generateTemplPreviewComponentHtml(
@@ -51,8 +49,8 @@ function generateTemplPreviewComponentHtml(
 ): string {
   const _props = {
     title: md.utils.escapeHtml(props.title),
-    codeContent: escapeForJSON(props.codeContent),
-    htmlContent: escapeForJSON(props.htmlContent),
+    codeContent: unescapeFromJSON(props.codeContent),
+    htmlContent: md.utils.unescapeAll(props.htmlContent),
     buttonStyle: md.utils.escapeHtml(props.buttonStyle),
     themes: props.themes,
   };
@@ -225,9 +223,9 @@ function renderTemplPreview(
   watchedMdFiles[templFilePath].add(id);
 
   const props: VTPComponentProps = {
-    title: titleValue,
-    codeContent: codeContent,
-    htmlContent: htmlContent,
+    title: md.utils.escapeHtml(titleValue),
+    codeContent: escapeForJSON(codeContent),
+    htmlContent: md.utils.escapeHtml(htmlContent),
     buttonStyle: buttonStyleValue as ButtonStyle,
     themes: themesValue as ThemeOptions,
   };

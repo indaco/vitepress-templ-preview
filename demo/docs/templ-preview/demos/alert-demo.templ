@@ -1,0 +1,50 @@
+package demos
+
+var cssHandle = templ.NewOnceHandle()
+
+templ alertCss() {
+	@cssHandle.Once() {
+		<style type="text/css">
+			.alert {
+				padding: 1rem;
+				color: #173418;
+				position: relative;
+				border-radius: 0.24rem;
+			}
+
+			.alert h3 {
+				margin: 0;
+				width: fit-content;
+			}
+
+			.alert.success {
+				background-color: #4CAF50;
+			}
+
+			.closebtn {
+				color: #EDF7EE;
+				font-weight: bold;
+				float: right;
+				cursor: pointer;
+				border-radius: 100vh;
+			}
+
+			.closebtn:hover {
+				color: #2E6930;
+			}
+		</style>
+	}
+}
+
+templ alert(title string, text string) {
+	<div class="alert success">
+		<span class="closebtn" onclick="this.parentElement.style.display='none';">x</span>
+		<h3>{ title }</h3>
+		<p>{ text }</p>
+	</div>
+}
+
+templ AlertDemo() {
+	@alertCss()
+	@alert("Success", "Files were successfully uploaded")
+}

@@ -11,8 +11,8 @@ hero:
       text: Templ Preview Demo
       link: /templ-preview
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Alert Component
+      link: /alert-preview
 
 features:
   - title: Feature A

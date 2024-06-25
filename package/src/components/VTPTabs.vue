@@ -5,7 +5,6 @@ import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import ViewIcon from "./ViewIcon.vue";
 import CodeIcon from "./CodeIcon.vue";
-import { unescapeFromJSON } from "../utils";
 
 const props = defineProps<VTPComponentProps>();
 
@@ -36,10 +35,7 @@ onMounted(async () => {
     themes: Object.values(props.themes),
   });
 
-  // Parse the code content to ensure it is correctly escaped
-  const codeContent = unescapeFromJSON(props.codeContent);
-
-  highlightedCode.value = highlighter.codeToHtml(codeContent, {
+  highlightedCode.value = highlighter.codeToHtml(props.codeContent, {
     lang: "templ",
     themes: props.themes as {
       light: BundledTheme;
@@ -87,7 +83,7 @@ onMounted(async () => {
       <div
         v-if="activeTab === 'preview'"
         class="preview-content"
-        v-html="unescapeFromJSON(props.htmlContent)"
+        v-html="props.htmlContent"
       ></div>
       <div v-if="activeTab === 'code'" class="code-content">
         <div class="language-templ vp-adaptive-theme">

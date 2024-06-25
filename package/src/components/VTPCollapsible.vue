@@ -4,7 +4,6 @@ import { ref, onMounted } from "vue";
 import { BundledTheme, createHighlighter } from "shiki";
 import { templLang } from "shiki-templ";
 import CodeIcon from "./CodeIcon.vue";
-import { unescapeFromJSON } from "../utils.js";
 
 const props = defineProps<VTPComponentProps>();
 
@@ -21,10 +20,7 @@ onMounted(async () => {
     themes: Object.values(props.themes),
   });
 
-  // Parse the code content to ensure it is correctly escaped
-  const codeContent = unescapeFromJSON(props.codeContent);
-
-  highlightedCode.value = highlighter.codeToHtml(codeContent, {
+  highlightedCode.value = highlighter.codeToHtml(props.codeContent, {
     lang: "templ",
     themes: props.themes as {
       light: BundledTheme;
@@ -39,10 +35,7 @@ onMounted(async () => {
   <div class="container">
     <h3 v-html="props.title"></h3>
     <div class="preview">
-      <div
-        class="preview-content"
-        v-html="unescapeFromJSON(props.htmlContent)"
-      ></div>
+      <div class="preview-content" v-html="props.htmlContent"></div>
     </div>
     <div class="code-section">
       <button

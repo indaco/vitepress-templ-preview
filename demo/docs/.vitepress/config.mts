@@ -18,6 +18,7 @@ export default defineConfig({
         text: "Examples",
         items: [
           { text: "Templ Preview", link: "/templ-preview" },
+          { text: "Alert Component Preview", link: "/alert-preview" },
           { text: "Markdown Examples", link: "/markdown-examples" },
           { text: "Runtime API Examples", link: "/api-examples" },
         ],
