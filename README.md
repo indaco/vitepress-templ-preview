@@ -8,6 +8,8 @@
 </p>
 <img title="banner" alt="preview components banner" src="./statics/images/preview_banner.png" style="border-radius: 8px; max-width: 100%; height: auto; opacity: 0.9;" />
 
+<hr />
+
 <p align="center">
   <a href="#features">Features</a> •
   <a href="#prerequisites">Prerequisites</a> •
@@ -17,7 +19,8 @@
   <a href="#api">API</a>
 </p>
 
-<hr />
+> [!WARNING]
+> Currently under development. There are known issues, and it has not been released yet.
 
 This package offers a solution for [templ](https://templ.guide/) component previews within [VitePress](https://vitepress.dev/) projects. It includes:
 
