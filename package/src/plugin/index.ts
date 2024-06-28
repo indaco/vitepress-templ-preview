@@ -6,13 +6,19 @@ import type {
   VTPComponentProps,
   ButtonStyle,
 } from "../types";
-import fs from "node:fs/promises";
+import * as fs from "node:fs";
 import path from "node:path";
-import { exec, spawnSync } from "node:child_process";
-import { Plugin } from "vite";
+import { Plugin, ResolvedConfig } from "vite";
 import MarkdownIt from "markdown-it";
 import { Token } from "markdown-it/index.js";
-import { escapeForJSON, unescapeFromJSON } from "../utils";
+import {
+  checkBinaries,
+  escapeForJSON,
+  executeAndUpdateCache,
+  executeCommand,
+  unescapeFromJSON,
+  updateFilesCache,
+} from "../utils";
 import { ThemeOptions } from "vitepress";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
@@ -36,80 +42,6 @@ const parseAttrs = (attrsString: string): TagAttrs => {
 
   return attrs;
 };
-
-/**
- * Generates the HTML for the templ preview component.
- * @param md - The MarkdownIt instance.
- * @param props - The properties for the preview component.
- * @returns The HTML string for the templ preview component.
- */
-function generateTemplPreviewComponentHtml(
-  md: MarkdownIt,
-  props: VTPComponentProps,
-): string {
-  const _props = {
-    title: md.utils.escapeHtml(props.title),
-    codeContent: unescapeFromJSON(props.codeContent),
-    htmlContent: md.utils.unescapeAll(props.htmlContent),
-    buttonStyle: md.utils.escapeHtml(props.buttonStyle),
-    themes: props.themes,
-  };
-
-  return `<templ-preview-component v-bind='${JSON.stringify(
-    _props,
-  )}'></templ-preview-component>`;
-}
-
-/**
- * Updates the cache for a specific file by reading its content.
- * @param cache - The cache object to update.
- * @param filePath - The path of the file to read.
- */
-async function updateFilesCache(
-  cache: Record<string, CachedFile>,
-  filePath: string,
-) {
-  try {
-    const stat = await fs.stat(filePath);
-    if (stat.isFile()) {
-      const content = await fs.readFile(filePath, "utf8");
-      cache[filePath] = {
-        content,
-      };
-      console.log(`[vitepress-templ-preview] Updated cache for: ${filePath}`);
-    }
-  } catch (err: any) {
-    console.error(
-      `[vitepress-templ-preview] Error reading file ${filePath}: ${err.message}`,
-    );
-  }
-}
-
-/**
- * Updates the cache for all HTML and Templ files in a directory.
- * @param cache - The cache object to update.
- * @param directory - The directory to scan for files.
- */
-async function updateCacheForDirectory(
-  cache: Record<string, CachedFile>,
-  directory: string,
-) {
-  try {
-    const files = await fs.readdir(directory);
-    await Promise.all(
-      files.map(async (file) => {
-        const filePath = path.join(directory, file);
-        if (filePath.endsWith(".templ") || filePath.endsWith(".html")) {
-          await updateFilesCache(cache, filePath);
-        }
-      }),
-    );
-  } catch (err: any) {
-    console.error(
-      `[vitepress-templ-preview] Error reading directory ${directory}: ${err.message}`,
-    );
-  }
-}
 
 /**
  * Creates a new token with the parsed attributes.
@@ -142,6 +74,46 @@ function processTokens(state: any) {
 }
 
 /**
+ * Builds the command string for generating HTML files from Templ files.
+ * @param serverRoot - The root directory of the server.
+ * @param inputDir - The input directory for Templ files.
+ * @param outputDir - The output directory for HTML files.
+ * @param debug - keep the `static-templ` generation script after completion.
+ * @returns The command string.
+ */
+function buildCommandStr(
+  serverRoot: string,
+  inputDir: string,
+  outputDir: string,
+  debug = false,
+): string {
+  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_PLUS_BIN} -i ${inputDir} -o ${outputDir} -g=true -d=${debug}`;
+}
+
+/**
+ * Generates the HTML for the templ preview component.
+ * @param md - The MarkdownIt instance.
+ * @param props - The properties for the preview component.
+ * @returns The HTML string for the templ preview component.
+ */
+function generateTemplPreviewComponentHtml(
+  md: MarkdownIt,
+  props: VTPComponentProps,
+): string {
+  const _props = {
+    title: md.utils.escapeHtml(props.title),
+    codeContent: unescapeFromJSON(props.codeContent),
+    htmlContent: md.utils.unescapeAll(props.htmlContent),
+    buttonStyle: md.utils.escapeHtml(props.buttonStyle),
+    themes: props.themes,
+  };
+
+  return `<templ-preview-component v-bind='${JSON.stringify(
+    _props,
+  )}'></templ-preview-component>`;
+}
+
+/**
  * Renders the templ preview component.
  * @param tokens - The markdown-it tokens.
  * @param idx - The index of the current token.
@@ -150,6 +122,7 @@ function processTokens(state: any) {
  * @returns The HTML string for the templ preview component.
  */
 function renderTemplPreview(
+  serverCommand: "build" | "serve",
   tokens: Token[],
   idx: number,
   context: PluginContext,
@@ -196,31 +169,38 @@ function renderTemplPreview(
   let htmlContent = "Loading..."; // Default placeholder
   let codeContent = token.content;
 
-  if (fileCache[htmlFilePath]) {
-    htmlContent = (fileCache[htmlFilePath] as CachedFile).content;
-  } else {
-    updateFilesCache(fileCache, htmlFilePath);
-    htmlContent =
-      (fileCache[htmlFilePath] as CachedFile)?.content || htmlContent;
-  }
+  if (serverCommand === "serve") {
+    if (fileCache[htmlFilePath]) {
+      htmlContent = (fileCache[htmlFilePath] as CachedFile).content;
+    } else {
+      updateFilesCache(fileCache, htmlFilePath).then(() => {
+        htmlContent =
+          (fileCache[htmlFilePath] as CachedFile)?.content || htmlContent;
+      });
+    }
 
-  if (fileCache[templFilePath]) {
-    codeContent = (fileCache[templFilePath] as CachedFile).content;
-  } else {
-    updateFilesCache(fileCache, templFilePath);
-    codeContent =
-      (fileCache[templFilePath] as CachedFile)?.content || codeContent;
-  }
+    if (fileCache[templFilePath]) {
+      codeContent = (fileCache[templFilePath] as CachedFile).content;
+    } else {
+      updateFilesCache(fileCache, templFilePath).then(() => {
+        codeContent =
+          (fileCache[templFilePath] as CachedFile)?.content || codeContent;
+      });
+    }
 
-  if (!watchedMdFiles[htmlFilePath]) {
-    watchedMdFiles[htmlFilePath] = new Set();
-  }
-  watchedMdFiles[htmlFilePath].add(id);
+    if (!watchedMdFiles[htmlFilePath]) {
+      watchedMdFiles[htmlFilePath] = new Set();
+    }
+    watchedMdFiles[htmlFilePath].add(id);
 
-  if (!watchedMdFiles[templFilePath]) {
-    watchedMdFiles[templFilePath] = new Set();
+    if (!watchedMdFiles[templFilePath]) {
+      watchedMdFiles[templFilePath] = new Set();
+    }
+    watchedMdFiles[templFilePath].add(id);
+  } else if (serverCommand === "build") {
+    htmlContent = fs.readFileSync(htmlFilePath, "utf8");
+    codeContent = fs.readFileSync(templFilePath, "utf8");
   }
-  watchedMdFiles[templFilePath].add(id);
 
   const props: VTPComponentProps = {
     title: md.utils.escapeHtml(titleValue),
@@ -231,112 +211,6 @@ function renderTemplPreview(
   };
 
   return generateTemplPreviewComponentHtml(md, props);
-}
-
-/**
- * Checks if the required binaries are installed on the system.
- * @param binaries - The list of binaries to check.
- */
-function checkBinaries(binaries: string[]): void {
-  binaries.forEach((binary) => {
-    const result = spawnSync("which", [binary]);
-    if (result.status !== 0) {
-      throw new Error(
-        `[vitepress-templ-preview] Required binary "${binary}" is not installed or not found in PATH.`,
-      );
-    }
-  });
-}
-
-/**
- * Builds the command string for generating HTML files from Templ files.
- * @param serverRoot - The root directory of the server.
- * @param inputDir - The input directory for Templ files.
- * @param outputDir - The output directory for HTML files.
- * @param debug - keep the `static-templ` generation script after completion.
- * @returns The command string.
- */
-function buildCommandStr(
-  serverRoot: string,
-  inputDir: string,
-  outputDir: string,
-  debug = false,
-): string {
-  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_PLUS_BIN} -i ${inputDir} -o ${outputDir} -g=true -d=${debug}`;
-}
-
-/**
- * Executes a command to generate HTML files, updates the file cache,
- * and invalidates modules to trigger re-rendering.
- * @param command - The command string to execute.
- * @param serverRoot - The root directory of the server.
- * @param finalOptions - The final options for the plugin.
- * @param fileCache - The cache for file content.
- * @param watchedMdFiles - The watched markdown files.
- * @param server - The Vite server instance.
- * @param isFirstServerRun - Flag to indicate if this is from the first run of the server.
- */
-function executeAndUpdateCache(
-  command: string,
-  serverRoot: string,
-  finalOptions: PluginOptions,
-  fileCache: Record<string, CachedFile>,
-  watchedMdFiles: Record<string, Set<string>>,
-  server: any,
-  isFirstServerRun: boolean = true,
-) {
-  const resolvedFinalOptions: PluginOptions = {
-    inputDir: path.join(finalOptions.projectDir!, finalOptions.inputDir!),
-    outputDir: path.join(finalOptions.projectDir!, finalOptions.outputDir!),
-  };
-
-  exec(command, async (error, stdout, stderr) => {
-    if (error) {
-      console.error(
-        `[vitepress-templ-preview] Error executing command: ${error.message}`,
-      );
-      return;
-    }
-    if (stderr) {
-      console.error(`[vitepress-templ-preview] Error: ${stderr}`);
-      return;
-    }
-    console.log(stdout);
-
-    const templResolvedPath = path.resolve(
-      serverRoot,
-      resolvedFinalOptions.inputDir!,
-    );
-
-    const htmlResolvedPath = path.resolve(
-      serverRoot,
-      resolvedFinalOptions.outputDir!,
-    );
-
-    if (isFirstServerRun) {
-      console.log(
-        `[vitepress-templ-preview] Watching Templ files at: ${templResolvedPath}`,
-      );
-      server.watcher.add(path.join(templResolvedPath, "**/*.templ"));
-    }
-    // Ensure cache is updated after HTML files are generated
-    await updateCacheForDirectory(fileCache, htmlResolvedPath);
-    await updateCacheForDirectory(fileCache, templResolvedPath);
-
-    // Invalidate modules to trigger re-rendering
-    for (const file in watchedMdFiles) {
-      watchedMdFiles[file].forEach((mdFile) => {
-        const module = server.moduleGraph.getModuleById(mdFile);
-        if (module) {
-          server.moduleGraph.invalidateModule(module);
-        }
-      });
-    }
-
-    server.ws.send({
-      type: "full-reload",
-    });
-  });
 }
 
 const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
@@ -351,36 +225,30 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
   const fileCache: Record<string, CachedFile> = {};
   const watchedMdFiles: Record<string, Set<string>> = {};
 
-  let serverRoot = "";
+  let serverRoot: string;
+
+  let serverCommand: "build" | "serve";
   return {
     name: "vite:templ-preview",
     enforce: "pre",
-    async configureServer(server) {
-      serverRoot = server.config.root;
-
-      // Check for required binaries at server startup
+    configResolved(resolvedConfig) {
+      serverRoot = resolvedConfig.root;
+      serverCommand = resolvedConfig.command;
+    },
+    async buildStart() {
       checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
-
       const cmd = buildCommandStr(
         serverRoot,
         finalOptions.inputDir!,
         finalOptions.outputDir!,
         finalOptions.debug!,
       );
-      executeAndUpdateCache(
-        cmd,
-        serverRoot,
-        finalOptions,
-        fileCache,
-        watchedMdFiles,
-        server,
-      );
-    },
-    handleHotUpdate(ctx) {
-      const { file, server, modules } = ctx;
 
-      if (file.endsWith(".templ")) {
-        console.log(`[vitepress-templ-preview] File changed: ${file}`);
+      await executeCommand(cmd);
+    },
+    async configureServer(server) {
+      if (serverCommand === "serve") {
+        checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
         const cmd = buildCommandStr(
           serverRoot,
           finalOptions.inputDir!,
@@ -394,25 +262,48 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
           fileCache,
           watchedMdFiles,
           server,
-          false,
         );
-
-        setTimeout(() => {
-          if (watchedMdFiles[file]) {
-            watchedMdFiles[file].forEach((mdFile) => {
-              const module = server.moduleGraph.getModuleById(mdFile);
-              if (module) {
-                server.moduleGraph.invalidateModule(module);
-              }
-            });
-          }
-
-          server.ws.send({
-            type: "full-reload",
-          });
-        }, 500);
       }
-      return modules;
+    },
+    handleHotUpdate(ctx) {
+      if (serverCommand === "serve") {
+        const { file, server, modules } = ctx;
+
+        if (file.endsWith(".templ")) {
+          console.log(`[vitepress-templ-preview] File changed: ${file}`);
+          const cmd = buildCommandStr(
+            serverRoot,
+            finalOptions.inputDir!,
+            finalOptions.outputDir!,
+            finalOptions.debug!,
+          );
+          executeAndUpdateCache(
+            cmd,
+            serverRoot,
+            finalOptions,
+            fileCache,
+            watchedMdFiles,
+            server,
+            false,
+          );
+
+          setTimeout(() => {
+            if (watchedMdFiles[file]) {
+              watchedMdFiles[file].forEach((mdFile) => {
+                const module = server.moduleGraph.getModuleById(mdFile);
+                if (module) {
+                  server.moduleGraph.invalidateModule(module);
+                }
+              });
+            }
+
+            server.ws.send({
+              type: "full-reload",
+            });
+          }, 500);
+        }
+        return modules;
+      }
     },
     async transform(code, id) {
       if (!id.endsWith(".md")) return;
@@ -436,7 +327,7 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
 
       md.core.ruler.push("templ_demo", processTokens);
       md.renderer.rules.templ_demo = (tokens: Token[], idx: number) =>
-        renderTemplPreview(tokens, idx, context, id);
+        renderTemplPreview(serverCommand, tokens, idx, context, id);
 
       const rendered = md.render(code);
       if (!rendered.includes("templ-preview-component")) return;
