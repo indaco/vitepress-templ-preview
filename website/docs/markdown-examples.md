@@ -4,6 +4,24 @@ This page demonstrates some of the built-in markdown extensions provided by Vite
 
 ## Syntax Highlighting
 
+### Templ Syntax added in shiki@v1.10.0
+
+This is the [PR](https://github.com/shikijs/textmate-grammars-themes/pull/68) submitted to add Templ syntax support to Shiki.
+
+```templ
+package demos
+
+templ hello(name string) {
+  <div>Hello, { name }</div>
+}
+
+templ HelloDemo() {
+  @hello("World!!!")
+}
+```
+
+### Examples
+
 VitePress provides Syntax Highlighting powered by [Shiki](https://github.com/shikijs/shiki), with additional features like line-highlighting:
 
 **Input**

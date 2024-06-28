@@ -3,25 +3,22 @@
 layout: home
 
 hero:
-  name: "My Awesome Project"
-  text: "A VitePress Site"
-  tagline: A vitepress-templ-preview plugin demo
+  name: "vitepress-templ-preview"
+  text: "A VitePress Plugin."
+  tagline: "Preview your template components while documenting them."
   actions:
     - theme: brand
-      text: Hello World Component
-      link: /hello-preview
+      text: What is it?
+      link: /overview
     - theme: alt
-      text: Button Component
-      link: /button-preview
-    - theme: alt
-      text: Alert Component
-      link: /alert-preview
+      text: Quick Start
+      link: /usage
 
 features:
   - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Syntax highlighting for `templ` files
   - title: Feature B
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
   - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    details: Predefined Vue components for rendering previews
 ---
