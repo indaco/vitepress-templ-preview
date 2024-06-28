@@ -2,7 +2,6 @@ package demos
 
 var buttonHandle = templ.NewOnceHandle()
 
-
 templ button(label string) {
   @buttonHandle.Once() {
     <script type="text/javascript">
@@ -16,5 +15,4 @@ templ button(label string) {
 
 templ ButtonDemo() {
   @button("Click me")
-
 }
