@@ -51,31 +51,31 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm clean && pnpm build:vue && pnpm build:plugin && pnpm postbuild",
+    "build": "pnpm clean && pnpm build:plugin && pnpm build:components && pnpm postbuild",
     "postbuild": "publint .",
+    "build:components": "vue-tsc && vite build",
     "build:plugin": "tsup",
-    "build:vue": "vue-tsc && vite build",
     "clean": "rimraf dist",
     "prepublish": "pnpm build"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.1",
-    "@types/node": "^20.14.8",
+    "@types/node": "^20.14.9",
     "@vitejs/plugin-vue": "^5.0.5",
     "markdown-it": "^14.1.0",
     "publint": "^0.2.8",
     "rimraf": "^5.0.7",
-    "shiki": "^1.9.0",
-    "shiki-templ": "^0.2.3",
+    "shiki": "^1.10.0",
+    "shiki-templ": "^0.2.4",
     "tsup": "^8.1.0",
     "typescript": "^5.5.2",
-    "vite": "^5.3.1",
+    "vite": "^5.3.2",
     "vitepress": "^1.2.3",
-    "vue": "^3.4.30",
+    "vue": "^3.4.31",
     "vue-tsc": "^2.0.22"
   },
   "peerDependencies": {
-    "shiki-templ": "^0.2.3"
+    "shiki-templ": "^0.2.4"
   },
   "packageManager": "pnpm@9.4.0"
 }
