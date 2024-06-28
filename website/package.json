@@ -1,8 +1,8 @@
 {
-  "name": "vitepress-templ-preview-demo",
+  "name": "docs-web",
   "version": "0.0.1",
   "private": true,
-  "description": "Demo project for vitepress-templ-preview plugin",
+  "description": "Docs website for vitepress-templ-preview plugin",
   "keywords": [],
   "license": "MIT",
   "author": "indaco <github@mircoveltri.me>",
