@@ -3,7 +3,6 @@ import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted, nextTick } from "vue";
 import { BundledTheme, createHighlighter } from "shiki";
-import { templLang } from "shiki-templ";
 import CodeIcon from "./CodeIcon.vue";
 
 const props = defineProps<VTPComponentProps>();
@@ -26,9 +25,11 @@ function executeScripts(container: HTMLElement): void {
 
 onMounted(async () => {
   const highlighter = await createHighlighter({
-    langs: [templLang],
+    langs: [],
     themes: Object.values(props.themes),
   });
+
+  await highlighter.loadLanguage("templ");
 
   highlightedCode.value = highlighter.codeToHtml(props.codeContent, {
     lang: "templ",

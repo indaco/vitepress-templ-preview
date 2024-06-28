@@ -49,9 +49,6 @@ importers:
       shiki:
         specifier: ^1.10.0
         version: 1.10.0
-      shiki-templ:
-        specifier: ^0.2.4
-        version: 0.2.4(shiki@1.10.0)
       tsup:
         specifier: ^8.1.0
         version: 8.1.0(postcss@8.4.38)(typescript@5.5.2)
@@ -83,9 +80,6 @@ importers:
       shiki:
         specifier: ^1.10.0
         version: 1.10.0
-      shiki-templ:
-        specifier: ^0.2.4
-        version: 0.2.4(shiki@1.10.0)
       vitepress:
         specifier: ^1.2.3
         version: 1.2.3(@algolia/client-search@4.23.3)(@types/node@20.14.9)(postcss@8.4.38)(search-insights@2.14.0)(typescript@5.5.2)
@@ -2443,14 +2437,6 @@ packages:
       }
     engines: { node: ">=8" }
 
-  shiki-templ@0.2.4:
-    resolution:
-      {
-        integrity: sha512-u45OEOSNMBNncyKgr8D+mDF/KKmoYh6AJ7mTE3rMjxhSmhvJ4bsb5M+iVHLCaFln0mBEoZs2hMYRWrUYb6K8/Q==,
-      }
-    peerDependencies:
-      shiki: ^1.9.1
-
   shiki@1.10.0:
     resolution:
       {
@@ -4205,10 +4191,6 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
-
-  shiki-templ@0.2.4(shiki@1.10.0):
-    dependencies:
-      shiki: 1.10.0
 
   shiki@1.10.0:
     dependencies:
