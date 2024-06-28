@@ -95,10 +95,9 @@ onMounted(async () => {
 <style scoped>
 .container {
   margin-top: 1.5rem;
-  padding: 0;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  padding: 20px;
   border-radius: 5px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
@@ -116,7 +115,7 @@ button {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  margin-bottom: 10px;
+  margin-bottom: 1rem;
   color: var(--vp-button-alt-text);
   font-weight: 500;
   background-color: var(--vp-button-alt-bg);
@@ -124,9 +123,9 @@ button {
     color 0.25s,
     border-color 0.25s,
     background-color 0.25s;
-  border-radius: 20px;
-  padding: 0 20px;
-  line-height: 38px;
+  border-radius: 1.25rem;
+  padding: 0 1.25rem;
+  line-height: 2.25rem;
   font-size: 14px;
 }
 
