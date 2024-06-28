@@ -27,3 +27,4 @@ dist-ssr
 /**/.vitepress/cache
 /**/output
 temp
+.temp
