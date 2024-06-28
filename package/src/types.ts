@@ -1,5 +1,5 @@
 import MarkdownIt from "markdown-it";
-import type { ThemeOptions } from "vitepress";
+import { BundledTheme } from "shiki";
 
 /**
  * Interface representing the options for the vite-templ-preview plugin.
@@ -55,6 +55,9 @@ export interface VTPComponentProps {
   title: string;
   codeContent: string;
   htmlContent: string;
-  themes: ThemeOptions;
+  themes: {
+    light: BundledTheme;
+    dark: BundledTheme;
+  };
   buttonStyle: ButtonStyle;
 }

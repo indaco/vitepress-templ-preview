@@ -8,7 +8,7 @@ import type {
 } from "../types";
 import * as fs from "node:fs";
 import path from "node:path";
-import { Plugin, ResolvedConfig } from "vite";
+import { Plugin } from "vite";
 import MarkdownIt from "markdown-it";
 import { Token } from "markdown-it/index.js";
 import {
@@ -20,8 +20,7 @@ import {
   unescapeFromJSON,
   updateFilesCache,
 } from "../utils";
-import { ThemeOptions } from "vitepress";
-import { consola } from "consola";
+import { BundledTheme } from "shiki";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 const DEFAULT_PROJECT_FOLDER = "templ-preview";
@@ -148,8 +147,12 @@ function renderTemplPreview(
   const srcValue = srcAttr ? srcAttr[1] : "";
   const titleValue = titleAttr ? titleAttr[1] : "";
   const buttonStyleValue = buttonAttr ? buttonAttr[1] : "alt";
-  const lightThemeValue = lightThemeAttr ? lightThemeAttr[1] : "github-light";
-  const darkThemeValue = darkThemeAttr ? darkThemeAttr[1] : "github-dark";
+  const lightThemeValue = (
+    lightThemeAttr ? lightThemeAttr[1] : "github-light"
+  ) as BundledTheme;
+  const darkThemeValue = (
+    darkThemeAttr ? darkThemeAttr[1] : "github-dark"
+  ) as BundledTheme;
   const themesValue = {
     light: lightThemeValue,
     dark: darkThemeValue,
@@ -209,7 +212,7 @@ function renderTemplPreview(
     codeContent: escapeForJSON(codeContent),
     htmlContent: md.utils.escapeHtml(htmlContent),
     buttonStyle: buttonStyleValue as ButtonStyle,
-    themes: themesValue as ThemeOptions,
+    themes: themesValue,
   };
 
   return generateTemplPreviewComponentHtml(md, props);
@@ -228,7 +231,6 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
   const watchedMdFiles: Record<string, Set<string>> = {};
 
   let serverRoot: string;
-
   let serverCommand: "build" | "serve";
   return {
     name: "vite:templ-preview",

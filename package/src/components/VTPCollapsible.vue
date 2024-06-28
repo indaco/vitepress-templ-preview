@@ -2,63 +2,22 @@
 import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted, nextTick } from "vue";
-import { BundledTheme, createHighlighter } from "shiki";
+import { executeScriptsTick, useHighlighter } from "./shared";
 import CodeIcon from "./CodeIcon.vue";
 
 const props = defineProps<VTPComponentProps>();
-
 const isCodeSectionVisible: Ref<boolean> = ref(false);
-const highlightedCode: Ref<string> = ref("");
+const { highlightedCode, highlightCode } = useHighlighter();
 
 function toggleCodeSection(): void {
   isCodeSectionVisible.value = !isCodeSectionVisible.value;
 }
 
-function executeScripts(container: HTMLElement): void {
-  const scripts = container.querySelectorAll("script");
-  scripts.forEach((script) => {
-    const newScript = document.createElement("script");
-    newScript.textContent = script.textContent;
-    document.body.appendChild(newScript).parentNode?.removeChild(newScript);
-  });
-}
-
 onMounted(async () => {
-  const highlighter = await createHighlighter({
-    langs: [],
-    themes: Object.values(props.themes),
-  });
-
-  await highlighter.loadLanguage("templ");
-
-  highlightedCode.value = highlighter.codeToHtml(props.codeContent, {
-    lang: "templ",
-    themes: props.themes as {
-      light: BundledTheme;
-      dark: BundledTheme;
-    },
-    defaultColor: false,
-  });
+  await highlightCode(props.codeContent, props.themes);
 
   nextTick(() => {
-    const previewContent = document.querySelector(
-      ".preview-content",
-    ) as HTMLElement;
-    if (previewContent) {
-      // Observe changes to the preview-content element
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (mutation.type === "childList") {
-            executeScripts(mutation.target as HTMLElement);
-          }
-        });
-      });
-
-      observer.observe(previewContent, { childList: true });
-
-      // Execute scripts in initial content
-      executeScripts(previewContent);
-    }
+    executeScriptsTick();
   });
 });
 </script>
