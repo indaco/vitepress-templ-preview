@@ -16,10 +16,12 @@ import {
   escapeForJSON,
   executeAndUpdateCache,
   executeCommand,
+  logger,
   unescapeFromJSON,
   updateFilesCache,
 } from "../utils";
 import { ThemeOptions } from "vitepress";
+import { consola } from "consola";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 const DEFAULT_PROJECT_FOLDER = "templ-preview";
@@ -270,7 +272,7 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
         const { file, server, modules } = ctx;
 
         if (file.endsWith(".templ")) {
-          console.log(`[vitepress-templ-preview] File changed: ${file}`);
+          logger.info(`[vitepress-templ-preview] File changed: ${file}`);
           const cmd = buildCommandStr(
             serverRoot,
             finalOptions.inputDir!,

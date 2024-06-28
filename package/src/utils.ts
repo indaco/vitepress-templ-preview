@@ -2,6 +2,14 @@ import { exec, spawnSync } from "node:child_process";
 import { CachedFile, PluginOptions } from "./types";
 import path from "node:path";
 import * as fsp from "node:fs/promises";
+import { createConsola } from "consola";
+
+export const logger = createConsola({
+  formatOptions: {
+    compact: true,
+    date: false,
+  },
+});
 
 /**
  * Updates the cache for a specific file by reading its content.
@@ -19,10 +27,10 @@ export async function updateFilesCache(
       cache[filePath] = {
         content,
       };
-      console.log(`[vitepress-templ-preview] Updated cache for: ${filePath}`);
+      logger.info(`[vitepress-templ-preview] Updated cache for: ${filePath}`);
     }
   } catch (err: any) {
-    console.error(
+    logger.error(
       `[vitepress-templ-preview] Error reading file ${filePath}: ${err.message}`,
     );
   }
@@ -48,7 +56,7 @@ export async function updateCacheForDirectory(
       }),
     );
   } catch (err: any) {
-    console.error(
+    logger.error(
       `[vitepress-templ-preview] Error reading directory ${directory}: ${err.message}`,
     );
   }
@@ -75,20 +83,20 @@ export function checkBinaries(binaries: string[]): void {
  * @returns A promise that resolves when the command is complete.
  */
 export function executeCommand(command: string): Promise<void> {
-  console.log(`[vitepress-templ-preview] Executing system command: ${command}`);
+  logger.info(`[vitepress-templ-preview] Executing system command: ${command}`);
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
-        console.error(
+        logger.error(
           `[vitepress-templ-preview] Error executing command: ${error.message}`,
         );
         reject(error);
         return;
       }
       if (stderr) {
-        console.error(`[vitepress-templ-preview] Error: ${stderr}`);
+        logger.error(`[vitepress-templ-preview] Error: ${stderr}`);
       }
-      console.log(stdout);
+      logger.info(stdout);
       resolve();
     });
   });
@@ -127,7 +135,7 @@ async function updateCacheAndInvalidate(
   );
 
   if (isFirstServerRun) {
-    console.log(
+    logger.info(
       `[vitepress-templ-preview] Watching Templ files at: ${templResolvedPath}`,
     );
     server.watcher.add(path.join(templResolvedPath, "**/*.templ"));
