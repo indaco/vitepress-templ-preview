@@ -4,21 +4,24 @@ layout: home
 
 hero:
   name: "vitepress-templ-preview"
-  text: "A VitePress Plugin."
-  tagline: "Preview your template components while documenting them."
+  text: ""
+  tagline: "A VitePress plugin to preview your templ components while documenting them."
   actions:
     - theme: brand
       text: What is it?
       link: /overview
     - theme: alt
-      text: Quick Start
-      link: /usage
+      text: Get Started
+      link: /prerequisites
 
 features:
-  - title: Feature A
-    details: Syntax highlighting for `templ` files
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Predefined Vue components for rendering previews
+  - title: Auto Templ Generation
+    icon: ⚙️
+    details: Automatically run `templ generate` behind the scenes to keep your Go code and documentation in sync without manual steps.
+  - title: Live Preview
+    icon: 👀
+    details: Instantly preview Templ components in VitePress, ensuring accurate and real-time documentation.
+  - title: Streamlined Workflow Integration
+    icon: 🔁
+    details: Smooth integration between templ and VitePress, allowing for efficient content creation and component development.
 ---
