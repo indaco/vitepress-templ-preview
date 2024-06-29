@@ -1,7 +1,7 @@
 {
   "name": "vitepress-templ-preview",
   "version": "0.1.0",
-  "description": "A Vitepress plugin for easily previewing templ components in Markdown.",
+  "description": "A VitePress plugin to preview your templ components while documenting them.",
   "bugs": {
     "url": "https://github.com/indaco/vitepress-templ-preview/issues"
   },
