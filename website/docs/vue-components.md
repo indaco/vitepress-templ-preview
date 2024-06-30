@@ -24,13 +24,13 @@ The `vitepress-templ-preview` plugin comes with some predefined components for p
 
 These components expose certain properties to allow configuration:
 
-| Prop          | Type            | Required | Default                                           | Description                                      |
-| :------------ | :-------------- | :------- | ------------------------------------------------- | ------------------------------------------------ |
-| `codeContent` | _string_        | Yes      |                                                   | The code content to display in the code tab.     |
-| `htmlContent` | _string_        | Yes      |                                                   | The HTML content to display in the preview tab.  |
-| `title`       | _string_        | Yes      |                                                   |                                                  |
-| `themes`      | _BundledTheme_  | Yes      | `light: 'github-light'`<br/>`dark: 'github-dark'` | Shiki themes for syntax highlighting.            |
-| `buttonStyle` | _"alt"/"brand"_ | Yes      | `alt`                                             | Show/hide code button style in `VTPCollpasible`. |
+| Prop          | Type            | Default                                            | Description                                      |
+| :------------ | :-------------- | -------------------------------------------------- | ------------------------------------------------ |
+| `codeContent` | _string_        |                                                    | The code content to display in the code tab.     |
+| `htmlContent` | _string_        |                                                    | The HTML content to display in the preview tab.  |
+| `title`       | _string_        |                                                    |                                                  |
+| `themes`      | _BundledTheme_  |  `light: 'github-light'`<br/>`dark: 'github-dark'` | Shiki themes for syntax highlighting.            |
+| `buttonStyle` | _"alt"/"brand"_ |  `alt`                                             | Show/hide code button style in `VTPCollpasible`. |
 
 ## Use a Custom Vue Component
 
