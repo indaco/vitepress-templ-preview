@@ -15,7 +15,7 @@ import {
   checkBinaries,
   escapeForJSON,
   executeAndUpdateCache,
-  executeCommand,
+  executeCommandSync,
   logger,
   unescapeFromJSON,
   updateFilesCache,
@@ -82,7 +82,19 @@ function processTokens(state: any) {
  * @param debug - keep the `static-templ` generation script after completion.
  * @returns The command string.
  */
-function buildCommandStr(
+function buildTemplGenerateCommandStr(serverRoot: string): string {
+  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${TEMPL_BIN} generate .`;
+}
+
+/**
+ * Builds the command string for generating HTML files from Templ files.
+ * @param serverRoot - The root directory of the server.
+ * @param inputDir - The input directory for Templ files.
+ * @param outputDir - The output directory for HTML files.
+ * @param debug - keep the `static-templ` generation script after completion.
+ * @returns The command string.
+ */
+function buildStaticTemplCommandStr(
   serverRoot: string,
   inputDir: string,
   outputDir: string,
@@ -132,7 +144,9 @@ function renderTemplPreview(
   const token = tokens[idx];
   const { md, serverRoot, finalOptions, fileCache, watchedMdFiles } = context;
 
+  // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === "src");
+  // Options are handles as `data-*` props.
   const titleAttr = token.attrs?.find((attr) => attr[0] === "title");
   const buttonAttr = token.attrs?.find(
     (attr) => attr[0] === "data-button-variant",
@@ -144,6 +158,7 @@ function renderTemplPreview(
     (attr) => attr[0] === "data-theme-dark",
   );
 
+  // Retrieving attribute values
   const srcValue = srcAttr ? srcAttr[1] : "";
   const titleValue = titleAttr ? titleAttr[1] : "";
   const buttonStyleValue = buttonAttr ? buttonAttr[1] : "alt";
@@ -241,26 +256,34 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
     },
     async buildStart() {
       checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
-      const cmd = buildCommandStr(
+
+      const templCmd = buildTemplGenerateCommandStr(serverRoot);
+      executeCommandSync(templCmd);
+
+      const staticTemplcmd = buildStaticTemplCommandStr(
         serverRoot,
         finalOptions.inputDir!,
         finalOptions.outputDir!,
         finalOptions.debug!,
       );
 
-      await executeCommand(cmd);
+      executeCommandSync(staticTemplcmd);
     },
     async configureServer(server) {
       if (serverCommand === "serve") {
         checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
-        const cmd = buildCommandStr(
+
+        const templCmd = buildTemplGenerateCommandStr(serverRoot);
+        executeCommandSync(templCmd);
+
+        const staticTemplcmd = buildStaticTemplCommandStr(
           serverRoot,
           finalOptions.inputDir!,
           finalOptions.outputDir!,
           finalOptions.debug!,
         );
         executeAndUpdateCache(
-          cmd,
+          staticTemplcmd,
           serverRoot,
           finalOptions,
           fileCache,
@@ -275,7 +298,7 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
 
         if (file.endsWith(".templ")) {
           logger.info(`[vitepress-templ-preview] File changed: ${file}`);
-          const cmd = buildCommandStr(
+          const cmd = buildStaticTemplCommandStr(
             serverRoot,
             finalOptions.inputDir!,
             finalOptions.outputDir!,

@@ -1,4 +1,4 @@
-import { exec, spawnSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import { CachedFile, PluginOptions } from "./types";
 import path from "node:path";
 import * as fsp from "node:fs/promises";
@@ -78,28 +78,25 @@ export function checkBinaries(binaries: string[]): void {
 }
 
 /**
- * Executes a command.
+ * Executes a command synchronously.
  * @param command - The command string to execute.
- * @returns A promise that resolves when the command is complete.
  */
-export function executeCommand(command: string): Promise<void> {
+export function executeCommandSync(command: string): void {
   logger.info(`[vitepress-templ-preview] Executing system command: ${command}`);
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        logger.error(
-          `[vitepress-templ-preview] Error executing command: ${error.message}`,
-        );
-        reject(error);
-        return;
-      }
-      if (stderr) {
-        logger.error(`[vitepress-templ-preview] Error: ${stderr}`);
-      }
-      logger.info(stdout);
-      resolve();
-    });
-  });
+  try {
+    const stdout = execSync(command, { stdio: "pipe" }).toString();
+    logger.info(stdout);
+  } catch (error: any) {
+    logger.error(
+      `[vitepress-templ-preview] Error executing command: ${error.message}`,
+    );
+    if (error.stderr) {
+      logger.error(
+        `[vitepress-templ-preview] Error: ${error.stderr.toString()}`,
+      );
+    }
+    throw error; // Re-throw the error to ensure it can be handled by the caller if necessary
+  }
 }
 
 /**
@@ -179,7 +176,7 @@ export async function executeAndUpdateCache(
   server: any,
   isFirstServerRun: boolean = true,
 ) {
-  await executeCommand(command);
+  executeCommandSync(command);
   await updateCacheAndInvalidate(
     serverRoot,
     finalOptions,
