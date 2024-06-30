@@ -17,7 +17,7 @@ hero:
 features:
   - title: Auto Templ Generation
     icon: ⚙️
-    details: Automatically run `templ generate` behind the scenes to keep your Go code and documentation in sync without manual steps.
+    details: Automatically generate HTML snippets from templ files to keep your Go code and documentation in sync without manual steps.
   - title: Live Preview
     icon: 👀
     details: Instantly preview Templ components in VitePress, ensuring accurate and real-time documentation.
