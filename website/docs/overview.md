@@ -27,4 +27,4 @@ This plugin bridges the gap between templ and VitePress, automating the generati
 - **Automatic Generation**: Runs `templ generate` command via `static-templ` at server startup, eliminating the need to run this command manually.
 - **Hot Reloading**: Automatically triggers the `templ generate` command and command and refresh the page to display the new content.
 - **File Content Caching**: Efficiently caches file contents to improve performance and reduce redundant file reads.
-- **Flexible Vue Components**: Includes three predefined Vue components for rendering previews, with the option to use custom components.
+- **Flexible Vue Components**: Includes predefined Vue components for rendering previews, with the option to use custom components.

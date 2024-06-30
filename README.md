@@ -14,7 +14,7 @@
 
 ## Documentation
 
-Check out docs [here](https://vitepress-templ-preview.indaco.dev)
+Check out the docs [here](https://vitepress-templ-preview.indaco.dev).
 
 ## Contributing
 
