@@ -105,6 +105,7 @@ onMounted(async () => {
 .tabs {
   display: flex;
   gap: 0.25rem;
+  margin-left: auto;
 }
 
 button {
