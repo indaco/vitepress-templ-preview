@@ -117,7 +117,7 @@ or
 
 ### Component configuration
 
-You can configure the component passing `data` properties to the tag itself. All `data-*` properties are optionals:
+You can configure the component by passing `data` properties directly to the tag. All `data-*` properties are optionals:
 
 ```html
 <templ-demo
