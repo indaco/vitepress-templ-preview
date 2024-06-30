@@ -81,7 +81,7 @@ export default defineConfig({
 });
 ```
 
-```ts{2,3,8-12} [theme/index.ts]
+```ts{3,4,9-13} [theme/index.ts]
 //.vitepress/theme/index.ts
 import DefaultTheme from "vitepress/theme";
 import { VTPCollapsible } from "vitepress-templ-preview/ui";
@@ -103,7 +103,7 @@ export default {
 
 ### Use the code block in the markdown
 
-Next, use the `templ-preview` tag in your markdown files:
+Next, use the `templ-demo` tag in your markdown files:
 
 ```html
 <templ-demo src="hello-demo" />
