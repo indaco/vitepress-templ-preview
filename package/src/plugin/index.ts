@@ -21,6 +21,7 @@ import {
   updateFilesCache,
 } from "../utils";
 import { BundledTheme } from "shiki";
+import { log } from "node:console";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 const DEFAULT_PROJECT_FOLDER = "templ-preview";
@@ -146,6 +147,14 @@ function renderTemplPreview(
 
   // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === "src");
+  // Throw an error if srcAttr is not set or srcAttr[1] is empty.
+  if (!srcAttr || !srcAttr[1]) {
+    const errorMsg =
+      "[vitepress-templ-preview] Error: The 'src' attribute is required and must not be empty.";
+    logger.error(errorMsg);
+    throw new Error(errorMsg);
+  }
+
   // Options are handles as `data-*` props.
   const titleAttr = token.attrs?.find((attr) => attr[0] === "title");
   const buttonAttr = token.attrs?.find(
@@ -159,7 +168,7 @@ function renderTemplPreview(
   );
 
   // Retrieving attribute values
-  const srcValue = srcAttr ? srcAttr[1] : "";
+  const srcValue = srcAttr[1];
   const titleValue = titleAttr ? titleAttr[1] : "";
   const buttonStyleValue = buttonAttr ? buttonAttr[1] : "alt";
   const lightThemeValue = (
