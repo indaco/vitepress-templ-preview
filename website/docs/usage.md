@@ -84,7 +84,7 @@ export default defineConfig({
 ```ts{2,3,8-12} [theme/index.ts]
 //.vitepress/theme/index.ts
 import DefaultTheme from "vitepress/theme";
-import { VTPTabs } from "vitepress-templ-preview/ui";
+import { VTPCollapsible } from "vitepress-templ-preview/ui";
 import "vitepress-templ-preview/ui/style.css";
 
 export default {
