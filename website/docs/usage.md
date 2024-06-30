@@ -106,8 +106,28 @@ export default {
 Next, use the `templ-preview` tag in your markdown files:
 
 ```html
-<templ-demo src="hello-demo" title="Simple Templ Component"></templ-demo>
+<templ-demo src="hello-demo" />
+```
+
+or
+
+```html
+<templ-demo src="hello-demo"></templ-demo>
+```
+
+### Component configuration
+
+You can configure the component passing `data` properties to the tag itself. All `data-*` properties are optionals:
+
+```html
+<templ-demo
+  src="hello-demo"
+  data-title="Hello Templ Demo"
+  data-button-variant="brand"
+  data-theme-light="vitesse-light"
+  data-theme-dark="vitesse-dark"
+/>
 ```
 
 > [!TIP]
-> Check the [Vue Components](/vue-components) page to know more on how to customize the rendering component.
+> Check the [Vue Components](/vue-components) page to know more.

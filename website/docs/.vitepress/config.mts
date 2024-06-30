@@ -54,7 +54,6 @@ export default defineConfig({
         items: [
           { text: "Options", link: "/options" },
           { text: "Vue components", link: "/vue-components" },
-          { text: "Use a Custom component", link: "/custom-vue-component" },
         ],
       },
     ],

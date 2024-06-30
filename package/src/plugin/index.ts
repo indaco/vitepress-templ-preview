@@ -156,7 +156,7 @@ function renderTemplPreview(
   }
 
   // Options are handles as `data-*` props.
-  const titleAttr = token.attrs?.find((attr) => attr[0] === "title");
+  const titleAttr = token.attrs?.find((attr) => attr[0] === "data-title");
   const buttonAttr = token.attrs?.find(
     (attr) => attr[0] === "data-button-variant",
   );

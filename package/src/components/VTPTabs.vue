@@ -41,7 +41,7 @@ onMounted(async () => {
 <template>
   <div>
     <div class="wrapper">
-      <h3 v-html="props.title"></h3>
+      <h3 v-if="props.title !== ''" v-html="props.title"></h3>
       <div class="tabs" role="tablist">
         <button
           role="tab"
