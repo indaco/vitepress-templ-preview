@@ -2,7 +2,7 @@
 import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted, nextTick } from "vue";
-import { executeScriptsTick, useHighlighter } from "./shared";
+import { executeScriptsTick, useHighlighter } from "../shared";
 import CodeIcon from "./CodeIcon.vue";
 
 const props = defineProps<VTPComponentProps>();

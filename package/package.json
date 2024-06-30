@@ -17,6 +17,10 @@
       "types": "./dist/types/plugin/index.d.ts",
       "default": "./dist/plugin/index.esm.js"
     },
+    "./shared": {
+      "types": "./dist/types/shared.d.ts",
+      "default": "./dist/shared.esm.js"
+    },
     "./types": {
       "types": "./dist/types/types.d.ts"
     },
@@ -41,6 +45,9 @@
       ],
       "types": [
         "./dist/types/types.d.ts"
+      ],
+      "shared": [
+        "./dist/types/shared.d.ts"
       ],
       ".": [
         "./dist/types/index.d.ts"

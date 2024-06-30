@@ -52,9 +52,9 @@ export interface TagAttrs {
 export type ButtonStyle = "alt" | "brand";
 
 export interface VTPComponentProps {
-  title: string;
   codeContent: string;
   htmlContent: string;
+  title: string;
   themes: {
     light: BundledTheme;
     dark: BundledTheme;

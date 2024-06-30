@@ -5,7 +5,7 @@ import { ref, onMounted, nextTick, computed } from "vue";
 import { BundledTheme, createHighlighter } from "shiki";
 import ViewIcon from "./ViewIcon.vue";
 import CodeIcon from "./CodeIcon.vue";
-import { executeScriptsTick, useHighlighter } from "./shared";
+import { executeScriptsTick, useHighlighter } from "../shared";
 
 const props = defineProps<VTPComponentProps>();
 const activeTab = ref("preview");

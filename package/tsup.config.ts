@@ -1,7 +1,12 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/types.ts", "src/utils.ts", "src/plugin/index.ts"],
+  entry: [
+    "src/types.ts",
+    "src/shared.ts",
+    "src/utils.ts",
+    "src/plugin/index.ts",
+  ],
   outExtension({ format }) {
     return {
       js: `.${format}.js`,
