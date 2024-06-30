@@ -32,7 +32,7 @@ These components expose certain properties to allow configuration:
 | `themes`      | _BundledTheme_  | Yes      | `light: 'github-light'`<br/>`dark: 'github-dark'` | Shiki themes for syntax highlighting.            |
 | `buttonStyle` | _"alt"/"brand"_ | Yes      | `alt`                                             | Show/hide code button style in `VTPCollpasible`. |
 
-## Use a Custom Vew Component
+## Use a Custom Vue Component
 
 If you are not satisfied with the predefined components and prefer to use your own custom one, it is easy to do so. Here is an example:
 
