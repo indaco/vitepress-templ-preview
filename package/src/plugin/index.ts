@@ -266,6 +266,9 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
     async buildStart() {
       checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
 
+      /**
+       *! TODO: remove when #12 will be merged into main for static-templ
+       */
       const templCmd = buildTemplGenerateCommandStr(serverRoot);
       executeCommandSync(templCmd);
 
@@ -282,6 +285,9 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
       if (serverCommand === "serve") {
         checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
 
+        /**
+         *! TODO: remove when #12 will be merged into main for static-templ
+         */
         const templCmd = buildTemplGenerateCommandStr(serverRoot);
         executeCommandSync(templCmd);
 
