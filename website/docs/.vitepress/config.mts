@@ -7,6 +7,9 @@ export default defineConfig({
   description:
     "A VitePress plugin to preview your templ components while documenting them.",
   lastUpdated: true,
+  sitemap: {
+    hostname: "https://vitepress-templ-preview.indaco.dev",
+  },
   themeConfig: {
     search: {
       provider: "local",
