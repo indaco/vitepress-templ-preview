@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: What is it?
-      link: /overview
+      link: /introduction
     - theme: alt
       text: Get Started
       link: /prerequisites
