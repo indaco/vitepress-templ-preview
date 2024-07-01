@@ -33,7 +33,8 @@ export default defineConfig({
         text: "Guide",
         collapsed: false,
         items: [
-          { text: "Overview", link: "/overview" },
+          { text: "Introduction", link: "/introduction" },
+          { text: "Motivation", link: "/motivation" },
           { text: "Prerequisites", link: "/prerequisites" },
           { text: "Usage", link: "/usage" },
         ],

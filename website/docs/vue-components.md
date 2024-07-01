@@ -1,36 +1,57 @@
 # View Components
 
-The `vitepress-templ-preview` plugin comes with some predefined components for preview rendering. Choose one and [register it](usage.html#vitepress).
+The `vitepress-templ-preview` plugin comes with some predefined components you can select for preview rendering:
 
-::: details VTPCard
+- _VTPCard_
+- _VTPCollapsible_
+- _VTPTabs_
+
+Choose one and [register](usage.html#vitepress) it.
+
+## Shared Properties
+
+All these components expose certain properties to allow configuration:
+
+| Prop          | Type           | Default                                           | Description                                     |
+| :------------ | :------------- | ------------------------------------------------- | ----------------------------------------------- |
+| `codeContent` | _string_       |                                                   | The code content to display in the code tab.    |
+| `htmlContent` | _string_       |                                                   | The HTML content to display in the preview tab. |
+| `title`       | _string_       |                                                   |                                                 |
+| `themes`      | _BundledTheme_ | `light: 'github-light'`<br/>`dark: 'github-dark'` | Shiki themes for syntax highlighting.           |
+
+## Component Specific Properties
+
+### VTPCard
+
+| Prop             | Type      | Default | Description                                       |
+| :--------------- | :-------- | ------- | ------------------------------------------------- |
+| `isPreviewFirst` | _boolean_ | `true`  | Wheather or not show the preview before the code. |
+
+::: details Screenshot
 
 ![VTPCard](/images/card.png)
 
 :::
 
-::: details VTPCollapsible
+### VTPCollapsible
+
+| Prop          | Type            | Default | Description                                      |
+| :------------ | :-------------- | ------- | ------------------------------------------------ |
+| `buttonStyle` | _"alt"/"brand"_ | `alt`   | Show/hide code button style in `VTPCollpasible`. |
+
+::: details Screenshot
 
 ![VTPCollapsible](/images/collapsible.png)
 
 :::
 
-::: details VTPTabs
+### VTPTabs
+
+::: details Screenshot
 
 ![VTPTabs](/images/tabs.png)
 
 :::
-
-## Props
-
-These components expose certain properties to allow configuration:
-
-| Prop          | Type            | Default                                           | Description                                      |
-| :------------ | :-------------- | ------------------------------------------------- | ------------------------------------------------ |
-| `codeContent` | _string_        |                                                   | The code content to display in the code tab.     |
-| `htmlContent` | _string_        |                                                   | The HTML content to display in the preview tab.  |
-| `title`       | _string_        |                                                   |                                                  |
-| `themes`      | _BundledTheme_  | `light: 'github-light'`<br/>`dark: 'github-dark'` | Shiki themes for syntax highlighting.            |
-| `buttonStyle` | _"alt"/"brand"_ | `alt`                                             | Show/hide code button style in `VTPCollpasible`. |
 
 ## Use a Custom Vue Component
 
@@ -66,6 +87,10 @@ onMounted(async () => {
     <span class="vp-code" v-html="highlightedCode"></span>
   </div>
 </template>
+
+<style scoped>
+/* Your CSS here */
+</style>
 ```
 
-Remember to [register it](usage.html#vitepress).
+Remember to [register](usage.html#vitepress) it.
