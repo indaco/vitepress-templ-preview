@@ -60,4 +60,5 @@ export interface VTPComponentProps {
     dark: BundledTheme;
   };
   buttonStyle: ButtonStyle;
+  isPreviewFirst: boolean;
 }
