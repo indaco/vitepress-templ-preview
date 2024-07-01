@@ -2,6 +2,7 @@
 import type { VTPComponentProps } from "../types";
 import { onMounted, nextTick } from "vue";
 import { executeScriptsTick, useHighlighter } from "../shared";
+import ConditionalWrapper from "./ConditionalWrapper.vue";
 
 const props = defineProps<VTPComponentProps>();
 const { highlightedCode, highlightCode } = useHighlighter();
@@ -18,17 +19,22 @@ onMounted(async () => {
 <template>
   <div class="container">
     <h3 v-if="props.title !== ''" v-html="props.title"></h3>
-    <div class="preview">
-      <div class="preview-content" v-html="props.htmlContent"></div>
-    </div>
-
-    <div class="code-content">
-      <div class="language-templ vp-adaptive-theme">
-        <button title="Copy Code" class="copy"></button>
-        <span class="lang">templ</span>
-        <span class="vp-code" v-html="highlightedCode"></span>
-      </div>
-    </div>
+    <ConditionalWrapper :isPreviewFirst="props.isPreviewFirst">
+      <template #preview>
+        <div class="preview">
+          <div class="preview-content" v-html="props.htmlContent"></div>
+        </div>
+      </template>
+      <template #code>
+        <div class="code-content">
+          <div class="language-templ vp-adaptive-theme">
+            <button title="Copy Code" class="copy"></button>
+            <span class="lang">templ</span>
+            <span class="vp-code" v-html="highlightedCode"></span>
+          </div>
+        </div>
+      </template>
+    </ConditionalWrapper>
   </div>
 </template>
 
@@ -49,7 +55,7 @@ onMounted(async () => {
 }
 
 .preview {
-  margin-bottom: 1rem;
+  margin-block: 1rem;
 }
 
 button {

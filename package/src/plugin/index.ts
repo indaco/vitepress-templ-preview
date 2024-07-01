@@ -120,6 +120,7 @@ function generateTemplPreviewComponentHtml(
     htmlContent: md.utils.unescapeAll(props.htmlContent),
     buttonStyle: md.utils.escapeHtml(props.buttonStyle),
     themes: props.themes,
+    isPreviewFirst: props.isPreviewFirst,
   };
 
   return `<templ-preview-component v-bind='${JSON.stringify(
@@ -166,6 +167,9 @@ function renderTemplPreview(
   const darkThemeAttr = token.attrs?.find(
     (attr) => attr[0] === "data-theme-dark",
   );
+  const isPreviewFirstAttr = token.attrs?.find(
+    (attr) => attr[0] === "data-preview-first",
+  );
 
   // Retrieving attribute values
   const srcValue = srcAttr[1];
@@ -181,6 +185,9 @@ function renderTemplPreview(
     light: lightThemeValue,
     dark: darkThemeValue,
   };
+  const isPreviewFirstValue = isPreviewFirstAttr
+    ? JSON.parse(isPreviewFirstAttr[1].toLowerCase())
+    : true;
 
   const templFilePath = path.resolve(
     serverRoot,
@@ -237,6 +244,7 @@ function renderTemplPreview(
     htmlContent: md.utils.escapeHtml(htmlContent),
     buttonStyle: buttonStyleValue as ButtonStyle,
     themes: themesValue,
+    isPreviewFirst: isPreviewFirstValue,
   };
 
   return generateTemplPreviewComponentHtml(md, props);

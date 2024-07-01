@@ -117,7 +117,9 @@ or
 
 ### Component configuration
 
-You can configure the component by passing `data` properties directly to the tag. All `data-*` properties are optionals:
+You can configure the component by passing `data` attributes directly to the tag.
+
+All `data-*` attributes are **optionals**:
 
 ```html
 <templ-demo
@@ -126,6 +128,7 @@ You can configure the component by passing `data` properties directly to the tag
   data-button-variant="brand"
   data-theme-light="vitesse-light"
   data-theme-dark="vitesse-dark"
+  data-preview-first="false"
 />
 ```
 
