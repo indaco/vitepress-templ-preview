@@ -85,6 +85,7 @@ button:hover {
 .code-content {
   display: grid;
   grid-template-rows: 1fr;
+  margin-block: 1rem;
   background-color: var(--vp-code-block-bg);
   border-radius: 5px;
 }

@@ -68,7 +68,7 @@ onMounted(async () => {
 }
 
 .preview {
-  margin-bottom: 1rem;
+  margin-block: 1rem;
 }
 
 button {
@@ -114,6 +114,7 @@ button {
 .code-content {
   display: grid;
   grid-template-rows: 0fr;
+  margin-block: 1rem;
   transition: grid-template-rows 500ms;
   background-color: var(--vp-code-block-bg);
   border-radius: 5px;
