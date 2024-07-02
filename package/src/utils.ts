@@ -46,7 +46,7 @@ export async function updateCacheForDirectory(
   directory: string,
 ) {
   try {
-    const files = await fsp.readdir(directory);
+    const files = await fsp.readdir(directory, { recursive: true });
     await Promise.all(
       files.map(async (file: any) => {
         const filePath = path.join(directory, file);
@@ -135,7 +135,7 @@ async function updateCacheAndInvalidate(
     logger.info(
       `[vitepress-templ-preview] Watching Templ files at: ${templResolvedPath}`,
     );
-    server.watcher.add(path.join(templResolvedPath, "**/*.templ"));
+    server.watcher.add(path.join(templResolvedPath, "**", "*.templ"));
   }
 
   // Ensure cache is updated after HTML files are generated

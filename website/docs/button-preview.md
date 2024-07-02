@@ -2,4 +2,4 @@
 
 Here you will see the result of what the `vitepress-templ-preview` plugin does:
 
-<templ-demo src="button-demo" data-title="Button Component Demo" />
+<templ-demo src="button/button-primary" data-title="Button Component Demo" />
