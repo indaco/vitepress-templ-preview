@@ -9,8 +9,8 @@ This package offers a solution for [templ](https://templ.guide/) component previ
 
 ## :sparkles: Features
 
-- **Templ Syntax Highlighting**: Provides syntax highlighting for `templ` files using [shiki-templ](https://github.com/indaco/shiki-templ).
+- **Templ Syntax Highlighting**: syntax highlighting for `templ` using [shiki](https://shiki.style).
 - **Automatic Generation**: Runs `templ generate` command via `static-templ`, eliminating the need to run this command manually.
-- **Hot Reloading**: Automatically triggers the `templ generate` command and command and refresh the page to display the new content.
+- **Hot Reloading**: Automatically triggers the `templ generate` command and refresh the page to display the new content.
 - **File Content Caching**: Efficiently caches file contents to improve performance and reduce redundant file reads when in `dev` mode.
 - **Flexible Vue Components**: Includes predefined Vue components for rendering previews, with the option to use custom components.
