@@ -2,6 +2,19 @@ package demos
 
 var cssHandle = templ.NewOnceHandle()
 
+templ AlertDemo() {
+	@alertCss()
+	@alert("Success", "Files were successfully uploaded")
+}
+
+templ alert(title string, text string) {
+	<div class="alert success">
+		<span class="closebtn" onclick="this.parentElement.style.display='none';">x</span>
+		<h3>{ title }</h3>
+		<p>{ text }</p>
+	</div>
+}
+
 templ alertCss() {
 	@cssHandle.Once() {
 		<style type="text/css">
@@ -34,17 +47,4 @@ templ alertCss() {
 			}
 		</style>
 	}
-}
-
-templ alert(title string, text string) {
-	<div class="alert success">
-		<span class="closebtn" onclick="this.parentElement.style.display='none';">x</span>
-		<h3>{ title }</h3>
-		<p>{ text }</p>
-	</div>
-}
-
-templ AlertDemo() {
-	@alertCss()
-	@alert("Success", "Files were successfully uploaded")
 }
