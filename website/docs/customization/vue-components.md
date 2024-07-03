@@ -3,8 +3,9 @@
 The `vitepress-templ-preview` plugin comes with some predefined components you can select for preview rendering:
 
 - _VTPCard_
-- _VTPCollapsible_
+- _VTPCodeToggle_
 - _VTPTabs_
+- _VTPIconTabs_
 
 Choose one and [register](/guide/usage.html#vitepress) it.
 
@@ -32,15 +33,15 @@ All these components expose certain properties to allow configuration:
 
 :::
 
-### VTPCollapsible
+### VTPCodeToggle
 
-| Prop          | Type            | Default | Description                                      |
-| :------------ | :-------------- | ------- | ------------------------------------------------ |
-| `buttonStyle` | _"alt"/"brand"_ | `alt`   | Show/hide code button style in `VTPCollpasible`. |
+| Prop          | Type            | Default | Description                  |
+| :------------ | :-------------- | ------- | ---------------------------- |
+| `buttonStyle` | _"alt"/"brand"_ | `alt`   | Show/hide code button style. |
 
 ::: details Screenshot
 
-![VTPCollapsible](/images/collapsible.png)
+![VTPCodeToggle](/images/code-toggle.gif)
 
 :::
 
@@ -48,7 +49,15 @@ All these components expose certain properties to allow configuration:
 
 ::: details Screenshot
 
-![VTPTabs](/images/tabs.png)
+![VTPTabs](/images/tabs.gif)
+
+:::
+
+### VTPIconTabs
+
+::: details Screenshot
+
+![VTPTabs](/images/icons-tab.gif)
 
 :::
 

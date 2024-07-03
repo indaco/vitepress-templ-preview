@@ -1,5 +1,5 @@
-# button component preview
+# Button component
 
-Here you will see the result of what the `vitepress-templ-preview` plugin does:
+Below, you will see the results produced by the `vitepress-templ-preview` plugin:
 
 <templ-demo src="button/button-primary" />
