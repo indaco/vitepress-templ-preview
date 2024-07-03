@@ -16,13 +16,13 @@ templ button(label string) {
 			};
 		</script>
 	}
-	<button class="fill" onclick="hello(this)">{ label }</button>
+	<button class="vtp-demo-btn fill" onclick="hello(this)">{ label }</button>
 }
 
 templ buttonCss() {
 	@buttonCSSHandle.Once() {
 		<style type="text/css">
-			button {
+			.vtp-demo-btn {
 				box-sizing: content-box;
 				display: inline-flex;
 				align-items: center;

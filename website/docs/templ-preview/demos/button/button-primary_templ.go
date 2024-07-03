@@ -80,14 +80,14 @@ func button(label string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"fill\" onclick=\"hello(this)\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"vtp-demo-btn fill\" onclick=\"hello(this)\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `demos/button/button-primary.templ`, Line: 19, Col: 51}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `demos/button/button-primary.templ`, Line: 19, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -131,7 +131,7 @@ func buttonCss() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style type=\"text/css\">\n\t\t\tbutton {\n\t\t\t\tbox-sizing: content-box;\n\t\t\t\tdisplay: inline-flex;\n\t\t\t\talign-items: center;\n\t\t\t\tjustify-content: center;\n\t\t\t\tblock-size: 2.5rem;\n\t\t\t\tmin-inline-size: 2.5rem;\n\t\t\t\tfont-size: .875rem;\n\t\t\t\tfont-weight: 500;\n\t\t\t\tpadding: 0 1.5rem;\n\t\t\t\tmargin: 0 .5rem;\n\t\t\t\tborder-radius: 0.375rem;\n\t\t\t\tuser-select: none;\n\t\t\t\tgap: 1rem;\n\t\t\t\tline-height: normal;\n\t\t\t}\n\n\t\t\t.fill {\n\t\t\t\tbackground-color: #cfbcff;\n\t\t\t\tcolor: #381e72;\n\t\t\t}\n\t\t</style>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style type=\"text/css\">\n\t\t\t.vtp-demo-btn {\n\t\t\t\tbox-sizing: content-box;\n\t\t\t\tdisplay: inline-flex;\n\t\t\t\talign-items: center;\n\t\t\t\tjustify-content: center;\n\t\t\t\tblock-size: 2.5rem;\n\t\t\t\tmin-inline-size: 2.5rem;\n\t\t\t\tfont-size: .875rem;\n\t\t\t\tfont-weight: 500;\n\t\t\t\tpadding: 0 1.5rem;\n\t\t\t\tmargin: 0 .5rem;\n\t\t\t\tborder-radius: 0.375rem;\n\t\t\t\tuser-select: none;\n\t\t\t\tgap: 1rem;\n\t\t\t\tline-height: normal;\n\t\t\t}\n\n\t\t\t.fill {\n\t\t\t\tbackground-color: #cfbcff;\n\t\t\t\tcolor: #381e72;\n\t\t\t}\n\t\t</style>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
