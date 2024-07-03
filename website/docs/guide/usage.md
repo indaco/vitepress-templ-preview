@@ -124,7 +124,6 @@ All `data-*` attributes are **optionals**:
 ```html
 <templ-demo
   src="hello-demo"
-  data-title="Hello Templ Demo"
   data-button-variant="brand"
   data-theme-light="vitesse-light"
   data-theme-dark="vitesse-dark"

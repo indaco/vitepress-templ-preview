@@ -18,7 +18,6 @@ onMounted(async () => {
 
 <template>
   <div class="container">
-    <h3 v-if="props.title !== ''" v-html="props.title"></h3>
     <ConditionalWrapper :isPreviewFirst="props.isPreviewFirst">
       <template #preview>
         <div class="preview">

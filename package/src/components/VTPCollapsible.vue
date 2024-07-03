@@ -24,7 +24,6 @@ onMounted(async () => {
 
 <template>
   <div class="container">
-    <h3 v-if="props.title !== ''" v-html="props.title"></h3>
     <div class="preview">
       <div class="preview-content" v-html="props.htmlContent"></div>
     </div>

@@ -12,7 +12,7 @@ hero:
       link: /guide/introduction
     - theme: alt
       text: Get Started
-      link: /giude/prerequisites
+      link: /guide/prerequisites
 
 features:
   - title: Auto Templ Generation

@@ -54,7 +54,6 @@ export type ButtonStyle = "alt" | "brand";
 export interface VTPComponentProps {
   codeContent: string;
   htmlContent: string;
-  title: string;
   themes: {
     light: BundledTheme;
     dark: BundledTheme;

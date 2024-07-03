@@ -115,7 +115,6 @@ function generateTemplPreviewComponentHtml(
   props: VTPComponentProps,
 ): string {
   const _props = {
-    title: md.utils.escapeHtml(props.title),
     codeContent: unescapeFromJSON(props.codeContent),
     htmlContent: md.utils.unescapeAll(props.htmlContent),
     buttonStyle: md.utils.escapeHtml(props.buttonStyle),
@@ -157,7 +156,6 @@ function renderTemplPreview(
   }
 
   // Options are handles as `data-*` props.
-  const titleAttr = token.attrs?.find((attr) => attr[0] === "data-title");
   const buttonAttr = token.attrs?.find(
     (attr) => attr[0] === "data-button-variant",
   );
@@ -173,7 +171,6 @@ function renderTemplPreview(
 
   // Retrieving attribute values
   const srcValue = srcAttr[1];
-  const titleValue = titleAttr ? titleAttr[1] : "";
   const buttonStyleValue = buttonAttr ? buttonAttr[1] : "alt";
   const lightThemeValue = (
     lightThemeAttr ? lightThemeAttr[1] : "github-light"
@@ -239,7 +236,6 @@ function renderTemplPreview(
   }
 
   const props: VTPComponentProps = {
-    title: md.utils.escapeHtml(titleValue),
     codeContent: escapeForJSON(codeContent),
     htmlContent: md.utils.escapeHtml(htmlContent),
     buttonStyle: buttonStyleValue as ButtonStyle,

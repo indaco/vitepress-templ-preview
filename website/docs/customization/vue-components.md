@@ -16,7 +16,6 @@ All these components expose certain properties to allow configuration:
 | :------------ | :------------- | ------------------------------------------------- | ----------------------------------------------- |
 | `codeContent` | _string_       |                                                   | The code content to display in the code tab.    |
 | `htmlContent` | _string_       |                                                   | The HTML content to display in the preview tab. |
-| `title`       | _string_       |                                                   |                                                 |
 | `themes`      | _BundledTheme_ | `light: 'github-light'`<br/>`dark: 'github-dark'` | Shiki themes for syntax highlighting.           |
 
 ## Component Specific Properties
@@ -79,7 +78,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h3 v-if="props.title !== ''" v-html="props.title"></h3>
   <div class="preview-content" v-html="props.htmlContent"></div>
   <div class="language-templ vp-adaptive-theme">
     <button title="Copy Code" class="copy"></button>
