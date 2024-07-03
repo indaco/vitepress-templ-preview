@@ -18,7 +18,8 @@
   "devDependencies": {
     "@types/node": "^20.14.9",
     "shiki": "^1.10.0",
-    "vitepress": "^1.2.3"
+    "vitepress": "^1.2.3",
+    "vue": "^3.4.31"
   },
   "packageManager": "pnpm@9.4.0"
 }

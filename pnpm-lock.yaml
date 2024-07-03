@@ -83,6 +83,9 @@ importers:
       vitepress:
         specifier: ^1.2.3
         version: 1.2.3(@algolia/client-search@4.23.3)(@types/node@20.14.9)(postcss@8.4.38)(search-insights@2.14.0)(typescript@5.5.2)
+      vue:
+        specifier: ^3.4.31
+        version: 3.4.31(typescript@5.5.2)
 
 packages:
   "@algolia/autocomplete-core@1.9.3":
@@ -2875,10 +2878,10 @@ packages:
       }
     engines: { node: ">=12" }
 
-  yocto-queue@1.0.0:
+  yocto-queue@1.1.1:
     resolution:
       {
-        integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==,
+        integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==,
       }
     engines: { node: ">=12.20" }
 
@@ -4054,7 +4057,7 @@ snapshots:
 
   p-limit@4.0.0:
     dependencies:
-      yocto-queue: 1.0.0
+      yocto-queue: 1.1.1
 
   p-locate@6.0.0:
     dependencies:
@@ -4469,4 +4472,4 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 21.1.1
 
-  yocto-queue@1.0.0: {}
+  yocto-queue@1.1.1: {}
