@@ -6,7 +6,7 @@ The `vitepress-templ-preview` plugin comes with some predefined components you c
 - _VTPCollapsible_
 - _VTPTabs_
 
-Choose one and [register](usage.html#vitepress) it.
+Choose one and [register](/guide/usage.html#vitepress) it.
 
 ## Shared Properties
 
@@ -93,4 +93,4 @@ onMounted(async () => {
 </style>
 ```
 
-Remember to [register](usage.html#vitepress) it.
+Remember to [register](/guide/usage.html#vitepress) it.

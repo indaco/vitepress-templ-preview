@@ -58,12 +58,12 @@ The resulting project structure should look like this:
 ```
 
 > [!TIP]
-> Please, refer to the [Plugin Options](/options) to see the available options for the plugin.
+> Please, refer to the [Plugin Options](/customization/options) to see the available options for the plugin.
 
 ### VitePress
 
 1. Configure the plugin in your VitePress project. Edit your VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
-2. Register the Vue component: choose a predefined Vue components or [Use a custom component](/custom-vue-component); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
+2. Register the Vue component: choose a predefined Vue components or [Use a custom component](/customization/vue-component); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
 
 ::: code-group
 
@@ -133,4 +133,4 @@ All `data-*` attributes are **optionals**:
 ```
 
 > [!TIP]
-> Check the [Vue Components](/vue-components) page to know more.
+> Check the [Vue Components](/customization/vue-components) page to know more.
