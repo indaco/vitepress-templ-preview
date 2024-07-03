@@ -63,7 +63,7 @@ The resulting project structure should look like this:
 ### VitePress
 
 1. Configure the plugin in your VitePress project. Edit your VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
-2. Register the Vue component: choose a predefined Vue components or [Use a custom component](/customization/vue-component); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
+2. Register the Vue component: choose a predefined Vue components or [Use a custom component](/customization/vue-components); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
 
 ::: code-group
 
