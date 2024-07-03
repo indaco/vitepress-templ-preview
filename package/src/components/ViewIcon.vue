@@ -1,14 +1,21 @@
 <script setup lang="ts">
-const props = defineProps<{ fill: string }>();
+interface Props {
+  fill: string;
+  size: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  size: 16,
+});
 </script>
 
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
+    :width="props.size"
+    :height="props.size"
     viewBox="0 0 16 16"
-    :fill="fill"
+    :fill="props.fill"
     aria-hidden="true"
   >
     <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />

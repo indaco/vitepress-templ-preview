@@ -1,12 +1,26 @@
 <script setup lang="ts">
+import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
-import { ref, onMounted, nextTick } from "vue";
-
+import { ref, onMounted, nextTick, computed } from "vue";
+import { BundledTheme, createHighlighter } from "shiki";
+import ViewIcon from "./ViewIcon.vue";
+import CodeIcon from "./CodeIcon.vue";
 import { executeScriptsTick, useHighlighter } from "../shared";
 
 const props = defineProps<VTPComponentProps>();
 const activeTab = ref("preview");
 const { highlightedCode, highlightCode } = useHighlighter();
+
+const fillColor = (tab: string) => {
+  return computed(() => {
+    return activeTab.value === tab
+      ? "var(--vp-button-brand-text)"
+      : "var(--vp-button-alt-text)";
+  });
+};
+
+const previewFillColor = fillColor("preview");
+const codeFillColor = fillColor("code");
 
 // Handle keyboard navigation
 const handleKeydown = (event: KeyboardEvent, tab: string) => {
@@ -37,7 +51,9 @@ onMounted(async () => {
           tabindex="0"
           aria-label="preview the component"
         >
-          Preview
+          <slot name="preview-icon">
+            <ViewIcon :fill="previewFillColor" />
+          </slot>
         </button>
         <button
           role="tab"
@@ -48,7 +64,9 @@ onMounted(async () => {
           tabindex="0"
           aria-label="view the source code"
         >
-          Code
+          <slot name="code-icon">
+            <CodeIcon :fill="codeFillColor" />
+          </slot>
         </button>
       </div>
     </div>
@@ -86,25 +104,47 @@ onMounted(async () => {
 .tabs {
   display: flex;
   gap: 0.25rem;
-  width: 100%;
-  border-bottom: 1px solid var(--vp-c-divider);
+  margin-left: auto;
+  padding: 0.25rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 100vh;
 }
 
 button {
-  padding: 0.375rem 1rem;
+  cursor: pointer;
+  padding-block: 0.375rem;
+  padding-inline: 0.75rem;
   font-size: inherit;
-  color: var(--vp-c-text-2);
+  border-radius: 100vh;
+  color: var(--vp-button-alt-text);
   font-weight: 500;
+  border: 1px solid var(--vp-button-alt-border);
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
 
 button.active {
-  color: var(--vp-c-text-1);
-  border-bottom: 2px solid var(--vp-c-text-2);
+  border-color: var(--vp-button-brand-border);
+  color: var(--vp-button-brand-text);
+  background-color: var(--vp-button-brand-bg);
+}
+
+button.active:hover {
+  border-color: var(--vp-button-brand-hover-border);
+  color: var(--vp-button-brand-hover-text);
+  background-color: var(--vp-button-brand-hover-bg);
 }
 
 button:not(.active):hover {
+  border-color: var(--vp-button-alt-hover-border);
   color: var(--vp-button-alt-hover-text);
-  background-color: var(--vp-c-bg-soft);
+  background-color: var(--vp-button-alt-hover-bg);
+}
+
+button:focus-visible {
+  outline: 2px solid Highlight;
 }
 
 .tab-content {
@@ -112,7 +152,6 @@ button:not(.active):hover {
 }
 
 .preview-content {
-  padding-block: 20px;
-  padding-inline: 0;
+  padding: 20px 0;
 }
 </style>
