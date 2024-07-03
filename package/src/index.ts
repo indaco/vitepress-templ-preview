@@ -1,5 +1,5 @@
 import { VTPComponentProps } from "./types";
 export type { VTPComponentProps };
 
-import { VTPCollapsible, VTPCard, VTPTabs, VTPIconTabs } from "./components";
-export { VTPCollapsible, VTPCard, VTPTabs, VTPIconTabs };
+import { VTPCodeToggle, VTPCard, VTPTabs, VTPIconTabs } from "./components";
+export { VTPCodeToggle, VTPCard, VTPTabs, VTPIconTabs };
