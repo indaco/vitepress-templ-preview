@@ -52,6 +52,47 @@ export async function updateCacheForDirectory(
 }
 
 /**
+ * Retrieves the content of a cached file or updates the cache if necessary.
+ *
+ * @param {Record<string, CachedFile>} fileCache - The file cache.
+ * @param {string} filePath - The path of the file to retrieve.
+ * @param {string} defaultContent - The default content if the file is not cached.
+ * @returns {string} - The content of the cached file or the default content.
+ */
+export function getCachedFileContent(
+  fileCache: Record<string, CachedFile>,
+  filePath: string,
+  defaultContent: string,
+): string {
+  if (fileCache[filePath]) {
+    return (fileCache[filePath] as CachedFile).content;
+  } else {
+    updateFilesCache(fileCache, filePath).then(() => {
+      return (fileCache[filePath] as CachedFile)?.content || defaultContent;
+    });
+  }
+  return defaultContent;
+}
+
+/**
+ * Watches for changes in a file and adds the file to the watched files list.
+ *
+ * @param {Record<string, Set<string>>} watchedMdFiles - The watched markdown files.
+ * @param {string} filePath - The path of the file to watch.
+ * @param {string} id - The id of the markdown file.
+ */
+export function watchFileChanges(
+  watchedMdFiles: Record<string, Set<string>>,
+  filePath: string,
+  id: string,
+): void {
+  if (!watchedMdFiles[filePath]) {
+    watchedMdFiles[filePath] = new Set();
+  }
+  watchedMdFiles[filePath].add(id);
+}
+
+/**
  * Checks if the required binaries are installed on the system.
  * @param binaries - The list of binaries to check.
  */

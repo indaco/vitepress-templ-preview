@@ -17,8 +17,9 @@ import {
   escapeForJSON,
   executeAndUpdateCache,
   executeCommandSync,
+  getCachedFileContent,
   unescapeFromJSON,
-  updateFilesCache,
+  watchFileChanges,
 } from "../utils";
 import { BundledTheme } from "shiki";
 import { Logger } from "../logger";
@@ -40,6 +41,28 @@ const parseAttrs = (attrsString: string): TagAttrs => {
 
   return attrs;
 };
+
+/**
+ * Retrieves the value of a specific attribute from the token.
+ *
+ * @param {Token} token - The markdown-it token.
+ * @param {string} attrName - The name of the attribute.
+ * @param {string} defaultValue - The default value if the attribute is not found.
+ * @param {boolean} [parseJson=false] - Whether to parse the attribute value as JSON.
+ * @returns {string | boolean} - The attribute value or the default value.
+ */
+function getAttribute(
+  token: Token,
+  attrName: string,
+  defaultValue: string,
+  parseJson: boolean = false,
+): string | boolean {
+  const attr = token.attrs?.find((attr) => attr[0] === attrName);
+  if (attr) {
+    return parseJson ? JSON.parse(attr[1].toLowerCase()) : attr[1];
+  }
+  return defaultValue;
+}
 
 /**
  * Creates a new token with the parsed attributes.
@@ -204,11 +227,14 @@ function handleOpMode(
 
 /**
  * Renders the templ preview component.
- * @param tokens - The markdown-it tokens.
- * @param idx - The index of the current token.
- * @param context - The plugin context.
- * @param id - The id of the markdown file.
- * @returns The HTML string for the templ preview component.
+ *
+ * @param {("build" | "serve")} serverCommand - The server command ("build" or "serve").
+ * @param {Token[]} tokens - The markdown-it tokens.
+ * @param {number} idx - The index of the current token.
+ * @param {PluginContext} context - The plugin context.
+ * @param {string} id - The id of the markdown file.
+ * @returns {string} - The HTML string for the templ preview component.
+ * @throws {Error} - Throws an error if the 'src' attribute is not defined or empty.
  */
 function renderTemplPreview(
   serverCommand: "build" | "serve",
@@ -222,45 +248,33 @@ function renderTemplPreview(
 
   // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === "src");
-  // Throw an error if srcAttr is not set or srcAttr[1] is empty.
   if (!srcAttr || !srcAttr[1]) {
     const errorMsg =
       "[vitepress-templ-preview] Error: The 'src' attribute is required and must not be empty.";
     Logger.error("", errorMsg);
-
     throw new Error(errorMsg);
   }
 
-  // Options are handles as `data-*` props.
-  const buttonAttr = token.attrs?.find(
-    (attr) => attr[0] === "data-button-variant",
-  );
-  const lightThemeAttr = token.attrs?.find(
-    (attr) => attr[0] === "data-theme-light",
-  );
-  const darkThemeAttr = token.attrs?.find(
-    (attr) => attr[0] === "data-theme-dark",
-  );
-  const isPreviewFirstAttr = token.attrs?.find(
-    (attr) => attr[0] === "data-preview-first",
-  );
-
-  // Retrieving attribute values
+  // Retrieve attribute values
   const srcValue = srcAttr[1];
-  const buttonStyleValue = buttonAttr ? buttonAttr[1] : "alt";
-  const lightThemeValue = (
-    lightThemeAttr ? lightThemeAttr[1] : "github-light"
+  const buttonStyleValue = getAttribute(
+    token,
+    "data-button-variant",
+    "alt",
+  ) as ButtonStyle;
+  const lightThemeValue = getAttribute(
+    token,
+    "data-theme-light",
+    "github-light",
   ) as BundledTheme;
-  const darkThemeValue = (
-    darkThemeAttr ? darkThemeAttr[1] : "github-dark"
+  const darkThemeValue = getAttribute(
+    token,
+    "data-theme-dark",
+    "github-dark",
   ) as BundledTheme;
-  const themesValue = {
-    light: lightThemeValue,
-    dark: darkThemeValue,
-  };
-  const isPreviewFirstValue = isPreviewFirstAttr
-    ? JSON.parse(isPreviewFirstAttr[1].toLowerCase())
-    : true;
+  const themesValue = { light: lightThemeValue, dark: darkThemeValue };
+  const isPreviewFirstValue =
+    getAttribute(token, "data-preview-first", "true") === "true";
 
   const resolvedPaths = handleOpMode(id, serverRoot, pluginOptions, srcValue);
 
@@ -268,35 +282,19 @@ function renderTemplPreview(
   let codeContent = token.content;
 
   if (serverCommand === "serve") {
-    if (fileCache[resolvedPaths.htmlFile]) {
-      htmlContent = (fileCache[resolvedPaths.htmlFile] as CachedFile).content;
-    } else {
-      updateFilesCache(fileCache, resolvedPaths.htmlFile).then(() => {
-        htmlContent =
-          (fileCache[resolvedPaths.htmlFile] as CachedFile)?.content ||
-          htmlContent;
-      });
-    }
+    htmlContent = getCachedFileContent(
+      fileCache,
+      resolvedPaths.htmlFile,
+      htmlContent,
+    );
+    codeContent = getCachedFileContent(
+      fileCache,
+      resolvedPaths.templFile,
+      codeContent,
+    );
 
-    if (fileCache[resolvedPaths.templFile]) {
-      codeContent = (fileCache[resolvedPaths.templFile] as CachedFile).content;
-    } else {
-      updateFilesCache(fileCache, resolvedPaths.templFile).then(() => {
-        codeContent =
-          (fileCache[resolvedPaths.templFile] as CachedFile)?.content ||
-          codeContent;
-      });
-    }
-
-    if (!watchedMdFiles[resolvedPaths.htmlFile]) {
-      watchedMdFiles[resolvedPaths.htmlFile] = new Set();
-    }
-    watchedMdFiles[resolvedPaths.htmlFile].add(id);
-
-    if (!watchedMdFiles[resolvedPaths.templFile]) {
-      watchedMdFiles[resolvedPaths.templFile] = new Set();
-    }
-    watchedMdFiles[resolvedPaths.templFile].add(id);
+    watchFileChanges(watchedMdFiles, resolvedPaths.htmlFile, id);
+    watchFileChanges(watchedMdFiles, resolvedPaths.templFile, id);
   } else if (serverCommand === "build") {
     htmlContent = fs.readFileSync(resolvedPaths.htmlFile, "utf8");
     codeContent = fs.readFileSync(resolvedPaths.templFile, "utf8");
@@ -305,7 +303,7 @@ function renderTemplPreview(
   const props: VTPComponentProps = {
     codeContent: escapeForJSON(codeContent),
     htmlContent: md.utils.escapeHtml(htmlContent),
-    buttonStyle: buttonStyleValue as ButtonStyle,
+    buttonStyle: buttonStyleValue,
     themes: themesValue,
     isPreviewFirst: isPreviewFirstValue,
   };
