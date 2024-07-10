@@ -2,14 +2,7 @@ import { execSync, spawnSync } from "node:child_process";
 import { CachedFile, PluginOptions } from "./types";
 import path from "node:path";
 import * as fsp from "node:fs/promises";
-import { createConsola } from "consola";
-
-export const logger = createConsola({
-  formatOptions: {
-    compact: true,
-    date: false,
-  },
-});
+import ansis from "ansis";
 
 /**
  * Updates the cache for a specific file by reading its content.
@@ -27,11 +20,13 @@ export async function updateFilesCache(
       cache[filePath] = {
         content,
       };
-      logger.info(`[vitepress-templ-preview] Updated cache for: ${filePath}`);
+      console.log(
+        `${ansis.bold.blueBright`[vitepress-templ-preview]`} Updated cache for: ${filePath}`,
+      );
     }
   } catch (err: any) {
-    logger.error(
-      `[vitepress-templ-preview] Error reading file ${filePath}: ${err.message}`,
+    console.error(
+      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error reading file ${filePath}: ${err.message}`,
     );
   }
 }
@@ -56,8 +51,8 @@ export async function updateCacheForDirectory(
       }),
     );
   } catch (err: any) {
-    logger.error(
-      `[vitepress-templ-preview] Error reading directory ${directory}: ${err.message}`,
+    console.error(
+      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error reading directory ${directory}: ${err.message}`,
     );
   }
 }
@@ -82,17 +77,19 @@ export function checkBinaries(binaries: string[]): void {
  * @param command - The command string to execute.
  */
 export function executeCommandSync(command: string): void {
-  logger.info(`[vitepress-templ-preview] Executing system command: ${command}`);
+  console.log(
+    `${ansis.bold.blueBright`[vitepress-templ-preview]`} Executing system command: ${command}`,
+  );
   try {
     const stdout = execSync(command, { stdio: "pipe" }).toString();
-    logger.info(stdout);
+    console.log(`${ansis.bold.blueBright`[vitepress-templ-preview]`} stdout`);
   } catch (error: any) {
-    logger.error(
-      `[vitepress-templ-preview] Error executing command: ${error.message}`,
+    console.error(
+      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error executing command: ${error.message}`,
     );
     if (error.stderr) {
-      logger.error(
-        `[vitepress-templ-preview] Error: ${error.stderr.toString()}`,
+      console.error(
+        `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error: ${error.stderr.toString()}`,
       );
     }
     throw error; // Re-throw the error to ensure it can be handled by the caller if necessary
@@ -132,8 +129,8 @@ async function updateCacheAndInvalidate(
   );
 
   if (isFirstServerRun) {
-    logger.info(
-      `[vitepress-templ-preview] Watching Templ files at: ${templResolvedPath}`,
+    console.log(
+      `${ansis.bold.blueBright`[vitepress-templ-preview]`} Watching Templ files at: ${templResolvedPath}`,
     );
     server.watcher.add(path.join(templResolvedPath, "**", "*.templ"));
   }

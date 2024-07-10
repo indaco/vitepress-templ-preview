@@ -16,12 +16,11 @@ import {
   escapeForJSON,
   executeAndUpdateCache,
   executeCommandSync,
-  logger,
   unescapeFromJSON,
   updateFilesCache,
 } from "../utils";
+import ansis from "ansis";
 import { BundledTheme } from "shiki";
-import { log } from "node:console";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 const DEFAULT_PROJECT_FOLDER = "templ-preview";
@@ -29,7 +28,7 @@ const DEFAULT_TEMPL_FOLDER = "demos";
 const DEFAULT_OUTPUT_FOLDER = "output";
 
 const TEMPL_BIN = "templ";
-const STATIC_TEMPL_PLUS_BIN = "static-templ";
+const STATIC_TEMPL_BIN = "static-templ-plus";
 
 // Function to parse attributes from the matched tag
 const parseAttrs = (attrsString: string): TagAttrs => {
@@ -77,6 +76,8 @@ function processTokens(state: any) {
 
 /**
  * Builds the command string for generating HTML files from Templ files.
+ * @deprecated
+ *
  * @param serverRoot - The root directory of the server.
  * @param inputDir - The input directory for Templ files.
  * @param outputDir - The output directory for HTML files.
@@ -101,7 +102,7 @@ function buildStaticTemplCommandStr(
   outputDir: string,
   debug = false,
 ): string {
-  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_PLUS_BIN} -i ${inputDir} -o ${outputDir} -g=true -d=${debug}`;
+  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_BIN} -i ${inputDir} -o ${outputDir} -g=true -d=${debug}`;
 }
 
 /**
@@ -151,7 +152,9 @@ function renderTemplPreview(
   if (!srcAttr || !srcAttr[1]) {
     const errorMsg =
       "[vitepress-templ-preview] Error: The 'src' attribute is required and must not be empty.";
-    logger.error(errorMsg);
+    console.error(
+      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} ${errorMsg}`,
+    );
     throw new Error(errorMsg);
   }
 
@@ -268,13 +271,14 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
       serverCommand = resolvedConfig.command;
     },
     async buildStart() {
-      checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
+      checkBinaries([TEMPL_BIN, STATIC_TEMPL_BIN]);
 
       /**
        *! TODO: remove when #12 will be merged into main for static-templ
-       */
+
       const templCmd = buildTemplGenerateCommandStr(serverRoot);
       executeCommandSync(templCmd);
+       */
 
       const staticTemplcmd = buildStaticTemplCommandStr(
         serverRoot,
@@ -287,13 +291,14 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
     },
     async configureServer(server) {
       if (serverCommand === "serve") {
-        checkBinaries([TEMPL_BIN, STATIC_TEMPL_PLUS_BIN]);
+        checkBinaries([TEMPL_BIN, STATIC_TEMPL_BIN]);
 
         /**
          *! TODO: remove when #12 will be merged into main for static-templ
-         */
+
         const templCmd = buildTemplGenerateCommandStr(serverRoot);
         executeCommandSync(templCmd);
+         */
 
         const staticTemplcmd = buildStaticTemplCommandStr(
           serverRoot,
@@ -316,7 +321,9 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
         const { file, server, modules } = ctx;
 
         if (file.endsWith(".templ")) {
-          logger.info(`[vitepress-templ-preview] File changed: ${file}`);
+          console.log(
+            `${ansis.bold.white.bgBlueBright`[vitepress-templ-preview]`} File changed: ${file}`,
+          );
           const cmd = buildStaticTemplCommandStr(
             serverRoot,
             finalOptions.inputDir!,
