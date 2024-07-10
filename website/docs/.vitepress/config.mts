@@ -1,5 +1,10 @@
 import { defineConfig } from "vitepress";
 import viteTemplPreviewPlugin from "vitepress-templ-preview";
+import type { VTPUserConfig } from "vitepress-templ-preview/types";
+
+const vtpOptions: VTPUserConfig = {
+  inputDir: "examples",
+};
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -43,9 +48,9 @@ export default defineConfig({
         text: "Examples",
         collapsed: false,
         items: [
-          { text: "Hello Templ", link: "/examples/hello-preview" },
-          { text: "Button", link: "/examples/button-preview" },
-          { text: "Alert", link: "/examples/alert-preview" },
+          { text: "Hello Templ", link: "/examples/hello/" },
+          { text: "Button", link: "/examples/button/" },
+          { text: "Alert", link: "/examples/alert/" },
           { text: "Markdown Examples", link: "/examples/markdown-examples" },
         ],
       },
@@ -79,7 +84,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [viteTemplPreviewPlugin()],
+    plugins: [viteTemplPreviewPlugin(vtpOptions)],
     build: {
       chunkSizeWarningLimit: 1000,
     },
