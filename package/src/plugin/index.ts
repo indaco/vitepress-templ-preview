@@ -1,10 +1,11 @@
 import type {
-  PluginOptions,
+  PluginConfig,
   PluginContext,
   CachedFile,
   TagAttrs,
   VTPComponentProps,
   ButtonStyle,
+  VTPUserConfig,
 } from "../types";
 import * as fs from "node:fs";
 import path from "node:path";
@@ -19,16 +20,12 @@ import {
   unescapeFromJSON,
   updateFilesCache,
 } from "../utils";
-import ansis from "ansis";
 import { BundledTheme } from "shiki";
+import { Logger } from "../logger";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
-const DEFAULT_PROJECT_FOLDER = "templ-preview";
-const DEFAULT_TEMPL_FOLDER = "demos";
-const DEFAULT_OUTPUT_FOLDER = "output";
-
 const TEMPL_BIN = "templ";
-const STATIC_TEMPL_BIN = "static-templ-plus";
+const STATIC_TEMPL_PLUS_BIN = "static-templ-plus";
 
 // Function to parse attributes from the matched tag
 const parseAttrs = (attrsString: string): TagAttrs => {
@@ -76,33 +73,35 @@ function processTokens(state: any) {
 
 /**
  * Builds the command string for generating HTML files from Templ files.
- * @deprecated
  *
  * @param serverRoot - The root directory of the server.
- * @param inputDir - The input directory for Templ files.
- * @param outputDir - The output directory for HTML files.
- * @param debug - keep the `static-templ` generation script after completion.
+ * @param resolvedOptions - The plugin options.
  * @returns The command string.
  */
-function buildTemplGenerateCommandStr(serverRoot: string): string {
-  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${TEMPL_BIN} generate .`;
+function buildTemplGenerateCommandStr(
+  serverRoot: string,
+  resolvedOptions: PluginConfig,
+): string {
+  return `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${TEMPL_BIN} generate .`;
 }
 
 /**
  * Builds the command string for generating HTML files from Templ files.
  * @param serverRoot - The root directory of the server.
- * @param inputDir - The input directory for Templ files.
- * @param outputDir - The output directory for HTML files.
- * @param debug - keep the `static-templ` generation script after completion.
+ * @param resolvedOptions - The plugin options.
  * @returns The command string.
  */
 function buildStaticTemplCommandStr(
   serverRoot: string,
-  inputDir: string,
-  outputDir: string,
-  debug = false,
+  resolvedOptions: PluginConfig,
 ): string {
-  return `cd ${serverRoot}/${DEFAULT_PROJECT_FOLDER} && ${STATIC_TEMPL_BIN} -i ${inputDir} -o ${outputDir} -g=true -d=${debug}`;
+  const baseCmd = `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${STATIC_TEMPL_PLUS_BIN} -m ${resolvedOptions.mode} -i ${resolvedOptions.inputDir} -g=${resolvedOptions.runTemplGenerate} -d=${resolvedOptions.debug}`;
+
+  if (resolvedOptions.mode === "bundle") {
+    return `${baseCmd} -o ${resolvedOptions.outputDir}`;
+  }
+
+  return baseCmd;
 }
 
 /**
@@ -128,6 +127,50 @@ function generateTemplPreviewComponentHtml(
   )}'></templ-preview-component>`;
 }
 
+function handleOpMode(
+  id: string,
+  serverRoot: string,
+  options: Partial<PluginConfig>,
+  srcValue: string,
+): {
+  templFile: string;
+  htmlFile: string;
+} {
+  let templFilePath = "";
+  let htmlFilePath = "";
+
+  const mode = options.mode!;
+  switch (mode) {
+    case "inline":
+      templFilePath = path.resolve(path.dirname(id), `${srcValue}.templ`);
+      htmlFilePath = path.resolve(path.dirname(id), `${srcValue}.html`);
+      break;
+    case "bundle":
+      templFilePath = path.resolve(
+        serverRoot,
+        options.inputDir || path.join(options.goProjectDir!, options.inputDir!),
+        `${srcValue}.templ`,
+      );
+      htmlFilePath = path.resolve(
+        serverRoot,
+        options.outputDir ||
+          path.join(options.goProjectDir!, options.inputDir!),
+        `${srcValue}.html`,
+      );
+
+      break;
+    default:
+      const errorMsg = `Unknown "${mode}"`;
+      Logger.error("", errorMsg);
+      throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
+  }
+
+  return {
+    templFile: templFilePath,
+    htmlFile: htmlFilePath,
+  };
+}
+
 /**
  * Renders the templ preview component.
  * @param tokens - The markdown-it tokens.
@@ -144,7 +187,7 @@ function renderTemplPreview(
   id: string,
 ): string {
   const token = tokens[idx];
-  const { md, serverRoot, finalOptions, fileCache, watchedMdFiles } = context;
+  const { md, serverRoot, pluginOptions, fileCache, watchedMdFiles } = context;
 
   // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === "src");
@@ -152,9 +195,8 @@ function renderTemplPreview(
   if (!srcAttr || !srcAttr[1]) {
     const errorMsg =
       "[vitepress-templ-preview] Error: The 'src' attribute is required and must not be empty.";
-    console.error(
-      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} ${errorMsg}`,
-    );
+    Logger.error("", errorMsg);
+
     throw new Error(errorMsg);
   }
 
@@ -189,53 +231,44 @@ function renderTemplPreview(
     ? JSON.parse(isPreviewFirstAttr[1].toLowerCase())
     : true;
 
-  const templFilePath = path.resolve(
-    serverRoot,
-    finalOptions.inputDir ||
-      path.join(DEFAULT_PROJECT_FOLDER, DEFAULT_TEMPL_FOLDER),
-    `${srcValue}.templ`,
-  );
-  const htmlFilePath = path.resolve(
-    serverRoot,
-    finalOptions.outputDir ||
-      path.join(DEFAULT_PROJECT_FOLDER, DEFAULT_OUTPUT_FOLDER),
-    `${srcValue}.html`,
-  );
+  const resolvedPaths = handleOpMode(id, serverRoot, pluginOptions, srcValue);
 
   let htmlContent = "Loading..."; // Default placeholder
   let codeContent = token.content;
 
   if (serverCommand === "serve") {
-    if (fileCache[htmlFilePath]) {
-      htmlContent = (fileCache[htmlFilePath] as CachedFile).content;
+    if (fileCache[resolvedPaths.htmlFile]) {
+      htmlContent = (fileCache[resolvedPaths.htmlFile] as CachedFile).content;
     } else {
-      updateFilesCache(fileCache, htmlFilePath).then(() => {
+      updateFilesCache(fileCache, resolvedPaths.htmlFile).then(() => {
         htmlContent =
-          (fileCache[htmlFilePath] as CachedFile)?.content || htmlContent;
+          (fileCache[resolvedPaths.htmlFile] as CachedFile)?.content ||
+          htmlContent;
       });
     }
 
-    if (fileCache[templFilePath]) {
-      codeContent = (fileCache[templFilePath] as CachedFile).content;
+    if (fileCache[resolvedPaths.templFile]) {
+      codeContent = (fileCache[resolvedPaths.templFile] as CachedFile).content;
     } else {
-      updateFilesCache(fileCache, templFilePath).then(() => {
+      updateFilesCache(fileCache, resolvedPaths.templFile).then(() => {
         codeContent =
-          (fileCache[templFilePath] as CachedFile)?.content || codeContent;
+          (fileCache[resolvedPaths.templFile] as CachedFile)?.content ||
+          codeContent;
       });
     }
 
-    if (!watchedMdFiles[htmlFilePath]) {
-      watchedMdFiles[htmlFilePath] = new Set();
+    if (!watchedMdFiles[resolvedPaths.htmlFile]) {
+      watchedMdFiles[resolvedPaths.htmlFile] = new Set();
     }
-    watchedMdFiles[htmlFilePath].add(id);
+    watchedMdFiles[resolvedPaths.htmlFile].add(id);
 
-    if (!watchedMdFiles[templFilePath]) {
-      watchedMdFiles[templFilePath] = new Set();
+    if (!watchedMdFiles[resolvedPaths.templFile]) {
+      watchedMdFiles[resolvedPaths.templFile] = new Set();
     }
-    watchedMdFiles[templFilePath].add(id);
+    watchedMdFiles[resolvedPaths.templFile].add(id);
   } else if (serverCommand === "build") {
-    htmlContent = fs.readFileSync(htmlFilePath, "utf8");
-    codeContent = fs.readFileSync(templFilePath, "utf8");
+    htmlContent = fs.readFileSync(resolvedPaths.htmlFile, "utf8");
+    codeContent = fs.readFileSync(resolvedPaths.templFile, "utf8");
   }
 
   const props: VTPComponentProps = {
@@ -249,13 +282,21 @@ function renderTemplPreview(
   return generateTemplPreviewComponentHtml(md, props);
 }
 
-const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
-  const defaultOptions: PluginOptions = {
-    projectDir: DEFAULT_PROJECT_FOLDER,
-    inputDir: DEFAULT_TEMPL_FOLDER,
-    outputDir: DEFAULT_OUTPUT_FOLDER,
+// Default values for the PluginOptions
+const defaultPluginOptions: PluginConfig = {
+  goProjectDir: "",
+  mode: "inline",
+  inputDir: "demos",
+  outputDir: "output",
+  debug: false,
+  runTemplGenerate: true,
+};
+
+const viteTemplPreviewPlugin = (options?: VTPUserConfig): Plugin => {
+  const resolvedPluginOptions: PluginConfig = {
+    ...defaultPluginOptions,
+    ...options,
   };
-  const finalOptions: PluginOptions = { ...defaultOptions, ...options };
 
   const md = new MarkdownIt();
   const fileCache: Record<string, CachedFile> = {};
@@ -271,45 +312,45 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
       serverCommand = resolvedConfig.command;
     },
     async buildStart() {
-      checkBinaries([TEMPL_BIN, STATIC_TEMPL_BIN]);
+      checkBinaries([STATIC_TEMPL_PLUS_BIN]);
 
-      /**
-       *! TODO: remove when #12 will be merged into main for static-templ
-
-      const templCmd = buildTemplGenerateCommandStr(serverRoot);
-      executeCommandSync(templCmd);
-       */
+      if (!resolvedPluginOptions.runTemplGenerate) {
+        checkBinaries([TEMPL_BIN]);
+        const templCmd = buildTemplGenerateCommandStr(
+          serverRoot,
+          resolvedPluginOptions,
+        );
+        executeCommandSync(templCmd);
+      }
 
       const staticTemplcmd = buildStaticTemplCommandStr(
         serverRoot,
-        finalOptions.inputDir!,
-        finalOptions.outputDir!,
-        finalOptions.debug!,
+        resolvedPluginOptions,
       );
 
       executeCommandSync(staticTemplcmd);
     },
     async configureServer(server) {
       if (serverCommand === "serve") {
-        checkBinaries([TEMPL_BIN, STATIC_TEMPL_BIN]);
+        checkBinaries([STATIC_TEMPL_PLUS_BIN]);
 
-        /**
-         *! TODO: remove when #12 will be merged into main for static-templ
-
-        const templCmd = buildTemplGenerateCommandStr(serverRoot);
-        executeCommandSync(templCmd);
-         */
+        if (!resolvedPluginOptions.runTemplGenerate) {
+          checkBinaries([TEMPL_BIN]);
+          const templCmd = buildTemplGenerateCommandStr(
+            serverRoot,
+            resolvedPluginOptions,
+          );
+          executeCommandSync(templCmd);
+        }
 
         const staticTemplcmd = buildStaticTemplCommandStr(
           serverRoot,
-          finalOptions.inputDir!,
-          finalOptions.outputDir!,
-          finalOptions.debug!,
+          resolvedPluginOptions,
         );
         executeAndUpdateCache(
           staticTemplcmd,
           serverRoot,
-          finalOptions,
+          resolvedPluginOptions,
           fileCache,
           watchedMdFiles,
           server,
@@ -321,19 +362,15 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
         const { file, server, modules } = ctx;
 
         if (file.endsWith(".templ")) {
-          console.log(
-            `${ansis.bold.white.bgBlueBright`[vitepress-templ-preview]`} File changed: ${file}`,
-          );
+          Logger.info("File changed", file);
           const cmd = buildStaticTemplCommandStr(
             serverRoot,
-            finalOptions.inputDir!,
-            finalOptions.outputDir!,
-            finalOptions.debug!,
+            resolvedPluginOptions,
           );
           executeAndUpdateCache(
             cmd,
             serverRoot,
-            finalOptions,
+            resolvedPluginOptions,
             fileCache,
             watchedMdFiles,
             server,
@@ -367,11 +404,15 @@ const viteTemplPreviewPlugin = (options: PluginOptions = {}): Plugin => {
       const context: PluginContext = {
         md,
         serverRoot,
-        finalOptions: {
-          inputDir: path.join(finalOptions.projectDir!, finalOptions.inputDir!),
+        pluginOptions: {
+          ...resolvedPluginOptions,
+          inputDir: path.join(
+            resolvedPluginOptions.goProjectDir!,
+            resolvedPluginOptions.inputDir!,
+          ),
           outputDir: path.join(
-            finalOptions.projectDir!,
-            finalOptions.outputDir!,
+            resolvedPluginOptions.goProjectDir!,
+            resolvedPluginOptions.outputDir!,
           ),
         },
         fileCache,

@@ -1,8 +1,8 @@
 import { execSync, spawnSync } from "node:child_process";
-import { CachedFile, PluginOptions } from "./types";
+import { CachedFile, PluginConfig } from "./types";
 import path from "node:path";
 import * as fsp from "node:fs/promises";
-import ansis from "ansis";
+import { Logger } from "./logger";
 
 /**
  * Updates the cache for a specific file by reading its content.
@@ -20,14 +20,10 @@ export async function updateFilesCache(
       cache[filePath] = {
         content,
       };
-      console.log(
-        `${ansis.bold.blueBright`[vitepress-templ-preview]`} Updated cache for: ${filePath}`,
-      );
+      Logger.info("Updated cache for", filePath);
     }
   } catch (err: any) {
-    console.error(
-      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error reading file ${filePath}: ${err.message}`,
-    );
+    Logger.error(`Error reading file ${filePath}`, err.message);
   }
 }
 
@@ -51,9 +47,7 @@ export async function updateCacheForDirectory(
       }),
     );
   } catch (err: any) {
-    console.error(
-      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error reading directory ${directory}: ${err.message}`,
-    );
+    Logger.error("Error reading directory", err.message);
   }
 }
 
@@ -65,6 +59,10 @@ export function checkBinaries(binaries: string[]): void {
   binaries.forEach((binary) => {
     const result = spawnSync("which", [binary]);
     if (result.status !== 0) {
+      Logger.error(
+        `Required binary ${binary}`,
+        "is not installed or not found in PATH.",
+      );
       throw new Error(
         `[vitepress-templ-preview] Required binary "${binary}" is not installed or not found in PATH.`,
       );
@@ -77,20 +75,14 @@ export function checkBinaries(binaries: string[]): void {
  * @param command - The command string to execute.
  */
 export function executeCommandSync(command: string): void {
-  console.log(
-    `${ansis.bold.blueBright`[vitepress-templ-preview]`} Executing system command: ${command}`,
-  );
+  Logger.info("Executing system command", command);
   try {
-    const stdout = execSync(command, { stdio: "pipe" }).toString();
-    console.log(`${ansis.bold.blueBright`[vitepress-templ-preview]`} stdout`);
+    const stdout = execSync(command, { stdio: "pipe" });
+    if (stdout.toLocaleString() != "") Logger.info("", stdout.toLocaleString());
   } catch (error: any) {
-    console.error(
-      `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error executing command: ${error.message}`,
-    );
+    Logger.error("Error executing command", error.message);
     if (error.stderr) {
-      console.error(
-        `${ansis.bold.bgRedBright`[vitepress-templ-preview]`} Error: ${error.stderr.toString()}`,
-      );
+      Logger.error("Error", error.stderr.toString());
     }
     throw error; // Re-throw the error to ensure it can be handled by the caller if necessary
   }
@@ -107,15 +99,16 @@ export function executeCommandSync(command: string): void {
  */
 async function updateCacheAndInvalidate(
   serverRoot: string,
-  finalOptions: PluginOptions,
+  finalOptions: PluginConfig,
   fileCache: Record<string, CachedFile>,
   watchedMdFiles: Record<string, Set<string>>,
   server: any,
   isFirstServerRun: boolean = true,
 ): Promise<void> {
-  const resolvedFinalOptions: PluginOptions = {
-    inputDir: path.join(finalOptions.projectDir!, finalOptions.inputDir!),
-    outputDir: path.join(finalOptions.projectDir!, finalOptions.outputDir!),
+  const resolvedFinalOptions: Partial<PluginConfig> = {
+    goProjectDir: finalOptions.goProjectDir,
+    inputDir: path.join(finalOptions.goProjectDir, finalOptions.inputDir!),
+    outputDir: path.join(finalOptions.goProjectDir, finalOptions.outputDir!),
   };
 
   const templResolvedPath = path.resolve(
@@ -123,15 +116,21 @@ async function updateCacheAndInvalidate(
     resolvedFinalOptions.inputDir!,
   );
 
-  const htmlResolvedPath = path.resolve(
-    serverRoot,
-    resolvedFinalOptions.outputDir!,
-  );
+  let htmlResolvedPath = "";
+
+  const dir =
+    finalOptions.mode === "bundle"
+      ? resolvedFinalOptions.outputDir
+      : finalOptions.mode === "inline"
+        ? resolvedFinalOptions.inputDir
+        : null;
+
+  if (dir) {
+    htmlResolvedPath = path.resolve(serverRoot, dir);
+  }
 
   if (isFirstServerRun) {
-    console.log(
-      `${ansis.bold.blueBright`[vitepress-templ-preview]`} Watching Templ files at: ${templResolvedPath}`,
-    );
+    Logger.info("Watching Templ files at", templResolvedPath);
     server.watcher.add(path.join(templResolvedPath, "**", "*.templ"));
   }
 
@@ -167,7 +166,7 @@ async function updateCacheAndInvalidate(
 export async function executeAndUpdateCache(
   command: string,
   serverRoot: string,
-  finalOptions: PluginOptions,
+  finalOptions: PluginConfig,
   fileCache: Record<string, CachedFile>,
   watchedMdFiles: Record<string, Set<string>>,
   server: any,
