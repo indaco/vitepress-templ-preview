@@ -24,11 +24,11 @@
     "./types": {
       "types": "./dist/types/types.d.ts"
     },
-    "./ui": {
+    "./components": {
       "types": "./dist/types/components/index.d.ts",
       "default": "./dist/vitepress-templ-preview.es.js"
     },
-    "./ui/style.css": {
+    "./style.css": {
       "default": "./dist/style.css"
     }
   },
