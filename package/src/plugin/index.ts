@@ -127,40 +127,71 @@ function generateTemplPreviewComponentHtml(
   )}'></templ-preview-component>`;
 }
 
+/**
+ * Handles the operation mode for generating template and HTML file paths.
+ *
+ * @param {string} id - The identifier of the source file.
+ * @param {string} serverRoot - The root directory of the server.
+ * @param {Partial<PluginConfig>} options - Configuration options for the plugin.
+ * @param {string} srcValue - The source value to be used in the file names.
+ * @returns {{ templFile: string; htmlFile: string }} - Object containing the paths for the template and HTML files.
+ * @throws {Error} - Throws an error if the mode is unknown or not defined in options.
+ */
 function handleOpMode(
   id: string,
   serverRoot: string,
   options: Partial<PluginConfig>,
   srcValue: string,
-): {
-  templFile: string;
-  htmlFile: string;
-} {
+): { templFile: string; htmlFile: string } {
+  const TEMPL_EXTENSION = ".templ";
+  const HTML_EXTENSION = ".html";
+
+  if (!options.mode) {
+    const errorMsg = `Mode is not defined in options`;
+    Logger.error("", errorMsg);
+    throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
+  }
+
+  const resolvePath = (
+    baseDir: string,
+    dir: string | undefined,
+    filename: string,
+  ) => path.resolve(baseDir, dir ?? "", filename);
+
+  const mode = options.mode;
   let templFilePath = "";
   let htmlFilePath = "";
 
-  const mode = options.mode!;
   switch (mode) {
     case "inline":
-      templFilePath = path.resolve(path.dirname(id), `${srcValue}.templ`);
-      htmlFilePath = path.resolve(path.dirname(id), `${srcValue}.html`);
+      templFilePath = resolvePath(
+        path.dirname(id),
+        "",
+        `${srcValue}${TEMPL_EXTENSION}`,
+      );
+      htmlFilePath = resolvePath(
+        path.dirname(id),
+        "",
+        `${srcValue}${HTML_EXTENSION}`,
+      );
       break;
     case "bundle":
-      templFilePath = path.resolve(
+      const inputDir = options.inputDir || options.goProjectDir!;
+      const outputDir =
+        options.outputDir || options.inputDir || options.goProjectDir!;
+      templFilePath = resolvePath(
         serverRoot,
-        options.inputDir || path.join(options.goProjectDir!, options.inputDir!),
-        `${srcValue}.templ`,
+        inputDir,
+        `${srcValue}${TEMPL_EXTENSION}`,
       );
-      htmlFilePath = path.resolve(
+      htmlFilePath = resolvePath(
         serverRoot,
-        options.outputDir ||
-          path.join(options.goProjectDir!, options.inputDir!),
-        `${srcValue}.html`,
+        outputDir,
+        `${srcValue}${HTML_EXTENSION}`,
       );
-
       break;
     default:
-      const errorMsg = `Unknown "${mode}"`;
+      const errorMsg = `Unknown mode: "${mode}"`;
       Logger.error("", errorMsg);
       throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
   }
