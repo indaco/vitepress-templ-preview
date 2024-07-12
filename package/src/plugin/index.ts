@@ -133,7 +133,8 @@ function buildStaticTemplCommandStr(
 /**
  * Generates the HTML for the templ preview component.
  * @param md - The MarkdownIt instance.
- * @param props - The properties for the preview component.
+ * @param componentProps - The properties for the preview component.
+ * @param extractorOptions - The options for the code extractor.
  * @returns The HTML string for the templ preview component.
  */
 function generateTemplPreviewComponentHtml(
@@ -290,9 +291,9 @@ function renderTemplPreview(
     true,
   );
   // code extractors options attributes
-  const isIncludePackagesValue = getAttributeOrElse(
+  const isIncludePackageValue = getAttributeOrElse(
     token,
-    "data-include-packages",
+    "data-include-package",
     "true",
     true,
   );
@@ -322,7 +323,7 @@ function renderTemplPreview(
   );
 
   const extractorOpts: CodeExtractorOptions = {
-    includePackage: Boolean(isIncludePackagesValue),
+    includePackage: Boolean(isIncludePackageValue),
     includeImports: Boolean(isIncludeImportsValue),
     includeConsts: Boolean(isIncludeConstsValue),
     includeVars: Boolean(isIncludeVarsValue),
