@@ -12,13 +12,13 @@ import * as fs from "node:fs";
 import path from "node:path";
 import { Plugin } from "vite";
 import MarkdownIt from "markdown-it";
-import { Token } from "markdown-it/index.js";
+import type { StateCore, Token } from "markdown-it/index.js";
+import Shiki from "@shikijs/markdown-it";
 import {
   checkBinaries,
   escapeForJSON,
   executeAndUpdateCache,
   executeCommandSync,
-  extractInnerCode,
   getCachedFileContent,
   unescapeFromJSON,
   watchFileChanges,
@@ -73,7 +73,7 @@ function getAttributeOrElse(
  * @param attrs - The attributes to add to the token.
  * @returns The created token.
  */
-function createTemplDemoToken(state: any, attrs: TagAttrs) {
+function createTemplDemoToken(state: StateCore, attrs: TagAttrs) {
   const token = new state.Token("templ_demo", "templ-demo", 0);
   token.attrs = Object.keys(attrs).map((key) => [key, attrs[key]]);
   return token;
@@ -83,7 +83,7 @@ function createTemplDemoToken(state: any, attrs: TagAttrs) {
  * Processes the tokens and replaces the matched custom tag.
  * @param state - The state object from markdown-it.
  */
-function processTokens(state: any) {
+function processTokens(state: StateCore) {
   const tokens = state.tokens;
   for (let i = 0; i < tokens.length; i++) {
     if (tokens[i].type === "inline") {
@@ -375,13 +375,24 @@ const defaultPluginOptions: PluginConfig = {
   runTemplGenerate: true,
 };
 
-const viteTemplPreviewPlugin = (options?: VTPUserConfig): Plugin => {
+const viteTemplPreviewPlugin = async (
+  options?: VTPUserConfig,
+): Promise<Plugin<any>> => {
   const resolvedPluginOptions: PluginConfig = {
     ...defaultPluginOptions,
     ...options,
   };
 
   const md = new MarkdownIt();
+  md.use(
+    await Shiki({
+      themes: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+    }),
+  );
+
   const fileCache: Record<string, CachedFile> = {};
   const watchedMdFiles: Record<string, Set<string>> = {};
 
