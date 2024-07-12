@@ -1,5 +1,0 @@
-module templ-preview-demo
-
-go 1.22
-
-require github.com/a-h/templ v0.2.731 // indirect
