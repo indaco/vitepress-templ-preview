@@ -3,8 +3,8 @@
 Below, you will see the results produced by the `vitepress-templ-preview` plugin:
 
 ```go
-func Ciao() {
-  fmt.Println("hi")
+func Greetings() {
+  fmt.Println("hi") // [!code focus]
 }
 ```
 

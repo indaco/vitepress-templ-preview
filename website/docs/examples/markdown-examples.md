@@ -2,6 +2,14 @@
 
 This page demonstrates some of the built-in markdown extensions provided by VitePress.
 
+!!! This content will be wrapped in a custom block.
+
+```go
+func Greetings() {
+  fmt.Println("hi") // [!code focus]
+}
+```
+
 ## Syntax Highlighting
 
 ### Templ Syntax added in shiki@v1.10.0

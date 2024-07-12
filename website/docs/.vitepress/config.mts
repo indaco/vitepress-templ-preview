@@ -1,6 +1,12 @@
 import { defineConfig } from "vitepress";
 import viteTemplPreviewPlugin from "vitepress-templ-preview";
 import type { VTPUserConfig } from "vitepress-templ-preview/types";
+import {
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  transformerNotationErrorLevel,
+  transformerNotationFocus,
+} from "@shikijs/transformers";
 
 const vtpOptions: VTPUserConfig = {
   inputDir: "examples",
@@ -83,6 +89,18 @@ export default defineConfig({
       copyright:
         'Copyright © 2024 <a href="https://github.com/indaco">Mirco Veltri</a>',
     },
+  },
+  markdown: {
+    theme: {
+      light: "github-light",
+      dark: "github-dark",
+    },
+    codeTransformers: [
+      transformerNotationDiff(),
+      transformerNotationHighlight(),
+      transformerNotationErrorLevel(),
+      transformerNotationFocus(),
+    ],
   },
   vite: {
     plugins: [viteTemplPreviewPlugin(vtpOptions)],
