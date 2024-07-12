@@ -36,6 +36,7 @@ export default defineConfig({
     ],
 
     sidebar: [
+      { text: "Markdown Examples", link: "/markdown-examples" },
       {
         text: "Examples",
         collapsed: false,
@@ -43,7 +44,6 @@ export default defineConfig({
           { text: "Hello Templ", link: "/examples/hello" },
           { text: "Button", link: "/examples/button" },
           { text: "Alert", link: "/examples/alert" },
-          { text: "Markdown Examples", link: "/examples/markdown-examples" },
         ],
       },
     ],
