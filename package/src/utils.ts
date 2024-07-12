@@ -1,5 +1,5 @@
 import { execSync, spawnSync } from "node:child_process";
-import { CachedFile, PluginConfig } from "./types";
+import type { CachedFile, PluginConfig } from "./types";
 import path from "node:path";
 import * as fsp from "node:fs/promises";
 import { Logger } from "./logger";
@@ -264,4 +264,31 @@ export function unescapeFromJSON(str: string): string {
     .replace(/\\t/g, "\t")
     .replace(/\\"/g, '"')
     .replace(/\\\\/g, "\\");
+}
+
+/**
+ * Extracts the inner code from templated blocks.
+ *
+ * This function takes an array of templated blocks and extracts only the inner code within the braces.
+ *
+ * @param {string[]} templBlocks - An array of strings, each containing a full templated block.
+ * @returns {string[]} An array of strings, each containing only the inner code of the templated block.
+ *
+ * @example
+ * const templBlocks = [
+ *   "package main\\n\\nimport (\\n\\"fmt\\"\\n\\"log\\"\\n)\\ntempl AlertDemo() {\\n\\t@alertCss()\\n\\t@alert(\\"Success\\", \\"Files were successfully uploaded\\")\\n}"
+ * ];
+ * const result = extractInnerCode(templBlocks);
+ * console.log(result);
+ * // Output:
+ * // [
+ * //   "@alertCss()\\n  @alert(\\"Success\\", \\"Files were successfully uploaded\\")"
+ * // ]
+ */
+export function extractInnerCode(templBlocks: string[]): string[] {
+  return templBlocks.map((block) => {
+    const startIndex = block.indexOf("{") + 1;
+    const endIndex = block.lastIndexOf("}");
+    return block.slice(startIndex, endIndex).trim();
+  });
 }

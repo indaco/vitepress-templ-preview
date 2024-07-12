@@ -79,3 +79,11 @@ export interface VTPComponentProps {
   buttonStyle: ButtonStyle;
   isPreviewFirst: boolean;
 }
+
+export interface CodeExtractorOptions {
+  includePackage?: boolean;
+  includeImports?: boolean;
+  includeVars?: boolean;
+  includeConsts?: boolean;
+  includeTypes?: boolean;
+}

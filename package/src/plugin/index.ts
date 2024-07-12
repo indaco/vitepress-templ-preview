@@ -6,6 +6,7 @@ import type {
   VTPComponentProps,
   ButtonStyle,
   VTPUserConfig,
+  CodeExtractorOptions,
 } from "../types";
 import * as fs from "node:fs";
 import path from "node:path";
@@ -17,12 +18,14 @@ import {
   escapeForJSON,
   executeAndUpdateCache,
   executeCommandSync,
+  extractInnerCode,
   getCachedFileContent,
   unescapeFromJSON,
   watchFileChanges,
 } from "../utils";
 import { BundledTheme } from "shiki";
 import { Logger } from "../logger";
+import { CodeExtractor } from "../code-extractor";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 const TEMPL_BIN = "templ";
@@ -51,7 +54,7 @@ const parseAttrs = (attrsString: string): TagAttrs => {
  * @param {boolean} [parseJson=false] - Whether to parse the attribute value as JSON.
  * @returns {string | boolean} - The attribute value or the default value.
  */
-function getAttribute(
+function getAttributeOrElse(
   token: Token,
   attrName: string,
   defaultValue: string,
@@ -135,14 +138,21 @@ function buildStaticTemplCommandStr(
  */
 function generateTemplPreviewComponentHtml(
   md: MarkdownIt,
-  props: VTPComponentProps,
+  componentProps: VTPComponentProps,
+  extractorOptions?: CodeExtractorOptions,
 ): string {
+  const extractor = new CodeExtractor(
+    componentProps.codeContent,
+    extractorOptions,
+  );
+  const templBlocks = extractor.extract();
+
   const _props = {
-    codeContent: unescapeFromJSON(props.codeContent),
-    htmlContent: md.utils.unescapeAll(props.htmlContent),
-    buttonStyle: md.utils.escapeHtml(props.buttonStyle),
-    themes: props.themes,
-    isPreviewFirst: props.isPreviewFirst,
+    codeContent: unescapeFromJSON(templBlocks[0]),
+    htmlContent: md.utils.unescapeAll(componentProps.htmlContent),
+    buttonStyle: md.utils.escapeHtml(componentProps.buttonStyle),
+    themes: componentProps.themes,
+    isPreviewFirst: componentProps.isPreviewFirst,
   };
 
   return `<templ-preview-component v-bind='${JSON.stringify(
@@ -257,24 +267,67 @@ function renderTemplPreview(
 
   // Retrieve attribute values
   const srcValue = srcAttr[1];
-  const buttonStyleValue = getAttribute(
+  const buttonStyleValue = getAttributeOrElse(
     token,
     "data-button-variant",
     "alt",
   ) as ButtonStyle;
-  const lightThemeValue = getAttribute(
+  const lightThemeValue = getAttributeOrElse(
     token,
     "data-theme-light",
     "github-light",
   ) as BundledTheme;
-  const darkThemeValue = getAttribute(
+  const darkThemeValue = getAttributeOrElse(
     token,
     "data-theme-dark",
     "github-dark",
   ) as BundledTheme;
   const themesValue = { light: lightThemeValue, dark: darkThemeValue };
-  const isPreviewFirstValue =
-    getAttribute(token, "data-preview-first", "true") === "true";
+  const isPreviewFirstValue = getAttributeOrElse(
+    token,
+    "data-preview-first",
+    "true",
+    true,
+  );
+  // code extractors options attributes
+  const isIncludePackagesValue = getAttributeOrElse(
+    token,
+    "data-include-packages",
+    "true",
+    true,
+  );
+  const isIncludeImportsValue = getAttributeOrElse(
+    token,
+    "data-include-imports",
+    "true",
+    true,
+  );
+  const isIncludeConstsValue = getAttributeOrElse(
+    token,
+    "data-include-consts",
+    "false",
+    true,
+  );
+  const isIncludeVarsValue = getAttributeOrElse(
+    token,
+    "data-include-vars",
+    "false",
+    true,
+  );
+  const isIncludeTypesValue = getAttributeOrElse(
+    token,
+    "data-include-types",
+    "false",
+    true,
+  );
+
+  const extractorOpts: CodeExtractorOptions = {
+    includePackage: Boolean(isIncludePackagesValue),
+    includeImports: Boolean(isIncludeImportsValue),
+    includeConsts: Boolean(isIncludeConstsValue),
+    includeVars: Boolean(isIncludeVarsValue),
+    includeTypes: Boolean(isIncludeTypesValue),
+  };
 
   const resolvedPaths = handleOpMode(id, serverRoot, pluginOptions, srcValue);
 
@@ -300,15 +353,15 @@ function renderTemplPreview(
     codeContent = fs.readFileSync(resolvedPaths.templFile, "utf8");
   }
 
-  const props: VTPComponentProps = {
+  const componentProps: VTPComponentProps = {
     codeContent: escapeForJSON(codeContent),
     htmlContent: md.utils.escapeHtml(htmlContent),
     buttonStyle: buttonStyleValue,
     themes: themesValue,
-    isPreviewFirst: isPreviewFirstValue,
+    isPreviewFirst: Boolean(isPreviewFirstValue),
   };
 
-  return generateTemplPreviewComponentHtml(md, props);
+  return generateTemplPreviewComponentHtml(md, componentProps, extractorOpts);
 }
 
 // Default values for the PluginOptions
