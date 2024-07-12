@@ -13,7 +13,6 @@ import path from "node:path";
 import { Plugin } from "vite";
 import MarkdownIt from "markdown-it";
 import type { StateCore, Token } from "markdown-it/index.js";
-import Shiki from "@shikijs/markdown-it";
 import {
   checkBinaries,
   escapeForJSON,
@@ -86,7 +85,7 @@ function createTemplDemoToken(state: StateCore, attrs: TagAttrs) {
 function processTokens(state: StateCore) {
   const tokens = state.tokens;
   for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type === "inline") {
+    if (tokens[i].type === "html_inline") {
       const match = tokens[i].content.match(TEMPL_DEMO_REGEX);
       if (match) {
         const attrsString = match[1];
@@ -382,28 +381,36 @@ const viteTemplPreviewPlugin = async (
     ...defaultPluginOptions,
     ...options,
   };
-
-  const md = new MarkdownIt();
-  md.use(
-    await Shiki({
-      themes: {
-        light: "github-light",
-        dark: "github-dark",
-      },
-    }),
-  );
-
   const fileCache: Record<string, CachedFile> = {};
   const watchedMdFiles: Record<string, Set<string>> = {};
 
+  let mdInstance: MarkdownIt;
   let serverRoot: string;
   let serverCommand: "build" | "serve";
+
   return {
     name: "vite:templ-preview",
     enforce: "pre",
-    configResolved(resolvedConfig) {
-      serverRoot = resolvedConfig.root;
-      serverCommand = resolvedConfig.command;
+    configResolved(config) {
+      serverRoot = config.root;
+      serverCommand = config.command;
+
+      if ((config as any).vitepress) {
+        const { markdown } = (config as any).vitepress;
+        if (markdown) {
+          if (typeof markdown.config === "function") {
+            const originalConfig = markdown.config;
+            markdown.config = (md: MarkdownIt) => {
+              originalConfig(md);
+              mdInstance = md;
+            };
+          } else {
+            markdown.config = (md: MarkdownIt) => {
+              mdInstance = md;
+            };
+          }
+        }
+      }
     },
     async buildStart() {
       checkBinaries([STATIC_TEMPL_PLUS_BIN]);
@@ -496,7 +503,7 @@ const viteTemplPreviewPlugin = async (
       if (!TEMPL_DEMO_REGEX.test(code)) return;
 
       const context: PluginContext = {
-        md,
+        md: mdInstance,
         serverRoot,
         pluginOptions: {
           ...resolvedPluginOptions,
@@ -513,11 +520,11 @@ const viteTemplPreviewPlugin = async (
         watchedMdFiles,
       };
 
-      md.core.ruler.push("templ_demo", processTokens);
-      md.renderer.rules.templ_demo = (tokens: Token[], idx: number) =>
+      mdInstance.core.ruler.push("templ_demo", processTokens);
+      mdInstance.renderer.rules.templ_demo = (tokens: Token[], idx: number) =>
         renderTemplPreview(serverCommand, tokens, idx, context, id);
 
-      const rendered = md.render(code);
+      const rendered = mdInstance.render(code);
       if (!rendered.includes("templ-preview-component")) return;
       return {
         code: rendered,
