@@ -59,6 +59,7 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: "Options", link: "/customization/options" },
+          { text: "Code Extractor", link: "/customization/code-extractor" },
           { text: "Vue components", link: "/customization/vue-components" },
         ],
       },
