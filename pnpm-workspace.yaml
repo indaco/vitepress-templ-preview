@@ -1,3 +1,4 @@
 packages:
   - "package"
   - "website"
+  - "_examples/mode-bundle"
