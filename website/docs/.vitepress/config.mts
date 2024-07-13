@@ -64,9 +64,11 @@ export default defineConfig({
         text: "Customization",
         collapsed: false,
         items: [
-          { text: "Options", link: "/customization/options" },
-          { text: "Code Extractor", link: "/customization/code-extractor" },
-          { text: "Vue components", link: "/customization/vue-components" },
+          { text: "Plugin Options", link: "/customization/plugin-options" },
+          {
+            text: "Rendering Components",
+            link: "/customization/rendering-components",
+          },
         ],
       },
     ],
