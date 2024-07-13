@@ -76,25 +76,25 @@ export class CodeExtractor {
 
   private getImportStatements(): string[] {
     return this.options.includeImports
-      ? this.code.match(CodeExtractor.importRegex) ?? []
+      ? (this.code.match(CodeExtractor.importRegex) ?? [])
       : [];
   }
 
   private getConstStatements(): string[] {
     return this.options.includeConsts
-      ? this.code.match(CodeExtractor.constRegex) ?? []
+      ? (this.code.match(CodeExtractor.constRegex) ?? [])
       : [];
   }
 
   private getVarStatements(): string[] {
     return this.options.includeVars
-      ? this.code.match(CodeExtractor.varRegex) ?? []
+      ? (this.code.match(CodeExtractor.varRegex) ?? [])
       : [];
   }
 
   private getTypeStatements(): string[] {
     return this.options.includeTypes
-      ? this.code.match(CodeExtractor.typeRegex) ?? []
+      ? (this.code.match(CodeExtractor.typeRegex) ?? [])
       : [];
   }
 
