@@ -11,6 +11,7 @@ import type {
 import * as fs from "node:fs";
 import path from "node:path";
 import { Plugin } from "vite";
+import { MarkdownOptions } from "vitepress";
 import MarkdownIt from "markdown-it";
 import type { StateCore, Token } from "markdown-it/index.js";
 import {
@@ -254,7 +255,8 @@ function renderTemplPreview(
   id: string,
 ): string {
   const token = tokens[idx];
-  const { md, serverRoot, pluginOptions, fileCache, watchedMdFiles } = context;
+  const { md, serverRoot, pluginOptions, fileCache, watchedMdFiles, theme } =
+    context;
 
   // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === "src");
@@ -272,17 +274,6 @@ function renderTemplPreview(
     "data-button-variant",
     "alt",
   ) as ButtonStyle;
-  const lightThemeValue = getAttributeOrElse(
-    token,
-    "data-theme-light",
-    "github-light",
-  ) as BundledTheme;
-  const darkThemeValue = getAttributeOrElse(
-    token,
-    "data-theme-dark",
-    "github-dark",
-  ) as BundledTheme;
-  const themesValue = { light: lightThemeValue, dark: darkThemeValue };
   const isPreviewFirstValue = getAttributeOrElse(
     token,
     "data-preview-first",
@@ -357,7 +348,7 @@ function renderTemplPreview(
     codeContent: escapeForJSON(codeContent),
     htmlContent: md.utils.escapeHtml(htmlContent),
     buttonStyle: buttonStyleValue,
-    themes: themesValue,
+    themes: theme,
     isPreviewFirst: Boolean(isPreviewFirstValue),
   };
 
@@ -383,10 +374,15 @@ const viteTemplPreviewPlugin = async (
   };
   const fileCache: Record<string, CachedFile> = {};
   const watchedMdFiles: Record<string, Set<string>> = {};
+  const defaultThemes: { light: BundledTheme; dark: BundledTheme } = {
+    light: "github-light",
+    dark: "github-dark",
+  };
 
   let mdInstance: MarkdownIt;
   let serverRoot: string;
   let serverCommand: "build" | "serve";
+  let userThemes: any;
 
   return {
     name: "vite:templ-preview",
@@ -398,6 +394,8 @@ const viteTemplPreviewPlugin = async (
       if ((config as any).vitepress) {
         const { markdown } = (config as any).vitepress;
         if (markdown) {
+          userThemes = (markdown as MarkdownOptions).theme;
+
           if (typeof markdown.config === "function") {
             const originalConfig = markdown.config;
             markdown.config = (md: MarkdownIt) => {
@@ -518,6 +516,7 @@ const viteTemplPreviewPlugin = async (
         },
         fileCache,
         watchedMdFiles,
+        theme: { ...defaultThemes, ...userThemes },
       };
 
       mdInstance.core.ruler.push("templ_demo", processTokens);

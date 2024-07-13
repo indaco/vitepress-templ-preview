@@ -91,10 +91,6 @@ export default defineConfig({
     },
   },
   markdown: {
-    theme: {
-      light: "github-light",
-      dark: "github-dark",
-    },
     codeTransformers: [
       transformerNotationDiff(),
       transformerNotationHighlight(),

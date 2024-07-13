@@ -57,6 +57,7 @@ export interface PluginContext {
   pluginOptions: Partial<PluginConfig>;
   fileCache: Record<string, CachedFile>;
   watchedMdFiles: Record<string, Set<string>>;
+  theme: { light: BundledTheme; dark: BundledTheme };
 }
 
 export interface CachedFile {
