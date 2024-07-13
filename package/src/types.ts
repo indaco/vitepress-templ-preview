@@ -79,6 +79,7 @@ export interface VTPComponentProps {
   };
   buttonStyle: ButtonStyle;
   isPreviewFirst: boolean;
+  isPreviewOnly: boolean;
 }
 
 export interface CodeExtractorOptions {

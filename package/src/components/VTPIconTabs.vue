@@ -2,9 +2,9 @@
 import type { Ref } from "vue";
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted, nextTick, computed } from "vue";
-import { BundledTheme, createHighlighter } from "shiki";
 import ViewIcon from "./ViewIcon.vue";
 import CodeIcon from "./CodeIcon.vue";
+import VTPCard from "./VTPCard.vue";
 import { executeScriptsTick, useHighlighter } from "../shared";
 
 const props = defineProps<VTPComponentProps>();
@@ -39,7 +39,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <VTPCard v-if="props.isPreviewOnly" v-bind="props" />
+  <template v-else>
     <div class="wrapper">
       <div class="tabs" role="tablist">
         <button
@@ -84,7 +85,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped>

@@ -4,6 +4,7 @@ import type { VTPComponentProps } from "../types";
 import { ref, onMounted, nextTick } from "vue";
 import { executeScriptsTick, useHighlighter } from "../shared";
 import CodeIcon from "./CodeIcon.vue";
+import VTPCard from "./VTPCard.vue";
 
 const props = defineProps<VTPComponentProps>();
 const isCodeSectionVisible: Ref<boolean> = ref(false);
@@ -23,32 +24,35 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container">
-    <div class="preview">
-      <div class="preview-content" v-html="props.htmlContent"></div>
-    </div>
-    <div class="code-section">
-      <button
-        @click="toggleCodeSection"
-        :class="`button-${props.buttonStyle}`"
-        aria-label="view the source code"
-      >
-        <slot name="code-icon">
-          <CodeIcon :fill="`var(--vp-button-${props.buttonStyle}-text)`" />
-        </slot>
-        {{ isCodeSectionVisible ? "Hide Code" : "Show Code" }}
-      </button>
-      <div class="code-content" :aria-hidden="!isCodeSectionVisible">
-        <div>
-          <div class="language-templ vp-adaptive-theme">
-            <button title="Copy Code" class="copy"></button>
-            <span class="lang">templ</span>
-            <span class="vp-code" v-html="highlightedCode"></span>
+  <VTPCard v-if="props.isPreviewOnly" v-bind="props" />
+  <template v-else>
+    <div class="container">
+      <div class="preview">
+        <div class="preview-content" v-html="props.htmlContent"></div>
+      </div>
+      <div class="code-section">
+        <button
+          @click="toggleCodeSection"
+          :class="`button-${props.buttonStyle}`"
+          aria-label="view the source code"
+        >
+          <slot name="code-icon">
+            <CodeIcon :fill="`var(--vp-button-${props.buttonStyle}-text)`" />
+          </slot>
+          {{ isCodeSectionVisible ? "Hide Code" : "Show Code" }}
+        </button>
+        <div class="code-content" :aria-hidden="!isCodeSectionVisible">
+          <div>
+            <div class="language-templ vp-adaptive-theme">
+              <button title="Copy Code" class="copy"></button>
+              <span class="lang">templ</span>
+              <span class="vp-code" v-html="highlightedCode"></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped>

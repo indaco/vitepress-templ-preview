@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { VTPComponentProps } from "../types";
 import { ref, onMounted, nextTick } from "vue";
-
 import { executeScriptsTick, useHighlighter } from "../shared";
+import VTPCard from "./VTPCard.vue";
 
 const props = defineProps<VTPComponentProps>();
 const activeTab = ref("preview");
@@ -25,7 +25,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
+  <VTPCard v-if="props.isPreviewOnly" v-bind="props" />
+  <template v-else>
     <div class="wrapper">
       <div class="tabs" role="tablist">
         <button
@@ -66,7 +67,7 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <style scoped>

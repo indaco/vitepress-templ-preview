@@ -24,7 +24,7 @@ onMounted(async () => {
           <div class="preview-content" v-html="props.htmlContent"></div>
         </div>
       </template>
-      <template #code>
+      <template #code v-if="!props.isPreviewOnly">
         <div class="code-content">
           <div class="language-templ vp-adaptive-theme">
             <button title="Copy Code" class="copy"></button>

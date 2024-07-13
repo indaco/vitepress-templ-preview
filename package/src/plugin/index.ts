@@ -64,7 +64,7 @@ function getAttributeOrElse(
   if (attr) {
     return parseJson ? JSON.parse(attr[1].toLowerCase()) : attr[1];
   }
-  return defaultValue;
+  return parseJson ? JSON.parse(defaultValue.toLowerCase()) : defaultValue;
 }
 
 /**
@@ -154,6 +154,7 @@ function generateTemplPreviewComponentHtml(
     buttonStyle: md.utils.escapeHtml(componentProps.buttonStyle),
     themes: componentProps.themes,
     isPreviewFirst: componentProps.isPreviewFirst,
+    isPreviewOnly: componentProps.isPreviewOnly,
   };
 
   return `<templ-preview-component v-bind='${JSON.stringify(
@@ -280,6 +281,12 @@ function renderTemplPreview(
     "true",
     true,
   );
+  const isPreviewOnlyValue = getAttributeOrElse(
+    token,
+    "data-preview-only",
+    "false",
+    true,
+  );
   // code extractors options attributes
   const isIncludePackageValue = getAttributeOrElse(
     token,
@@ -350,6 +357,7 @@ function renderTemplPreview(
     buttonStyle: buttonStyleValue,
     themes: theme,
     isPreviewFirst: Boolean(isPreviewFirstValue),
+    isPreviewOnly: Boolean(isPreviewOnlyValue),
   };
 
   return generateTemplPreviewComponentHtml(md, componentProps, extractorOpts);
