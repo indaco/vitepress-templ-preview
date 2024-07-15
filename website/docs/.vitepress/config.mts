@@ -32,9 +32,9 @@ export default defineConfig({
       {
         text: "Examples",
         items: [
-          { text: "Hello Templ", link: "/examples/hello-preview" },
-          { text: "Button", link: "/examples/button-preview" },
-          { text: "Alert", link: "/examples/alert-preview" },
+          { text: "Hello Templ", link: "/examples/hello" },
+          { text: "Button", link: "/examples/button" },
+          { text: "Alert", link: "/examples/alert" },
         ],
       },
     ],
