@@ -26,7 +26,7 @@ Assuming you chose to scaffold the VitePress project in `./docs`, the initial ge
 
 ## Setup
 
-The plugin supports two ways of working reflecting the `static-templ-plus` [modes](https://github.com/indaco/static-templ-plus/tree/op-modes?tab=readme-ov-file#modes). The result is the same in both cases. he choice depends on your preferences for content management and resulting URLs.
+The plugin supports two ways of working reflecting the `static-templ-plus` [modes](https://github.com/indaco/static-templ-plus/tree/op-modes?tab=readme-ov-file#modes). The result is the same in both cases. The choice depends on your preferences for content management and resulting URLs.
 
 > [!TIP]
 > Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.
@@ -42,7 +42,7 @@ This is the **default** method. It involves setting up a Go module project in th
 
 At the end, your project structure should look like this:
 
-```bash{8-19}
+```bash{8-18}
 .
 ├── docs
 │  ├─ .vitepress
@@ -84,7 +84,7 @@ This method involves setting up a new Go module project within your VitePress pr
 
 The resulting project structure should look like this:
 
-```bash{8-12}
+```bash{11-16}
 .
 ├─ docs
 │  ├─ .vitepress
@@ -107,7 +107,7 @@ The resulting project structure should look like this:
 ### VitePress
 
 1. Configure the plugin in your VitePress project by editing the VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
-2. Register the Vue component: choose a predefined Vue component or [Use a custom component](/customization/rendering-components); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
+2. Register the rendering component: choose a predefined Vue component or [Use a custom component](/customization/rendering-components); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
 
 ::: code-group
 
@@ -147,7 +147,7 @@ export default {
 
 ## Templ Components in Markdown
 
-To embed a `templ` component in your markdown files, use the `templ-demo` tag as follows:
+To embed and preview a `templ` component, in your markdown files use the `templ-demo` tag as follows:
 
 ```html
 <templ-demo src="hello-demo" />
