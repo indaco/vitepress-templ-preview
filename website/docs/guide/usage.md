@@ -42,7 +42,7 @@ This is the **default** method. It involves setting up a Go module project in th
 
 At the end, your project structure should look like this:
 
-```bash{8-18}
+```bash{8-16}
 .
 ├── docs
 │  ├─ .vitepress
