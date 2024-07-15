@@ -9,10 +9,10 @@ hero:
   actions:
     - theme: brand
       text: What is it?
-      link: /guide/introduction
+      link: /introduction/overview
     - theme: alt
       text: Get Started
-      link: /guide/prerequisites
+      link: /introduction/prerequisites
 
 features:
   - title: Auto Templ Generation
