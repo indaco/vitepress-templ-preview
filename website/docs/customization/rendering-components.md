@@ -13,9 +13,9 @@ Components can be configured by passing `data` [attributes](#data-attributes) di
 <templ-demo
   src="hello-demo"
   data-preview-first="false"
-  data-include-package="true"
-  data-include-imports="true"
-  data-include-types="true"
+  data-go-package="true"
+  data-go-imports="true"
+  data-go-types="true"
   <!-- ... -->
 />
 ```
@@ -25,7 +25,7 @@ Components can be configured by passing `data` [attributes](#data-attributes) di
 The `data-*` attributes set options for both the rendering component and the [code block](#code-block-extractor).
 
 > [!IMPORTANT]
-> All `data-*` attributes are **optional** and follow the `data-` prefix with the option name in kebab case. For example, to include the go package statement from the **code block extractor**, use `data-include-package="true"`.
+> All `data-*` attributes are **optional** and follow the `data-` prefix with the option name in kebab case. For example, to include the go package statement from the **code block extractor**, use `data-go-package="true"`.
 
 ## Code Block Extractor
 
@@ -33,11 +33,12 @@ Your `templ` code can include various elements like package declarations, import
 
 | Option           | Type      | Default | Description                                                   |
 | :--------------- | :-------- | :------ | ------------------------------------------------------------- |
-| `includePackage` | _boolean_ | `false` | Include the `package` statement in the extracted code blocks. |
-| `includeImports` | _boolean_ | `false` | Include `import` statements in the extracted code blocks.     |
-| `includeConsts`  | _boolean_ | `false` | Include `const` declarations in the extracted code blocks.    |
-| `includeVars`    | _boolean_ | `false` | Include `var` declarations in the extracted code blocks.      |
-| `includeTypes`   | _boolean_ | `false` | Include `type` definitions in the extracted code blocks.      |
+| `goExportedOnly` | _boolean_ | `false` | Whether or not include exported functions only.               |
+| `goPackage`      | _boolean_ | `false` | Include the `package` statement in the extracted code blocks. |
+| `goImports`      | _boolean_ | `false` | Include `import` statements in the extracted code blocks.     |
+| `goConsts`       | _boolean_ | `false` | Include `const` declarations in the extracted code blocks.    |
+| `goVars`         | _boolean_ | `false` | Include `var` declarations in the extracted code blocks.      |
+| `goTypes`        | _boolean_ | `false` | Include `type` definitions in the extracted code blocks.      |
 
 ## Vue Components
 

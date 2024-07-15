@@ -1,18 +1,19 @@
 import { CodeExtractorOptions } from "./types";
 
 /**
- * Class to extract templated blocks of code with names starting with a capital letter.
+ * Class to extract templated blocks of code.
  */
 export class CodeExtractor {
   private code: string;
   private options: CodeExtractorOptions;
 
   private static readonly defaultOptions: CodeExtractorOptions = {
-    includePackage: true,
-    includeImports: true,
-    includeVars: false,
-    includeConsts: false,
-    includeTypes: false,
+    goExportedOnly: false,
+    goPackage: true,
+    goImports: true,
+    goVars: false,
+    goConsts: false,
+    goTypes: false,
   };
 
   private static readonly packageRegex = /package\s+\w+/;
@@ -20,13 +21,15 @@ export class CodeExtractor {
   private static readonly constRegex = /const\s+\(.*?\);?|const\s+.*?;/gs;
   private static readonly varRegex = /var\s+\(.*?\);?|var\s+.*?;/gs;
   private static readonly typeRegex = /type\s+\(.*?\);?|type\s+.*?;/gs;
-  private static readonly templRegex = /templ ([A-Z][a-zA-Z]*)\(\)/g;
+  private static readonly allTemplRegex = /templ\s+\w+\s*\(([^()]*)\)\s*\{/g;
+  private static readonly exportedTemplRegex =
+    /templ\s+([A-Z][a-zA-Z]*)\s*\(([^()]*)\)\s*\{/g;
 
   /**
-   * Constructs a TemplExtractor instance.
+   * Constructs a CodeExtractor instance.
    *
    * @param {string} code - The code string to scan for templated blocks.
-   * @param {ExtractOptions} [options] - Configuration options to include or exclude certain keywords.
+   * @param {CodeExtractorOptions} [options] - Configuration options to include or exclude certain keywords.
    */
   constructor(code: string, options?: CodeExtractorOptions) {
     this.code = code;
@@ -36,64 +39,64 @@ export class CodeExtractor {
   /**
    * Extracts templated blocks of code based on the provided options.
    *
-   * @returns {string[]} An array of strings, each containing a full templated block with the specified inclusions.
+   * @returns {string[]} An array containing a single string with the full templated block including specified inclusions.
    */
   public extract(): string[] {
-    const results: string[] = [];
     const packageMatch = this.getPackageMatch();
     const importStatements = this.getImportStatements();
     const constStatements = this.getConstStatements();
     const varStatements = this.getVarStatements();
     const typeStatements = this.getTypeStatements();
 
-    let match;
-    while ((match = CodeExtractor.templRegex.exec(this.code)) !== null) {
-      const templBlock = this.extractTemplBlock(match.index);
-      if (templBlock) {
-        results.push(
-          [
-            packageMatch ? packageMatch[0] : "",
-            ...importStatements,
-            ...constStatements,
-            ...varStatements,
-            ...typeStatements,
-            templBlock,
-          ]
-            .filter(Boolean)
-            .join("\n\n"),
-        );
-      }
-    }
+    const templRegex = this.options.goExportedOnly
+      ? CodeExtractor.exportedTemplRegex
+      : CodeExtractor.allTemplRegex;
 
-    return results;
+    const matches = this.getAllMatches(templRegex);
+    const templBlocks = matches
+      .map((match) => this.extractTemplBlock(match.index))
+      .filter(Boolean) as string[];
+
+    const allCode = [
+      packageMatch ? packageMatch[0] : "",
+      ...importStatements,
+      ...constStatements,
+      ...varStatements,
+      ...typeStatements,
+      ...templBlocks,
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+
+    return [allCode];
   }
 
   private getPackageMatch(): RegExpMatchArray | null {
-    return this.options.includePackage
+    return this.options.goPackage
       ? this.code.match(CodeExtractor.packageRegex)
       : null;
   }
 
   private getImportStatements(): string[] {
-    return this.options.includeImports
+    return this.options.goImports
       ? (this.code.match(CodeExtractor.importRegex) ?? [])
       : [];
   }
 
   private getConstStatements(): string[] {
-    return this.options.includeConsts
+    return this.options.goConsts
       ? (this.code.match(CodeExtractor.constRegex) ?? [])
       : [];
   }
 
   private getVarStatements(): string[] {
-    return this.options.includeVars
+    return this.options.goVars
       ? (this.code.match(CodeExtractor.varRegex) ?? [])
       : [];
   }
 
   private getTypeStatements(): string[] {
-    return this.options.includeTypes
+    return this.options.goTypes
       ? (this.code.match(CodeExtractor.typeRegex) ?? [])
       : [];
   }
@@ -108,6 +111,7 @@ export class CodeExtractor {
     }
 
     // Track braces to find the matching closing brace
+    const startBraceIndex = endIndex;
     for (; endIndex < this.code.length; endIndex++) {
       if (this.code[endIndex] === "{") braceCount++;
       if (this.code[endIndex] === "}") braceCount--;
@@ -119,5 +123,14 @@ export class CodeExtractor {
     }
 
     return null;
+  }
+
+  private getAllMatches(regex: RegExp): RegExpExecArray[] {
+    const matches: RegExpExecArray[] = [];
+    let match;
+    while ((match = regex.exec(this.code)) !== null) {
+      matches.push(match);
+    }
+    return matches;
   }
 }

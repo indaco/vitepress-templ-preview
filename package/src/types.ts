@@ -15,9 +15,9 @@ export interface PluginConfig {
   goProjectDir: string;
 
   /**
-   * The operational mode for static-templ-plus.
+   * The working mode for the plugin : either `inline` or `bundle`
    * It affects the project structure and where the generated HTML files are saved.
-   * @default "components"
+   * @default "inline"
    */
   mode: StaticTemplPlusMode;
 
@@ -42,8 +42,7 @@ export interface PluginConfig {
   debug: boolean;
 
   /**
-   * Whether or not run "templ generate" command from static-templ or as separate standalone templ
-   * command for more control over it.
+   * Whether the plugin should run the `templ generate` command for you.
    * @default true
    */
   runTemplGenerate: boolean;
@@ -83,9 +82,10 @@ export interface VTPComponentProps {
 }
 
 export interface CodeExtractorOptions {
-  includePackage?: boolean;
-  includeImports?: boolean;
-  includeVars?: boolean;
-  includeConsts?: boolean;
-  includeTypes?: boolean;
+  goExportedOnly?: boolean;
+  goPackage?: boolean;
+  goImports?: boolean;
+  goVars?: boolean;
+  goConsts?: boolean;
+  goTypes?: boolean;
 }

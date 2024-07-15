@@ -287,44 +287,53 @@ function renderTemplPreview(
     "false",
     true,
   );
-  // code extractors options attributes
-  const isIncludePackageValue = getAttributeOrElse(
+  /**
+   * code extractors options attributes
+   */
+  const isGoExportedOnlyValue = getAttributeOrElse(
     token,
-    "data-include-package",
-    "true",
-    true,
-  );
-  const isIncludeImportsValue = getAttributeOrElse(
-    token,
-    "data-include-imports",
-    "true",
-    true,
-  );
-  const isIncludeConstsValue = getAttributeOrElse(
-    token,
-    "data-include-consts",
+    "data-exported-only",
     "false",
     true,
   );
-  const isIncludeVarsValue = getAttributeOrElse(
+  const isGoPackageValue = getAttributeOrElse(
     token,
-    "data-include-vars",
+    "data-go-package",
+    "true",
+    true,
+  );
+  const isGoImportsValue = getAttributeOrElse(
+    token,
+    "data-go-imports",
+    "true",
+    true,
+  );
+  const isGoConstsValue = getAttributeOrElse(
+    token,
+    "data-go-consts",
     "false",
     true,
   );
-  const isIncludeTypesValue = getAttributeOrElse(
+  const isGoVarsValue = getAttributeOrElse(
     token,
-    "data-include-types",
+    "data-go-vars",
+    "false",
+    true,
+  );
+  const isGoTypesValue = getAttributeOrElse(
+    token,
+    "data-go-types",
     "false",
     true,
   );
 
   const extractorOpts: CodeExtractorOptions = {
-    includePackage: Boolean(isIncludePackageValue),
-    includeImports: Boolean(isIncludeImportsValue),
-    includeConsts: Boolean(isIncludeConstsValue),
-    includeVars: Boolean(isIncludeVarsValue),
-    includeTypes: Boolean(isIncludeTypesValue),
+    goExportedOnly: Boolean(isGoExportedOnlyValue),
+    goPackage: Boolean(isGoPackageValue),
+    goImports: Boolean(isGoImportsValue),
+    goConsts: Boolean(isGoConstsValue),
+    goVars: Boolean(isGoVarsValue),
+    goTypes: Boolean(isGoTypesValue),
   };
 
   const resolvedPaths = handleOpMode(id, serverRoot, pluginOptions, srcValue);
