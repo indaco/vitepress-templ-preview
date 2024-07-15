@@ -1,13 +1,13 @@
 # Rendering Components
 
-The `vitepress-templ-preview` plugin comes with predefined Vue components for preview rendering. Choose one and [register it](/guide/usage.html#vitepress):
+The `vitepress-templ-preview` plugin comes with predefined Vue components for preview rendering. Choose one and [register it](/introduction/usage.html#vitepress):
 
 - [_VTPCard_](#vtpcard)
 - [_VTPCodeToggle_](#vtpcodetoggle)
 - [_VTPTabs_](#vtptabs)
 - [_VTPIconTabs_](#vtpicontabs)
 
-Components can be configured by passing `data` [attributes](#data-attributes) directly to the custom `templ-demo` [tag](../guide/usage.md#use-it-in-the-markdown).
+Components can be configured by passing `data` [attributes](#data-attributes) directly to the custom `templ-demo` [tag](../introduction/usage.md#use-it-in-the-markdown).
 
 ```html
 <templ-demo
@@ -133,4 +133,4 @@ onMounted(async () => {
 </style>
 ```
 
-Remember to [register](/guide/usage.html#vitepress) it.
+Remember to [register](/introduction/usage.html#vitepress) it.
