@@ -37,6 +37,16 @@ export default defineConfig({
           { text: "Alert", link: "/examples/alert" },
         ],
       },
+      {
+        text: "v0.1.0",
+        items: [
+          {
+            text: "Changelog",
+            link: "https://github.com/indaco/vitepress-templ-preview/blob/main/CHANGELOG.md",
+            target: "_blank",
+          },
+        ],
+      },
     ],
 
     sidebar: [
