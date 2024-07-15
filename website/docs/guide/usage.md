@@ -125,22 +125,20 @@ export default defineConfig({
 });
 ```
 
-```ts{3,4,9-13} [theme/index.ts]
+```ts{4-5,10-11} [theme/index.ts]
 //.vitepress/theme/index.ts
+import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
-import { VTPCollapsible } from "vitepress-templ-preview/components";
+import { VTPIconTabs } from "vitepress-templ-preview/components";
 import "vitepress-templ-preview/style.css";
 
 export default {
-  ...DefaultTheme,
+  extends: DefaultTheme,
   enhanceApp({ app }) {
-    /**
-     * You must write "component" rather that "componen"
-     * It is not a typo but using "component", raise an error.
-     */
-    app.component("templ-preview-componen", VTPCollapsible);
+    /* Make sure to name the tag  `VTPLivePreview` */
+    app.component("VTPLivePreview", VTPIconTabs);
   },
-};
+} satisfies Theme;
 ```
 
 :::

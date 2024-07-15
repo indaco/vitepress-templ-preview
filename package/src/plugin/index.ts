@@ -157,9 +157,7 @@ function generateTemplPreviewComponentHtml(
     isPreviewOnly: componentProps.isPreviewOnly,
   };
 
-  return `<templ-preview-component v-bind='${JSON.stringify(
-    _props,
-  )}'></templ-preview-component>`;
+  return `<VTPLivePreview v-bind='${JSON.stringify(_props)}'></VTPLivePreview>`;
 }
 
 /**
