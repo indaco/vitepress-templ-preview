@@ -26,10 +26,53 @@ Assuming you chose to scaffold the VitePress project in `./docs`, the initial ge
 
 ## Setup
 
-### templ project
+The plugin supports two ways of working reflecting the `static-templ-plus` [modes](https://github.com/indaco/static-templ-plus/tree/op-modes?tab=readme-ov-file#modes). The result is the same in both cases. he choice depends on your preferences for content management and resulting URLs.
+
+> [!TIP]
+> Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.
+
+### Inline mode
+
+> [!INFO]
+> This website is built in `inline` mode. The code is available in the GitHub repository and can be used as a reference.
+
+This is the **default** method. It involves setting up a Go module project in the **root** folder of your VitePress project with the templ files alongside your markdown content files.
+
+> The resulting URLs are in the form of `/components/button` or `/components/dropdown`.
+
+At the end, your project structure should look like this:
+
+```bash{8-19}
+.
+├── docs
+│  ├─ .vitepress
+│  │  └─ config.js
+│  ├─ api-examples.md
+│  ├─ markdown-examples.md
+│  ├─ index.md
+│  ├─ components
+│  │  ├─ button
+│  │  │  ├─ button-demo.templ
+│  │  │  └─ index.md
+│  │  ├─ dropdown
+│  │  │  ├─ dropdown-demo.templ
+│  │  │  └─ index.md
+│  ├─ go.mod
+│  ├─ go.sum
+└─ package.json
+```
+
+### Bundle mode
+
+> [!INFO]
+> If you are interested in this working mode, there is a sample project in the GitHub repository that can be used as a reference. Check it out [here](https://github.com/indaco/vitepress-templ-preview/_examples/).
+
+This method involves setting up a new Go module project within your VitePress project.
+
+> The resulting URLs are in the form of `/components/button.html` or `/components/dropdown.html`.
 
 1. Create a `templ-preview` folder within `./docs` containing your templ project.
-2. Initialize a new Go project within it as you do for a normal `templ` project, refer to the [official doc](https://templ.guide/quick-start/creating-a-simple-templ-component).
+2. Initialize a new Go project within it as you would for a normal `templ` project. Refer to the [official doc](https://templ.guide/quick-start/creating-a-simple-templ-component).
 
    ```bash
    cd templ-preview
@@ -48,22 +91,23 @@ The resulting project structure should look like this:
 │  │  └─ config.js
 │  ├─ api-examples.md
 │  ├─ markdown-examples.md
+│  ├─ components
+│  │  └─ button.md
+│  │  └─ dropdown.md
 │  └─ index.md
 │  ├─ templ-preview
 │  │  └─ demos
-│  │     └─ hello-demo.templ
+│  │     └─ button-demo.templ
+│  │     └─ dropdown-demo.templ
 │  │  └─ go.mod
 │  │  └─ go.sum
 └─ package.json
 ```
 
-> [!TIP]
-> Please, refer to the [Plugin Options](/customization/options) to see the available options for the plugin.
-
 ### VitePress
 
-1. Configure the plugin in your VitePress project. Edit your VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
-2. Register the Vue component: choose a predefined Vue components or [Use a custom component](/customization/vue-components); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
+1. Configure the plugin in your VitePress project by editing the VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
+2. Register the Vue component: choose a predefined Vue component or [Use a custom component](/customization/rendering-components); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
 
 ::: code-group
 
@@ -84,8 +128,8 @@ export default defineConfig({
 ```ts{3,4,9-13} [theme/index.ts]
 //.vitepress/theme/index.ts
 import DefaultTheme from "vitepress/theme";
-import { VTPCollapsible } from "vitepress-templ-preview/ui";
-import "vitepress-templ-preview/ui/style.css";
+import { VTPCollapsible } from "vitepress-templ-preview/components";
+import "vitepress-templ-preview/style.css";
 
 export default {
   ...DefaultTheme,
@@ -101,35 +145,21 @@ export default {
 
 :::
 
-### Use the code block in the markdown
+## Templ Components in Markdown
 
-Next, use the `templ-demo` tag in your markdown files:
+To embed a `templ` component in your markdown files, use the `templ-demo` tag as follows:
 
 ```html
 <templ-demo src="hello-demo" />
 ```
 
-or
+Alternatively, you can use the self-closing format:
 
 ```html
 <templ-demo src="hello-demo"></templ-demo>
 ```
 
-### Component configuration
+> [!IMPORTANT]
+> The `src` property is the only mandatory attribute. It must be set to the `templ` file name **without** the extension.
 
-You can configure the component by passing `data` attributes directly to the tag.
-
-All `data-*` attributes are **optionals**:
-
-```html
-<templ-demo
-  src="hello-demo"
-  data-button-variant="brand"
-  data-theme-light="vitesse-light"
-  data-theme-dark="vitesse-dark"
-  data-preview-first="false"
-/>
-```
-
-> [!TIP]
-> Check the [Vue Components](/customization/vue-components) page to know more.
+For more information on the available options for rendering components via the custom `templ-demo` tag, refer to the [Rendering Components documentation](/customization/rendering-components).
