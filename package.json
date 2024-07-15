@@ -9,6 +9,7 @@
     "prepare": "husky",
     "prepublish": "pnpm run build",
     "release": "pnpm run publish --filter='vitepress-templ-preview' --access public",
+    "test": "pnpm format && pnpm --filter='vitepress-templ-preview' test && pnpm build",
     "web:build": "pnpm run build && pnpm --filter='docs-web' run docs:build",
     "web:dev": "pnpm run build && pnpm --filter='docs-web' run docs:dev",
     "web:preview": "pnpm run web:build && pnpm --filter='docs-web' run docs:preview"

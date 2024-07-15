@@ -64,8 +64,9 @@
     "build:plugin": "tsup",
     "clean": "rimraf dist",
     "prepublish": "pnpm build",
-    "test": "vitest",
-    "test:ui": "vitest --ui"
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest watch"
   },
   "devDependencies": {
     "@shikijs/markdown-it": "^1.10.3",
