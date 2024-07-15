@@ -9,7 +9,7 @@ If you are planning to use this plugin, you likely already have a VitePress proj
 To pre-render the components, [static-templ-plus](https://github.com/indaco/static-templ-plus) works under the hood.
 
 ```bash
-go install github.com/github.com/indaco/static-templ-plus@latest
+go install github.com/indaco/static-templ-plus@latest
 ```
 
 ## templ (optional)
