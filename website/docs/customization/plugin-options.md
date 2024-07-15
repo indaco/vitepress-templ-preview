@@ -23,11 +23,11 @@ export default defineConfig({
   vite: {
     plugins: [
       viteTemplPreviewPlugin({
-        // goProjectDir: "preview"
+        // goProjectDir: ""
         // mode: "inline"
-        // inputDir: "templ-files"
-        // outputDir: "html-files"
-        // debug: true
+        // inputDir: "demos"
+        // outputDir: "output"
+        // debug: false
         // runTemplGenerate: true
       }),
     ],
