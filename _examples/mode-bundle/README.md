@@ -14,7 +14,7 @@ const vtpOptions: VTPUserConfig = {
 ## Prerequisites
 
 ```bash
-go install github.com/indaco/static-templ-plus@latest
+go install github.com/nokacper24/static-templ@latest
 ```
 
 ## Usage

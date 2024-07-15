@@ -26,7 +26,7 @@ Assuming you chose to scaffold the VitePress project in `./docs`, the initial ge
 
 ## Setup
 
-The plugin supports two ways of working reflecting the `static-templ-plus` [modes](https://github.com/indaco/static-templ-plus/tree/op-modes?tab=readme-ov-file#modes). The result is the same in both cases. The choice depends on your preferences for content management and resulting URLs.
+The plugin supports two ways of working reflecting the `static-templ` [modes](https://github.com/nokacper24/static-templ?tab=readme-ov-file#modes). The result is the same in both cases. The choice depends on your preferences for content management and resulting URLs.
 
 > [!TIP]
 > Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.

@@ -26,4 +26,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ### Acknowledgements
 
-This project makes use of [static-templ-plus](https://github.com/indaco/static-templ-plus) an extension of [static-templ](https://github.com/nokacper24/static-templ), which is licensed under the GNU General Public License (GPL). Users of this project must comply with the terms of the GPL license when using static-templ. Refer to the [static-templ repository](https://github.com/nokacper24/static-templ) for more information on its licensing terms.
+This project makes use of [static-templ](https://github.com/nokacper24/static-templ), which is licensed under the GNU General Public License (GPL). Users of this project must comply with the terms of the GPL license when using static-templ. Refer to the [static-templ repository](https://github.com/nokacper24/static-templ) for more information on its licensing terms.

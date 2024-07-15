@@ -29,7 +29,7 @@ import { CodeExtractor } from "../code-extractor";
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 const TEMPL_BIN = "templ";
-const STATIC_TEMPL_PLUS_BIN = "static-templ-plus";
+const STATIC_TEMPL_BIN = "static-templ";
 
 // Function to parse attributes from the matched tag
 const parseAttrs = (attrsString: string): TagAttrs => {
@@ -121,7 +121,7 @@ function buildStaticTemplCommandStr(
   serverRoot: string,
   resolvedOptions: PluginConfig,
 ): string {
-  const baseCmd = `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${STATIC_TEMPL_PLUS_BIN} -m ${resolvedOptions.mode} -i ${resolvedOptions.inputDir} -g=${resolvedOptions.runTemplGenerate} -d=${resolvedOptions.debug}`;
+  const baseCmd = `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${STATIC_TEMPL_BIN} -m ${resolvedOptions.mode} -i ${resolvedOptions.inputDir} -g=${resolvedOptions.runTemplGenerate} -d=${resolvedOptions.debug}`;
 
   if (resolvedOptions.mode === "bundle") {
     return `${baseCmd} -o ${resolvedOptions.outputDir}`;
@@ -428,7 +428,7 @@ const viteTemplPreviewPlugin = async (
       }
     },
     async buildStart() {
-      checkBinaries([STATIC_TEMPL_PLUS_BIN]);
+      checkBinaries([STATIC_TEMPL_BIN]);
 
       if (!resolvedPluginOptions.runTemplGenerate) {
         checkBinaries([TEMPL_BIN]);
@@ -448,7 +448,7 @@ const viteTemplPreviewPlugin = async (
     },
     async configureServer(server) {
       if (serverCommand === "serve") {
-        checkBinaries([STATIC_TEMPL_PLUS_BIN]);
+        checkBinaries([STATIC_TEMPL_BIN]);
 
         if (!resolvedPluginOptions.runTemplGenerate) {
           checkBinaries([TEMPL_BIN]);

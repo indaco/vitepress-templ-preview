@@ -2,7 +2,7 @@
 
 The following table lists the configurable options for the `viteTemplPreviewPlugin`. These options allow you to customize the plugin's behavior according to your project's needs.
 
-Most of these options are the same as those accepted by `static-templ-plus`.
+Most of these options are the same as those accepted by `static-templ`.
 
 | Option             | Type      | Default  | Description                                                                                                |
 | :----------------- | :-------- | :------- | ---------------------------------------------------------------------------------------------------------- |
