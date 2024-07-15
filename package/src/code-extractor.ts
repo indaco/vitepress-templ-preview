@@ -17,13 +17,15 @@ export class CodeExtractor {
   };
 
   private static readonly packageRegex = /package\s+\w+/;
-  private static readonly importRegex = /import\s+\(.*?\);?|import\s+.*?;/gs;
-  private static readonly constRegex = /const\s+\(.*?\);?|const\s+.*?;/gs;
-  private static readonly varRegex = /var\s+\(.*?\);?|var\s+.*?;/gs;
-  private static readonly typeRegex = /type\s+\(.*?\);?|type\s+.*?;/gs;
-  private static readonly allTemplRegex = /templ\s+\w+\s*\(([^()]*)\)\s*\{/g;
+  private static readonly importRegex = /import\s+\(.*?\)|import\s+.*?;/gs;
+  private static readonly constRegex = /const\s+(?:\([^]*?\)|[^\n;]+(;\s*)?)/gs;
+  private static readonly varRegex = /var\s+(?:\([^]*?\)|[^\n;]+(;\s*)?)/gs;
+  private static readonly typeRegex =
+    /type\s+(?:\([^)]*\)|\w+\s+struct\s+\{[^}]*\}|[^\n;]+;)/gs;
   private static readonly exportedTemplRegex =
-    /templ\s+([A-Z][a-zA-Z]*)\s*\(([^()]*)\)\s*\{/g;
+    /templ\s+([A-Z][a-zA-Z]*)\s*\([^)]*\)\s*\{[^}]*\}/gs;
+  private static readonly allTemplRegex =
+    /templ\s+\w+\s*\([^)]*\)\s*\{[^}]*\}/gs;
 
   /**
    * Constructs a CodeExtractor instance.
