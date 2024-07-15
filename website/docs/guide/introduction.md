@@ -1,5 +1,7 @@
 # Introduction
 
+<p><Badge type="tip" text="v0.1.0" /></p>
+
 This package offers a solution for [templ](https://templ.guide/) component previews within [VitePress](https://vitepress.dev/) projects.
 
 ## 📦 What’s Inside?
