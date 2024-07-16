@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { Ref } from "vue";
-import type { VTPComponentProps } from "../types";
-import { ref, onMounted, nextTick } from "vue";
-import { executeScriptsTick, useHighlighter } from "../shared";
-import CodeIcon from "./CodeIcon.vue";
-import VTPCard from "./VTPCard.vue";
+import type { Ref } from 'vue';
+import type { VTPComponentProps } from '../types';
+import { ref, onMounted, nextTick } from 'vue';
+import { executeScriptsTick, useHighlighter } from '../shared';
+import CodeIcon from './CodeIcon.vue';
+import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPComponentProps>();
 const isCodeSectionVisible: Ref<boolean> = ref(false);
@@ -39,7 +39,7 @@ onMounted(async () => {
           <slot name="code-icon">
             <CodeIcon :fill="`var(--vp-button-${props.buttonStyle}-text)`" />
           </slot>
-          {{ isCodeSectionVisible ? "Hide Code" : "Show Code" }}
+          {{ isCodeSectionVisible ? 'Hide Code' : 'Show Code' }}
         </button>
         <div class="code-content" :aria-hidden="!isCodeSectionVisible">
           <div>
@@ -123,7 +123,7 @@ button {
   border-radius: 5px;
 }
 
-.code-content[aria-hidden="false"] {
+.code-content[aria-hidden='false'] {
   grid-template-rows: 1fr;
 }
 

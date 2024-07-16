@@ -1,7 +1,7 @@
-import MarkdownIt from "markdown-it";
-import { BundledTheme } from "shiki";
+import MarkdownIt from 'markdown-it';
+import { BundledTheme } from 'shiki';
 
-export type StaticTemplPlusMode = "bundle" | "inline";
+export type StaticTemplPlusMode = 'bundle' | 'inline';
 
 /**
  * Interface representing the options for the vite-templ-preview plugin.
@@ -67,7 +67,7 @@ export interface TagAttrs {
   [key: string]: string;
 }
 
-export type ButtonStyle = "alt" | "brand";
+export type ButtonStyle = 'alt' | 'brand';
 
 export interface VTPComponentProps {
   codeContent: string;

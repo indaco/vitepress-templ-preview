@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import type { Ref } from "vue";
-import type { VTPComponentProps } from "../types";
-import { ref, onMounted, nextTick, computed } from "vue";
-import ViewIcon from "./ViewIcon.vue";
-import CodeIcon from "./CodeIcon.vue";
-import VTPCard from "./VTPCard.vue";
-import { executeScriptsTick, useHighlighter } from "../shared";
+import type { Ref } from 'vue';
+import type { VTPComponentProps } from '../types';
+import { ref, onMounted, nextTick, computed } from 'vue';
+import ViewIcon from './ViewIcon.vue';
+import CodeIcon from './CodeIcon.vue';
+import VTPCard from './VTPCard.vue';
+import { executeScriptsTick, useHighlighter } from '../shared';
 
 const props = defineProps<VTPComponentProps>();
-const activeTab = ref("preview");
+const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
 
 const fillColor = (tab: string) => {
   return computed(() => {
     return activeTab.value === tab
-      ? "var(--vp-button-brand-text)"
-      : "var(--vp-button-alt-text)";
+      ? 'var(--vp-button-brand-text)'
+      : 'var(--vp-button-alt-text)';
   });
 };
 
-const previewFillColor = fillColor("preview");
-const codeFillColor = fillColor("code");
+const previewFillColor = fillColor('preview');
+const codeFillColor = fillColor('code');
 
 // Handle keyboard navigation
 const handleKeydown = (event: KeyboardEvent, tab: string) => {
-  if (event.key === "Enter" || event.key === " ") {
+  if (event.key === 'Enter' || event.key === ' ') {
     activeTab.value = tab;
   }
 };

@@ -1,8 +1,8 @@
-import { ref } from "vue";
-import { BundledTheme, createHighlighter } from "shiki";
+import { ref } from 'vue';
+import { BundledTheme, createHighlighter } from 'shiki';
 
 export function useHighlighter() {
-  const highlightedCode = ref("");
+  const highlightedCode = ref('');
 
   async function highlightCode(
     codeContent: string,
@@ -13,10 +13,10 @@ export function useHighlighter() {
       themes: Object.values(themes),
     });
 
-    await highlighter.loadLanguage("templ");
+    await highlighter.loadLanguage('templ');
 
     highlightedCode.value = highlighter.codeToHtml(codeContent, {
-      lang: "templ",
+      lang: 'templ',
       themes,
       defaultColor: false,
     });
@@ -30,13 +30,13 @@ export function useHighlighter() {
 
 export function executeScriptsTick() {
   const previewContent = document.querySelector(
-    ".preview-content",
+    '.preview-content',
   ) as HTMLElement;
   if (previewContent) {
     // Observe changes to the preview-content element
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === "childList") {
+        if (mutation.type === 'childList') {
           executeScripts(mutation.target as HTMLElement);
         }
       });
@@ -50,9 +50,9 @@ export function executeScriptsTick() {
 }
 
 function executeScripts(container: HTMLElement): void {
-  const scripts = container.querySelectorAll("script");
+  const scripts = container.querySelectorAll('script');
   scripts.forEach((script) => {
-    const newScript = document.createElement("script");
+    const newScript = document.createElement('script');
     newScript.textContent = script.textContent;
     document.body.appendChild(newScript).parentNode?.removeChild(newScript);
   });

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type { VTPComponentProps } from "../types";
-import { ref, onMounted, nextTick } from "vue";
-import { executeScriptsTick, useHighlighter } from "../shared";
-import VTPCard from "./VTPCard.vue";
+import type { VTPComponentProps } from '../types';
+import { ref, onMounted, nextTick } from 'vue';
+import { executeScriptsTick, useHighlighter } from '../shared';
+import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPComponentProps>();
-const activeTab = ref("preview");
+const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
 
 // Handle keyboard navigation
 const handleKeydown = (event: KeyboardEvent, tab: string) => {
-  if (event.key === "Enter" || event.key === " ") {
+  if (event.key === 'Enter' || event.key === ' ') {
     activeTab.value = tab;
   }
 };

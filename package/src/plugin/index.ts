@@ -7,13 +7,13 @@ import type {
   ButtonStyle,
   VTPUserConfig,
   CodeExtractorOptions,
-} from "../types";
-import * as fs from "node:fs";
-import path from "node:path";
-import { Plugin } from "vite";
-import { MarkdownOptions } from "vitepress";
-import MarkdownIt from "markdown-it";
-import type { StateCore, Token } from "markdown-it/index.js";
+} from '../types';
+import * as fs from 'node:fs';
+import path from 'node:path';
+import { Plugin } from 'vite';
+import { MarkdownOptions } from 'vitepress';
+import MarkdownIt from 'markdown-it';
+import type { StateCore, Token } from 'markdown-it/index.js';
 import {
   checkBinaries,
   escapeForJSON,
@@ -22,14 +22,14 @@ import {
   getCachedFileContent,
   unescapeFromJSON,
   watchFileChanges,
-} from "../utils";
-import { BundledTheme } from "shiki";
-import { Logger } from "../logger";
-import { CodeExtractor } from "../code-extractor";
+} from '../utils';
+import { BundledTheme } from 'shiki';
+import { Logger } from '../logger';
+import { CodeExtractor } from '../code-extractor';
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
-const TEMPL_BIN = "templ";
-const STATIC_TEMPL_BIN = "static-templ";
+const TEMPL_BIN = 'templ';
+const STATIC_TEMPL_BIN = 'static-templ';
 
 // Function to parse attributes from the matched tag
 const parseAttrs = (attrsString: string): TagAttrs => {
@@ -74,7 +74,7 @@ function getAttributeOrElse(
  * @returns The created token.
  */
 function createTemplDemoToken(state: StateCore, attrs: TagAttrs) {
-  const token = new state.Token("templ_demo", "templ-demo", 0);
+  const token = new state.Token('templ_demo', 'templ-demo', 0);
   token.attrs = Object.keys(attrs).map((key) => [key, attrs[key]]);
   return token;
 }
@@ -86,7 +86,7 @@ function createTemplDemoToken(state: StateCore, attrs: TagAttrs) {
 function processTokens(state: StateCore) {
   const tokens = state.tokens;
   for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type === "html_inline") {
+    if (tokens[i].type === 'html_inline') {
       const match = tokens[i].content.match(TEMPL_DEMO_REGEX);
       if (match) {
         const attrsString = match[1];
@@ -123,7 +123,7 @@ function buildStaticTemplCommandStr(
 ): string {
   const baseCmd = `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${STATIC_TEMPL_BIN} -m ${resolvedOptions.mode} -i ${resolvedOptions.inputDir} -g=${resolvedOptions.runTemplGenerate} -d=${resolvedOptions.debug}`;
 
-  if (resolvedOptions.mode === "bundle") {
+  if (resolvedOptions.mode === 'bundle') {
     return `${baseCmd} -o ${resolvedOptions.outputDir}`;
   }
 
@@ -176,12 +176,12 @@ function handleOpMode(
   options: Partial<PluginConfig>,
   srcValue: string,
 ): { templFile: string; htmlFile: string } {
-  const TEMPL_EXTENSION = ".templ";
-  const HTML_EXTENSION = ".html";
+  const TEMPL_EXTENSION = '.templ';
+  const HTML_EXTENSION = '.html';
 
   if (!options.mode) {
     const errorMsg = `Mode is not defined in options`;
-    Logger.error("", errorMsg);
+    Logger.error('', errorMsg);
     throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
   }
 
@@ -189,26 +189,26 @@ function handleOpMode(
     baseDir: string,
     dir: string | undefined,
     filename: string,
-  ) => path.resolve(baseDir, dir ?? "", filename);
+  ) => path.resolve(baseDir, dir ?? '', filename);
 
   const mode = options.mode;
-  let templFilePath = "";
-  let htmlFilePath = "";
+  let templFilePath = '';
+  let htmlFilePath = '';
 
   switch (mode) {
-    case "inline":
+    case 'inline':
       templFilePath = resolvePath(
         path.dirname(id),
-        "",
+        '',
         `${srcValue}${TEMPL_EXTENSION}`,
       );
       htmlFilePath = resolvePath(
         path.dirname(id),
-        "",
+        '',
         `${srcValue}${HTML_EXTENSION}`,
       );
       break;
-    case "bundle":
+    case 'bundle':
       const inputDir = options.inputDir || options.goProjectDir!;
       const outputDir =
         options.outputDir || options.inputDir || options.goProjectDir!;
@@ -225,7 +225,7 @@ function handleOpMode(
       break;
     default:
       const errorMsg = `Unknown mode: "${mode}"`;
-      Logger.error("", errorMsg);
+      Logger.error('', errorMsg);
       throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
   }
 
@@ -247,7 +247,7 @@ function handleOpMode(
  * @throws {Error} - Throws an error if the 'src' attribute is not defined or empty.
  */
 function renderTemplPreview(
-  serverCommand: "build" | "serve",
+  serverCommand: 'build' | 'serve',
   tokens: Token[],
   idx: number,
   context: PluginContext,
@@ -258,11 +258,11 @@ function renderTemplPreview(
     context;
 
   // Mandatory attribute on the tag.
-  const srcAttr = token.attrs?.find((attr) => attr[0] === "src");
+  const srcAttr = token.attrs?.find((attr) => attr[0] === 'src');
   if (!srcAttr || !srcAttr[1]) {
     const errorMsg =
       "[vitepress-templ-preview] Error: The 'src' attribute is required and must not be empty.";
-    Logger.error("", errorMsg);
+    Logger.error('', errorMsg);
     throw new Error(errorMsg);
   }
 
@@ -270,19 +270,19 @@ function renderTemplPreview(
   const srcValue = srcAttr[1];
   const buttonStyleValue = getAttributeOrElse(
     token,
-    "data-button-variant",
-    "alt",
+    'data-button-variant',
+    'alt',
   ) as ButtonStyle;
   const isPreviewFirstValue = getAttributeOrElse(
     token,
-    "data-preview-first",
-    "true",
+    'data-preview-first',
+    'true',
     true,
   );
   const isPreviewOnlyValue = getAttributeOrElse(
     token,
-    "data-preview-only",
-    "false",
+    'data-preview-only',
+    'false',
     true,
   );
   /**
@@ -290,38 +290,38 @@ function renderTemplPreview(
    */
   const isGoExportedOnlyValue = getAttributeOrElse(
     token,
-    "data-exported-only",
-    "false",
+    'data-exported-only',
+    'false',
     true,
   );
   const isGoPackageValue = getAttributeOrElse(
     token,
-    "data-go-package",
-    "true",
+    'data-go-package',
+    'true',
     true,
   );
   const isGoImportsValue = getAttributeOrElse(
     token,
-    "data-go-imports",
-    "true",
+    'data-go-imports',
+    'true',
     true,
   );
   const isGoConstsValue = getAttributeOrElse(
     token,
-    "data-go-consts",
-    "false",
+    'data-go-consts',
+    'false',
     true,
   );
   const isGoVarsValue = getAttributeOrElse(
     token,
-    "data-go-vars",
-    "false",
+    'data-go-vars',
+    'false',
     true,
   );
   const isGoTypesValue = getAttributeOrElse(
     token,
-    "data-go-types",
-    "false",
+    'data-go-types',
+    'false',
     true,
   );
 
@@ -336,10 +336,10 @@ function renderTemplPreview(
 
   const resolvedPaths = handleOpMode(id, serverRoot, pluginOptions, srcValue);
 
-  let htmlContent = "Loading..."; // Default placeholder
+  let htmlContent = 'Loading...'; // Default placeholder
   let codeContent = token.content;
 
-  if (serverCommand === "serve") {
+  if (serverCommand === 'serve') {
     htmlContent = getCachedFileContent(
       fileCache,
       resolvedPaths.htmlFile,
@@ -353,9 +353,9 @@ function renderTemplPreview(
 
     watchFileChanges(watchedMdFiles, resolvedPaths.htmlFile, id);
     watchFileChanges(watchedMdFiles, resolvedPaths.templFile, id);
-  } else if (serverCommand === "build") {
-    htmlContent = fs.readFileSync(resolvedPaths.htmlFile, "utf8");
-    codeContent = fs.readFileSync(resolvedPaths.templFile, "utf8");
+  } else if (serverCommand === 'build') {
+    htmlContent = fs.readFileSync(resolvedPaths.htmlFile, 'utf8');
+    codeContent = fs.readFileSync(resolvedPaths.templFile, 'utf8');
   }
 
   const componentProps: VTPComponentProps = {
@@ -372,10 +372,10 @@ function renderTemplPreview(
 
 // Default values for the PluginOptions
 const defaultPluginOptions: PluginConfig = {
-  goProjectDir: "",
-  mode: "inline",
-  inputDir: "demos",
-  outputDir: "output",
+  goProjectDir: '',
+  mode: 'inline',
+  inputDir: 'demos',
+  outputDir: 'output',
   debug: false,
   runTemplGenerate: true,
 };
@@ -390,18 +390,18 @@ const viteTemplPreviewPlugin = async (
   const fileCache: Record<string, CachedFile> = {};
   const watchedMdFiles: Record<string, Set<string>> = {};
   const defaultThemes: { light: BundledTheme; dark: BundledTheme } = {
-    light: "github-light",
-    dark: "github-dark",
+    light: 'github-light',
+    dark: 'github-dark',
   };
 
   let mdInstance: MarkdownIt;
   let serverRoot: string;
-  let serverCommand: "build" | "serve";
+  let serverCommand: 'build' | 'serve';
   let userThemes: any;
 
   return {
-    name: "vite:templ-preview",
-    enforce: "pre",
+    name: 'vite:templ-preview',
+    enforce: 'pre',
     configResolved(config) {
       serverRoot = config.root;
       serverCommand = config.command;
@@ -411,7 +411,7 @@ const viteTemplPreviewPlugin = async (
         if (markdown) {
           userThemes = (markdown as MarkdownOptions).theme;
 
-          if (typeof markdown.config === "function") {
+          if (typeof markdown.config === 'function') {
             const originalConfig = markdown.config;
             markdown.config = (md: MarkdownIt) => {
               originalConfig(md);
@@ -445,7 +445,7 @@ const viteTemplPreviewPlugin = async (
       executeCommandSync(staticTemplcmd);
     },
     async configureServer(server) {
-      if (serverCommand === "serve") {
+      if (serverCommand === 'serve') {
         checkBinaries([STATIC_TEMPL_BIN]);
 
         if (!resolvedPluginOptions.runTemplGenerate) {
@@ -472,11 +472,11 @@ const viteTemplPreviewPlugin = async (
       }
     },
     handleHotUpdate(ctx) {
-      if (serverCommand === "serve") {
+      if (serverCommand === 'serve') {
         const { file, server, modules } = ctx;
 
-        if (file.endsWith(".templ")) {
-          Logger.info("File changed", file);
+        if (file.endsWith('.templ')) {
+          Logger.info('File changed', file);
           const cmd = buildStaticTemplCommandStr(
             serverRoot,
             resolvedPluginOptions,
@@ -502,7 +502,7 @@ const viteTemplPreviewPlugin = async (
             }
 
             server.ws.send({
-              type: "full-reload",
+              type: 'full-reload',
             });
           }, 500);
         }
@@ -510,7 +510,7 @@ const viteTemplPreviewPlugin = async (
       }
     },
     async transform(code, id) {
-      if (!id.endsWith(".md")) return;
+      if (!id.endsWith('.md')) return;
 
       // Check if the markdown contains the templ demo parameters
       if (!TEMPL_DEMO_REGEX.test(code)) return;
@@ -534,12 +534,12 @@ const viteTemplPreviewPlugin = async (
         theme: { ...defaultThemes, ...userThemes },
       };
 
-      mdInstance.core.ruler.push("templ_demo", processTokens);
+      mdInstance.core.ruler.push('templ_demo', processTokens);
       mdInstance.renderer.rules.templ_demo = (tokens: Token[], idx: number) =>
         renderTemplPreview(serverCommand, tokens, idx, context, id);
 
       const rendered = mdInstance.render(code);
-      if (!rendered.includes("templ-preview-component")) return;
+      if (!rendered.includes('templ-preview-component')) return;
       return {
         code: rendered,
         map: null,

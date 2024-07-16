@@ -1,8 +1,8 @@
-import { execSync, spawnSync } from "node:child_process";
-import type { CachedFile, PluginConfig } from "./types";
-import path from "node:path";
-import * as fsp from "node:fs/promises";
-import { Logger } from "./logger";
+import { execSync, spawnSync } from 'node:child_process';
+import type { CachedFile, PluginConfig } from './types';
+import path from 'node:path';
+import * as fsp from 'node:fs/promises';
+import { Logger } from './logger';
 
 /**
  * Updates the cache for a specific file by reading its content.
@@ -16,11 +16,11 @@ export async function updateFilesCache(
   try {
     const stat = await fsp.stat(filePath);
     if (stat.isFile()) {
-      const content = await fsp.readFile(filePath, "utf8");
+      const content = await fsp.readFile(filePath, 'utf8');
       cache[filePath] = {
         content,
       };
-      Logger.info("Updated cache for", filePath);
+      Logger.info('Updated cache for', filePath);
     }
   } catch (err: any) {
     Logger.error(`Error reading file ${filePath}`, err.message);
@@ -41,13 +41,13 @@ export async function updateCacheForDirectory(
     await Promise.all(
       files.map(async (file: any) => {
         const filePath = path.join(directory, file);
-        if (filePath.endsWith(".templ") || filePath.endsWith(".html")) {
+        if (filePath.endsWith('.templ') || filePath.endsWith('.html')) {
           await updateFilesCache(cache, filePath);
         }
       }),
     );
   } catch (err: any) {
-    Logger.error("Error reading directory", err.message);
+    Logger.error('Error reading directory', err.message);
   }
 }
 
@@ -98,11 +98,11 @@ export function watchFileChanges(
  */
 export function checkBinaries(binaries: string[]): void {
   binaries.forEach((binary) => {
-    const result = spawnSync("which", [binary]);
+    const result = spawnSync('which', [binary]);
     if (result.status !== 0) {
       Logger.error(
         `Required binary ${binary}`,
-        "is not installed or not found in PATH.",
+        'is not installed or not found in PATH.',
       );
       throw new Error(
         `[vitepress-templ-preview] Required binary "${binary}" is not installed or not found in PATH.`,
@@ -116,14 +116,14 @@ export function checkBinaries(binaries: string[]): void {
  * @param command - The command string to execute.
  */
 export function executeCommandSync(command: string): void {
-  Logger.info("Executing system command", command);
+  Logger.info('Executing system command', command);
   try {
-    const stdout = execSync(command, { stdio: "pipe" });
-    if (stdout.toLocaleString() != "") Logger.info("", stdout.toLocaleString());
+    const stdout = execSync(command, { stdio: 'pipe' });
+    if (stdout.toLocaleString() != '') Logger.info('', stdout.toLocaleString());
   } catch (error: any) {
-    Logger.error("Error executing command", error.message);
+    Logger.error('Error executing command', error.message);
     if (error.stderr) {
-      Logger.error("Error", error.stderr.toString());
+      Logger.error('Error', error.stderr.toString());
     }
     throw error; // Re-throw the error to ensure it can be handled by the caller if necessary
   }
@@ -157,12 +157,12 @@ async function updateCacheAndInvalidate(
     resolvedFinalOptions.inputDir!,
   );
 
-  let htmlResolvedPath = "";
+  let htmlResolvedPath = '';
 
   const dir =
-    finalOptions.mode === "bundle"
+    finalOptions.mode === 'bundle'
       ? resolvedFinalOptions.outputDir
-      : finalOptions.mode === "inline"
+      : finalOptions.mode === 'inline'
         ? resolvedFinalOptions.inputDir
         : null;
 
@@ -171,8 +171,8 @@ async function updateCacheAndInvalidate(
   }
 
   if (isFirstServerRun) {
-    Logger.info("Watching Templ files at", templResolvedPath);
-    server.watcher.add(path.join(templResolvedPath, "**", "*.templ"));
+    Logger.info('Watching Templ files at', templResolvedPath);
+    server.watcher.add(path.join(templResolvedPath, '**', '*.templ'));
   }
 
   // Ensure cache is updated after HTML files are generated
@@ -190,7 +190,7 @@ async function updateCacheAndInvalidate(
   }
 
   server.ws.send({
-    type: "full-reload",
+    type: 'full-reload',
   });
 }
 
@@ -238,12 +238,12 @@ export async function executeAndUpdateCache(
  */
 export function escapeForJSON(str: string): string {
   return str
-    .replace(/\\/g, "\\\\") // Escape backslashes
+    .replace(/\\/g, '\\\\') // Escape backslashes
     .replace(/"/g, '\\"') // Escape double quotes
     .replace(/'/g, '\\"') // Replace single quotes with escaped double quotes
-    .replace(/\n/g, "\\n") // Escape newlines
-    .replace(/\r/g, "\\r") // Escape carriage returns
-    .replace(/\t/g, "\\t"); // Escape tabs
+    .replace(/\n/g, '\\n') // Escape newlines
+    .replace(/\r/g, '\\r') // Escape carriage returns
+    .replace(/\t/g, '\\t'); // Escape tabs
 }
 
 /**
@@ -260,10 +260,10 @@ export function escapeForJSON(str: string): string {
  */
 export function unescapeFromJSON(str: string): string {
   return str
-    .replace(/\\n/g, "\n")
-    .replace(/\\t/g, "\t")
+    .replace(/\\n/g, '\n')
+    .replace(/\\t/g, '\t')
     .replace(/\\"/g, '"')
-    .replace(/\\\\/g, "\\");
+    .replace(/\\\\/g, '\\');
 }
 
 /**
@@ -287,8 +287,8 @@ export function unescapeFromJSON(str: string): string {
  */
 export function extractInnerCode(templBlocks: string[]): string[] {
   return templBlocks.map((block) => {
-    const startIndex = block.indexOf("{") + 1;
-    const endIndex = block.lastIndexOf("}");
+    const startIndex = block.indexOf('{') + 1;
+    const endIndex = block.lastIndexOf('}');
     return block.slice(startIndex, endIndex).trim();
   });
 }

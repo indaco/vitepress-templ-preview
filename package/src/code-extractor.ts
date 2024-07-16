@@ -1,4 +1,4 @@
-import { CodeExtractorOptions } from "./types";
+import { CodeExtractorOptions } from './types';
 
 /**
  * Class to extract templated blocks of code.
@@ -60,7 +60,7 @@ export class CodeExtractor {
       .filter(Boolean) as string[];
 
     const allCode = [
-      packageMatch ? packageMatch[0] : "",
+      packageMatch ? packageMatch[0] : '',
       ...importStatements,
       ...constStatements,
       ...varStatements,
@@ -68,7 +68,7 @@ export class CodeExtractor {
       ...templBlocks,
     ]
       .filter(Boolean)
-      .join("\n\n");
+      .join('\n\n');
 
     return [allCode];
   }
@@ -108,15 +108,15 @@ export class CodeExtractor {
     let endIndex = startIndex;
 
     // Move start index to the first brace
-    while (this.code[endIndex] !== "{" && endIndex < this.code.length) {
+    while (this.code[endIndex] !== '{' && endIndex < this.code.length) {
       endIndex++;
     }
 
     // Track braces to find the matching closing brace
     const startBraceIndex = endIndex;
     for (; endIndex < this.code.length; endIndex++) {
-      if (this.code[endIndex] === "{") braceCount++;
-      if (this.code[endIndex] === "}") braceCount--;
+      if (this.code[endIndex] === '{') braceCount++;
+      if (this.code[endIndex] === '}') braceCount--;
       if (braceCount === 0) break;
     }
 

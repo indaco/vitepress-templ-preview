@@ -1,3 +1,15 @@
 {
-  "plugins": ["prettier-plugin-packagejson"]
+  "plugins": ["prettier-plugin-packagejson"],
+  "semi": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": ["*.md"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
 }

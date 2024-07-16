@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { CodeExtractor } from "./code-extractor";
+import { describe, it, expect } from 'vitest';
+import { CodeExtractor } from './code-extractor';
 
-describe("CodeExtractor", () => {
+describe('CodeExtractor', () => {
   const codeSample = `
 package hello
 
@@ -14,9 +14,9 @@ templ hello(name string) {
 }
 `;
 
-  const normalizeString = (str: string) => str.trim().replace(/\s+/g, " ");
+  const normalizeString = (str: string) => str.trim().replace(/\s+/g, ' ');
 
-  it("should extract all templ blocks when goExportedOnly is false", () => {
+  it('should extract all templ blocks when goExportedOnly is false', () => {
     const extractor = new CodeExtractor(codeSample);
     const result = extractor.extract();
     const expected = `
@@ -33,7 +33,7 @@ templ hello(name string) {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
-  it("should extract only exported templ blocks when goExportedOnly is true", () => {
+  it('should extract only exported templ blocks when goExportedOnly is true', () => {
     const extractor = new CodeExtractor(codeSample, { goExportedOnly: true });
     const result = extractor.extract();
     const expected = `
@@ -46,7 +46,7 @@ templ HelloDemo() {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
-  it("should include multiple exported templ components correctly", () => {
+  it('should include multiple exported templ components correctly', () => {
     const codeWithMultipleExportedTempls = `
 package hello
 
@@ -86,7 +86,7 @@ templ SecondDemo() {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
-  it("should include package, imports, consts, vars, and types correctly", () => {
+  it('should include package, imports, consts, vars, and types correctly', () => {
     const codeWithExtras = `
 package hello
 
@@ -138,7 +138,7 @@ templ HelloDemo() {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
-  it("should not include package, imports, consts, vars, and types when options are false", () => {
+  it('should not include package, imports, consts, vars, and types when options are false', () => {
     const codeWithExtras = `
 package hello
 
@@ -176,7 +176,7 @@ templ HelloDemo() {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
-  it("should include multiple consts correctly", () => {
+  it('should include multiple consts correctly', () => {
     const codeWithMultipleConsts = `
 package hello
 
@@ -234,7 +234,7 @@ templ HelloDemo() {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
-  it("should include multiple vars correctly", () => {
+  it('should include multiple vars correctly', () => {
     const codeWithMultipleVars = `
 package hello
 

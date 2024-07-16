@@ -1,15 +1,15 @@
-import ansis from "ansis";
+import ansis from 'ansis';
 
 export class Logger {
-  static PREFIX = "vitepress-templ-preview";
+  static PREFIX = 'vitepress-templ-preview';
   static log(
     headline: string,
     message: string,
     prefix: string,
     color: (text: string) => string,
   ) {
-    let _headline = "";
-    if (headline != "") {
+    let _headline = '';
+    if (headline != '') {
       _headline = `${headline}:`;
     }
     console.log(

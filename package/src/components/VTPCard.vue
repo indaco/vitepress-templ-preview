@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { VTPComponentProps } from "../types";
-import { onMounted, nextTick } from "vue";
-import { executeScriptsTick, useHighlighter } from "../shared";
-import ConditionalWrapper from "./ConditionalWrapper.vue";
+import type { VTPComponentProps } from '../types';
+import { onMounted, nextTick } from 'vue';
+import { executeScriptsTick, useHighlighter } from '../shared';
+import ConditionalWrapper from './ConditionalWrapper.vue';
 
 const props = defineProps<VTPComponentProps>();
 const { highlightedCode, highlightCode } = useHighlighter();
