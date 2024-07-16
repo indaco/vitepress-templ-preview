@@ -28,13 +28,7 @@ Assuming you chose to scaffold the VitePress project in `./docs`, the initial ge
 
 The plugin supports two ways of working reflecting the `static-templ` [modes](https://github.com/nokacper24/static-templ?tab=readme-ov-file#modes). The result is the same in both cases. The choice depends on your preferences for content management and resulting URLs.
 
-> [!TIP]
-> Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.
-
 ### Inline mode
-
-> [!NOTE]
-> This website is built in `inline` mode. The code is available in the GitHub repository and can be used as a reference.
 
 This is the **default** method. It involves setting up a Go module project in the **root** folder of your VitePress project with the templ files alongside your markdown content files.
 
@@ -62,10 +56,10 @@ At the end, your project structure should look like this:
 └─ package.json
 ```
 
-### Bundle mode
+> [!TIP]
+> This website is built using `inline` mode. The code is available in the GitHub repository and can be used as a reference.
 
-> [!NOTE]
-> If you are interested in this working mode, there is a sample project in the GitHub repository that can be used as a reference. Check it out [here](https://github.com/indaco/vitepress-templ-preview/_examples/).
+### Bundle mode
 
 This method involves setting up a new Go module project within your VitePress project.
 
@@ -103,6 +97,9 @@ The resulting project structure should look like this:
 │  │  └─ go.sum
 └─ package.json
 ```
+
+> [!TIP]
+> If you are interested in `bundle` working mode, there is a sample project in the GitHub repository that you can use as a reference. Check it out [here](https://github.com/indaco/vitepress-templ-preview/_examples/).
 
 ### VitePress configuration
 
@@ -142,6 +139,9 @@ export default {
 ```
 
 :::
+
+> [!INFO]
+> Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.
 
 ## Components in Markdown
 
