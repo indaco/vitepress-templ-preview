@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-pnpm format && pnpm test && pnpm build
+pnpm format && pnpm exec lint-staged && pnpm test && pnpm build

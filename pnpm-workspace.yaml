@@ -1,4 +1,4 @@
 packages:
-  - "package"
-  - "website"
-  - "_examples/mode-bundle"
+  - 'package'
+  - 'website'
+  - '_examples/mode-bundle'
