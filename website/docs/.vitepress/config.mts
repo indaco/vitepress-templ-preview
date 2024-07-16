@@ -52,10 +52,10 @@ export default defineConfig({
         text: 'Guide',
         collapsed: false,
         items: [
-          { text: 'Overview', link: '/introduction/overview' },
-          { text: 'Motivation', link: '/introduction/motivation' },
-          { text: 'Prerequisites', link: '/introduction/prerequisites' },
-          { text: 'Usage', link: '/introduction/usage' },
+          { text: 'Overview', link: '/guide/overview' },
+          { text: 'Motivation', link: '/guide/motivation' },
+          { text: 'Prerequisites', link: '/guide/prerequisites' },
+          { text: 'Getting Started', link: '/guide/getting-started' },
         ],
       },
       {
