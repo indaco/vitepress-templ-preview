@@ -5,6 +5,6 @@ import 'vitepress-templ-preview/style.css';
 export default {
   ...DefaultTheme,
   enhanceApp({ app }) {
-    app.component('templ-preview-component', VTPIconTabs);
+    app.component('VTPLivePreview', VTPIconTabs);
   },
 };

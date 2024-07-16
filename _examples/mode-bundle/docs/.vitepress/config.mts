@@ -67,6 +67,7 @@ export default defineConfig({
         'Copyright © 2024 <a href="https://github.com/indaco">Mirco Veltri</a>',
     },
   },
+  markdown: {},
   vite: {
     plugins: [viteTemplPreviewPlugin(vtpOptions)],
     build: {
