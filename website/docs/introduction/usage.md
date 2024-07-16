@@ -108,32 +108,34 @@ The resulting project structure should look like this:
 
 ::: code-group
 
-```ts{3,8} [config.mts]
+```ts [config.mts]
 // .vitepress/config.mts
 import { defineConfig } from "vitepress";
-import viteTemplPreviewPlugin from "vitepress-templ-preview";
+import viteTemplPreviewPlugin from "vitepress-templ-preview"; // [!code ++]
 
 export default defineConfig({
   /* ... */
+  markdown: {}, // [!code ++]
   vite: {
-    plugins: [viteTemplPreviewPlugin()],
-  }
+    // [!code ++]
+    plugins: [viteTemplPreviewPlugin()], // [!code ++]
+  }, // [!code ++]
   /* ... */
 });
 ```
 
-```ts{4-5,10-11} [theme/index.ts]
+```ts [theme/index.ts]
 //.vitepress/theme/index.ts
 import type { Theme } from "vitepress";
 import DefaultTheme from "vitepress/theme";
-import { VTPIconTabs } from "vitepress-templ-preview/components";
-import "vitepress-templ-preview/style.css";
+import { VTPIconTabs } from "vitepress-templ-preview/components"; // [!code ++]
+import "vitepress-templ-preview/style.css"; // [!code ++]
 
 export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
     /* Make sure to name the tag  `VTPLivePreview` */
-    app.component("VTPLivePreview", VTPIconTabs);
+    app.component("VTPLivePreview", VTPIconTabs); // [!code ++]
   },
 } satisfies Theme;
 ```
