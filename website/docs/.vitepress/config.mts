@@ -3,8 +3,6 @@ import viteTemplPreviewPlugin from 'vitepress-templ-preview';
 import type { VTPUserConfig } from 'vitepress-templ-preview/types';
 import {
   transformerNotationDiff,
-  transformerNotationHighlight,
-  transformerNotationErrorLevel,
   transformerNotationFocus,
 } from '@shikijs/transformers';
 
@@ -103,12 +101,7 @@ export default defineConfig({
     },
   },
   markdown: {
-    codeTransformers: [
-      transformerNotationDiff(),
-      transformerNotationHighlight(),
-      transformerNotationErrorLevel(),
-      transformerNotationFocus(),
-    ],
+    codeTransformers: [transformerNotationDiff(), transformerNotationFocus()],
   },
   vite: {
     plugins: [viteTemplPreviewPlugin(vtpOptions)],
