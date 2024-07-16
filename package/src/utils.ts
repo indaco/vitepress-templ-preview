@@ -1,8 +1,9 @@
 import { execSync, spawnSync } from 'node:child_process';
-import type { CachedFile, PluginConfig } from './types';
+import type { CachedFile, PluginConfig, UserMessage } from './types';
 import path from 'node:path';
 import * as fsp from 'node:fs/promises';
 import { Logger } from './logger';
+import { UserMessages } from './user-messages';
 
 /**
  * Updates the cache for a specific file by reading its content.
@@ -20,10 +21,10 @@ export async function updateFilesCache(
       cache[filePath] = {
         content,
       };
-      Logger.info('Updated cache for', filePath);
+      Logger.info(UserMessages.UPDATE_CACHE, filePath);
     }
   } catch (err: any) {
-    Logger.error(`Error reading file ${filePath}`, err.message);
+    Logger.error(UserMessages.READING_FILE_ERROR, filePath, err.message);
   }
 }
 
@@ -47,7 +48,7 @@ export async function updateCacheForDirectory(
       }),
     );
   } catch (err: any) {
-    Logger.error('Error reading directory', err.message);
+    Logger.error(UserMessages.READING_DIR_ERROR, err.message);
   }
 }
 
@@ -100,12 +101,9 @@ export function checkBinaries(binaries: string[]): void {
   binaries.forEach((binary) => {
     const result = spawnSync('which', [binary]);
     if (result.status !== 0) {
-      Logger.error(
-        `Required binary ${binary}`,
-        'is not installed or not found in PATH.',
-      );
+      Logger.error(UserMessages.NO_BINARY, binary);
       throw new Error(
-        `[vitepress-templ-preview] Required binary "${binary}" is not installed or not found in PATH.`,
+        `[vitepress-templ-preview] ${UserMessages.NO_BINARY.headline}: ${UserMessages.NO_BINARY.message} "${binary}`,
       );
     }
   });
@@ -116,14 +114,15 @@ export function checkBinaries(binaries: string[]): void {
  * @param command - The command string to execute.
  */
 export function executeCommandSync(command: string): void {
-  Logger.info('Executing system command', command);
+  Logger.info(UserMessages.EXEC_SYSTEM_CMD, command);
   try {
     const stdout = execSync(command, { stdio: 'pipe' });
-    if (stdout.toLocaleString() != '') Logger.info('', stdout.toLocaleString());
+    if (stdout.toLocaleString() != '')
+      Logger.info(<UserMessage>{ message: stdout.toLocaleString() });
   } catch (error: any) {
-    Logger.error('Error executing command', error.message);
+    Logger.error(UserMessages.EXEC_SYSTEM_CMD_ERROR, error.message);
     if (error.stderr) {
-      Logger.error('Error', error.stderr.toString());
+      Logger.error(UserMessages.GENERIC_ERROR, error.stderr.toString());
     }
     throw error; // Re-throw the error to ensure it can be handled by the caller if necessary
   }
@@ -171,7 +170,7 @@ async function updateCacheAndInvalidate(
   }
 
   if (isFirstServerRun) {
-    Logger.info('Watching Templ files at', templResolvedPath);
+    Logger.info(UserMessages.WATCHING_FILES, templResolvedPath);
     server.watcher.add(path.join(templResolvedPath, '**', '*.templ'));
   }
 

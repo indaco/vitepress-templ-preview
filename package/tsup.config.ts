@@ -6,6 +6,7 @@ export default defineConfig({
     'src/code-extractor.ts',
     'src/logger.ts',
     'src/shared.ts',
+    'src/user-messages.ts',
     'src/utils.ts',
     'src/plugin/index.ts',
   ],

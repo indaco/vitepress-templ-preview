@@ -89,3 +89,8 @@ export interface CodeExtractorOptions {
   goConsts?: boolean;
   goTypes?: boolean;
 }
+
+export type UserMessage = {
+  headline: string;
+  message: string;
+};

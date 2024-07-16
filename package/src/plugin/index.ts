@@ -7,6 +7,7 @@ import type {
   ButtonStyle,
   VTPUserConfig,
   CodeExtractorOptions,
+  UserMessage,
 } from '../types';
 import * as fs from 'node:fs';
 import path from 'node:path';
@@ -14,6 +15,7 @@ import { Plugin } from 'vite';
 import { MarkdownOptions } from 'vitepress';
 import MarkdownIt from 'markdown-it';
 import type { StateCore, Token } from 'markdown-it/index.js';
+import { UserMessages } from '../user-messages';
 import {
   checkBinaries,
   escapeForJSON,
@@ -180,9 +182,10 @@ function handleOpMode(
   const HTML_EXTENSION = '.html';
 
   if (!options.mode) {
-    const errorMsg = `Mode is not defined in options`;
-    Logger.error('', errorMsg);
-    throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
+    Logger.error(UserMessages.MODE_NOT_DEFINED);
+    throw new Error(
+      `[vitepress-templ-preview] ${UserMessages.MODE_NOT_DEFINED.headline}: ${UserMessages.MODE_NOT_DEFINED.message}.`,
+    );
   }
 
   const resolvePath = (
@@ -224,9 +227,10 @@ function handleOpMode(
       );
       break;
     default:
-      const errorMsg = `Unknown mode: "${mode}"`;
-      Logger.error('', errorMsg);
-      throw new Error(`[vitepress-templ-preview] ${errorMsg}.`);
+      Logger.error(UserMessages.UNKNOWN_MODE_ERROR, mode);
+      throw new Error(
+        `[vitepress-templ-preview] ${UserMessages.UNKNOWN_MODE_ERROR.headline}: ${UserMessages.UNKNOWN_MODE_ERROR.message}.`,
+      );
   }
 
   return {
@@ -260,10 +264,10 @@ function renderTemplPreview(
   // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === 'src');
   if (!srcAttr || !srcAttr[1]) {
-    const errorMsg =
-      "[vitepress-templ-preview] Error: The 'src' attribute is required and must not be empty.";
-    Logger.error('', errorMsg);
-    throw new Error(errorMsg);
+    Logger.error(UserMessages.NO_SRC_ATTR_ERROR);
+    throw new Error(
+      `[vitepress-templ-preview] ${UserMessages.NO_SRC_ATTR_ERROR.headline}: ${UserMessages.NO_SRC_ATTR_ERROR.message}`,
+    );
   }
 
   // Retrieve attribute values
@@ -408,20 +412,26 @@ const viteTemplPreviewPlugin = async (
 
       if ((config as any).vitepress) {
         const { markdown } = (config as any).vitepress;
-        if (markdown) {
-          userThemes = (markdown as MarkdownOptions).theme;
+        if (!markdown) {
+          Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_OBJ_ERROR);
+          Logger.warning(UserMessages.MISSING_MARKDOWN_OBJ_HINT);
+          throw new Error(
+            `[vitepress-templ-preview] ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.headline} ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.message}`,
+          );
+        }
 
-          if (typeof markdown.config === 'function') {
-            const originalConfig = markdown.config;
-            markdown.config = (md: MarkdownIt) => {
-              originalConfig(md);
-              mdInstance = md;
-            };
-          } else {
-            markdown.config = (md: MarkdownIt) => {
-              mdInstance = md;
-            };
-          }
+        userThemes = (markdown as MarkdownOptions).theme;
+
+        if (typeof markdown.config === 'function') {
+          const originalConfig = markdown.config;
+          markdown.config = (md: MarkdownIt) => {
+            originalConfig(md);
+            mdInstance = md;
+          };
+        } else {
+          markdown.config = (md: MarkdownIt) => {
+            mdInstance = md;
+          };
         }
       }
     },
@@ -476,7 +486,7 @@ const viteTemplPreviewPlugin = async (
         const { file, server, modules } = ctx;
 
         if (file.endsWith('.templ')) {
-          Logger.info('File changed', file);
+          Logger.info(<UserMessage>{ headline: 'File changed', message: file });
           const cmd = buildStaticTemplCommandStr(
             serverRoot,
             resolvedPluginOptions,
