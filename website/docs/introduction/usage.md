@@ -117,9 +117,8 @@ export default defineConfig({
   /* ... */
   markdown: {}, // [!code ++]
   vite: {
-    // [!code ++]
     plugins: [viteTemplPreviewPlugin()], // [!code ++]
-  }, // [!code ++]
+  },
   /* ... */
 });
 ```
