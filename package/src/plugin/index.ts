@@ -378,7 +378,7 @@ function renderTemplPreview(
 const defaultPluginOptions: PluginConfig = {
   goProjectDir: '',
   mode: 'inline',
-  inputDir: 'demos',
+  inputDir: 'components',
   outputDir: 'output',
   debug: false,
   runTemplGenerate: true,
