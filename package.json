@@ -5,6 +5,7 @@
   "scripts": {
     "build": "pnpm run build:package",
     "build:package": "pnpm --filter='vitepress-templ-preview' run build",
+    "example": "pnpm run build && pnpm --filter='bundle-mode-example' run docs:dev",
     "format": "prettier --write .",
     "prepare": "husky",
     "prepublish": "pnpm run build",

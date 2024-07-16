@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "bundle-mode-example",
   "version": "0.0.1",
   "private": true,
   "description": "Example website for vitepress-templ-preview plugin with mode=bundle",
