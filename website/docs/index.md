@@ -7,7 +7,7 @@ hero:
   text: ""
   tagline: "A VitePress plugin to preview your templ components while documenting them."
   image:
-    src: /assets/logos/logo-large.svg
+    src: /assets/logos/logo-lg.svg
     alt: VitePress
   actions:
     - theme: brand

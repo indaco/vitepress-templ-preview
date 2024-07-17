@@ -21,7 +21,7 @@ export default defineConfig({
       {
         rel: 'icon',
         type: 'image/svg+xml',
-        href: '/assets/favicons/logo-small.svg',
+        href: '/assets/favicons/logo-xs.svg',
       },
     ],
   ],
