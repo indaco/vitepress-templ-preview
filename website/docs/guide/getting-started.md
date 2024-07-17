@@ -87,10 +87,10 @@ export default {
    ```
 
 2. Create a `components` folder within `./docs`.
-3. Create a `button` folderto store both the markdown and the `templ` files for the demos:
+3. Create a `hello` folder to store both the markdown and the `templ` files for the demos:
 
-   - Create a `index.md` file
-   - Create a `button-demo.templ` file with some `templ` code:
+   - Create an `index.md` file
+   - Create a `hello-demo.templ` file with some `templ` code:
 
      ```templ
      package hello
@@ -106,7 +106,7 @@ export default {
 
 Your project structure should look like this:
 
-```bash{8-16}
+```bash{8-13}
 .
 ├── docs
 │  ├─ .vitepress
@@ -115,11 +115,8 @@ Your project structure should look like this:
 │  ├─ markdown-examples.md
 │  ├─ index.md
 │  ├─ components
-│  │  ├─ button
-│  │  │  ├─ button-demo.templ
-│  │  │  └─ index.md
-│  │  ├─ dropdown
-│  │  │  ├─ dropdown-demo.templ
+│  │  ├─ hello
+│  │  │  ├─ hello-demo.templ
 │  │  │  └─ index.md
 │  ├─ go.mod
 │  ├─ go.sum
@@ -130,7 +127,7 @@ Your project structure should look like this:
 
 To embed and preview a `templ` component in your markdown files, use the `templ-demo` tag.
 
-Edit the `components/button/index.md` file by adding:
+Edit the `components/hello/index.md` file by adding:
 
 ```html
 <templ-demo src="hello-demo" />
@@ -169,6 +166,6 @@ yarn docs:dev
 
 :::
 
-Visit the documentation page for the hello component you just created.
+Visit the page for the **hello** component you just created.
 
 Your project is now up and running. Enjoy! :heart:
