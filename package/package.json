@@ -2,6 +2,7 @@
   "name": "vitepress-templ-preview",
   "version": "0.1.0",
   "description": "A VitePress plugin to preview your templ components while documenting them.",
+  "homepage": "https://vitepress-templ-preview.indaco.dev",
   "bugs": {
     "url": "https://github.com/indaco/vitepress-templ-preview/issues"
   },
@@ -55,7 +56,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "pnpm clean && pnpm build:plugin && pnpm build:components && pnpm postbuild",
