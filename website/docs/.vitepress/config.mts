@@ -107,7 +107,7 @@ export default defineConfig({
       message:
         'Released under the <a href="https://github.com/indaco/vitepress-templ-preview#license">MIT License</a>.',
       copyright:
-        'Copyright © 2024 <a href="https://github.com/indaco">Mirco Veltri</a>',
+        'Copyright © 2024 <a href="https://github.com/indaco">Mirco Veltri</a>.<br><span style="color: var(--vp-c-text-3); font-size: 12px;">The vitepress-templ-preview logo is a combination of elements from the Templ logo and the VitePress logo.<br/>All rights and licenses for these logos are owned by their respective creators.</span>',
     },
   },
   markdown: {
