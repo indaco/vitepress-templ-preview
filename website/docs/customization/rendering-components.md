@@ -50,7 +50,7 @@ Your `templ` code can include various elements like package declarations, import
 
 ::: details Screenshot
 
-![VTPCard](/images/card.png)
+![VTPCard](/assets/screenshots/card.png)
 
 :::
 
@@ -62,7 +62,7 @@ Your `templ` code can include various elements like package declarations, import
 
 ::: details Screenshot
 
-![VTPCodeToggle](/images/code-toggle.gif)
+![VTPCodeToggle](/assets/screenshots/code-toggle.gif)
 
 :::
 
@@ -70,7 +70,7 @@ Your `templ` code can include various elements like package declarations, import
 
 ::: details Screenshot
 
-![VTPTabs](/images/tabs.gif)
+![VTPTabs](/assets/screenshots/tabs.gif)
 
 :::
 
@@ -78,7 +78,7 @@ Your `templ` code can include various elements like package declarations, import
 
 ::: details Screenshot
 
-![VTPTabs](/images/icons-tab.gif)
+![VTPTabs](/assets/screenshots/icons-tab.gif)
 
 :::
 
@@ -90,7 +90,7 @@ In some cases, you may want to preview only the `templ` component on specific pa
 
 ::: details Example
 
-![PreviewOnly](/images/preview-only.png)
+![PreviewOnly](/assets/screenshots/preview-only.png)
 
 :::
 
