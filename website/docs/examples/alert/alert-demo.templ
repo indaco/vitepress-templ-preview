@@ -1,50 +1,60 @@
 package alert
 
-var cssHandle = templ.NewOnceHandle()
+var (
+	alertCSSHandle = templ.NewOnceHandle()
+	alertJSHandle = templ.NewOnceHandle()
+)
 
 templ AlertDemo() {
-	@alertCss()
-	@alert("Success", "Files were successfully uploaded")
+    @alertCss()
+    @alertJSHandle.Once() {
+        <script type="text/javascript">
+            function closeAlert(element) {
+                element.parentElement.style.display = 'none';
+            };
+        </script>
+    }
+    @alert("Success", "Files were successfully uploaded")
 }
 
 templ alert(title string, text string) {
-	<div class="alert success">
-		<span class="closebtn" onclick="this.parentElement.style.display='none';">x</span>
-		<h3>{ title }</h3>
-		<p>{ text }</p>
-	</div>
+    <div class="alert success">
+        <span class="closebtn" onclick="closeAlert(this)">x</span>
+        <h3>{ title }</h3>
+        <p>{ text }</p>
+    </div>
 }
 
 templ alertCss() {
-	@cssHandle.Once() {
-		<style type="text/css">
-			.alert {
-				padding: 1rem;
-				color: #173418;
-				position: relative;
-				border-radius: 0.24rem;
-			}
+    @alertCSSHandle.Once() {
+        <style type="text/css">
+            .alert {
+                padding: 1rem;
+                color: #173418;
+                position: relative;
+                border-radius: 0.24rem;
+            }
 
-			.alert h3 {
-				margin: 0;
-				width: fit-content;
-			}
+            .alert h3 {
+                margin: 0;
+                width: fit-content;
+            }
 
-			.alert.success {
-				background-color: #4CAF50;
-			}
+            .alert.success {
+                background-color: #4CAF50;
+            }
 
-			.closebtn {
-				color: #EDF7EE;
-				font-weight: bold;
-				float: right;
-				cursor: pointer;
-				border-radius: 100vh;
-			}
+            .closebtn {
+                color: #EDF7EE;
+                font-weight: bold;
+                float: right;
+                cursor: pointer;
+                border-radius: 100vh;
+            }
 
-			.closebtn:hover {
-				color: #2E6930;
-			}
-		</style>
-	}
+            .closebtn:hover {
+                color: #2E6930;
+            }
+        </style>
+    }
 }

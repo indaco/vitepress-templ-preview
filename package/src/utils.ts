@@ -242,7 +242,9 @@ export function escapeForJSON(str: string): string {
     .replace(/'/g, '\\"') // Replace single quotes with escaped double quotes
     .replace(/\n/g, '\\n') // Escape newlines
     .replace(/\r/g, '\\r') // Escape carriage returns
-    .replace(/\t/g, '\\t'); // Escape tabs
+    .replace(/\t/g, '\\t') // Escape tabs
+    .replace(/</g, '\\u003C') // Escape less-than sign
+    .replace(/>/g, '\\u003E'); // Escape greater-than sign
 }
 
 /**
@@ -259,7 +261,10 @@ export function escapeForJSON(str: string): string {
  */
 export function unescapeFromJSON(str: string): string {
   return str
+    .replace(/\\u003C/g, '<') // Unescape less-than sign
+    .replace(/\\u003E/g, '>') // Unescape greater-than sign
     .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r') // Unescape carriage returns
     .replace(/\\t/g, '\t')
     .replace(/\\"/g, '"')
     .replace(/\\\\/g, '\\');

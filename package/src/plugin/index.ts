@@ -152,7 +152,7 @@ function generateTemplPreviewComponentHtml(
 
   const _props = {
     codeContent: unescapeFromJSON(templBlocks[0]),
-    htmlContent: md.utils.unescapeAll(componentProps.htmlContent),
+    htmlContent: unescapeFromJSON(componentProps.htmlContent),
     buttonStyle: md.utils.escapeHtml(componentProps.buttonStyle),
     themes: componentProps.themes,
     isPreviewFirst: componentProps.isPreviewFirst,
@@ -364,7 +364,7 @@ function renderTemplPreview(
 
   const componentProps: VTPComponentProps = {
     codeContent: escapeForJSON(codeContent),
-    htmlContent: md.utils.escapeHtml(htmlContent),
+    htmlContent: escapeForJSON(htmlContent),
     buttonStyle: buttonStyleValue,
     themes: theme,
     isPreviewFirst: Boolean(isPreviewFirstValue),

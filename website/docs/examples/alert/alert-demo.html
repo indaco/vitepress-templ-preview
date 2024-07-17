@@ -27,12 +27,13 @@
     color: #2e6930;
   }
 </style>
+<script type="text/javascript">
+  function closeAlert(element) {
+    element.parentElement.style.display = 'none';
+  }
+</script>
 <div class="alert success">
-  <span
-    class="closebtn"
-    onclick="this.parentElement.style.display=&#39;none&#39;;"
-    >x</span
-  >
+  <span class="closebtn" onclick="closeAlert(this)">x</span>
   <h3>Success</h3>
   <p>Files were successfully uploaded</p>
 </div>
