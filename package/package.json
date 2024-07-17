@@ -76,7 +76,7 @@
     "@types/node": "^20.14.11",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitest/ui": "^2.0.3",
-    "ansis": "3.2.0",
+    "ansis": "^3.3.0",
     "markdown-it": "^14.1.0",
     "publint": "^0.2.9",
     "rimraf": "^6.0.1",
