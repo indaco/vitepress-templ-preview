@@ -7,11 +7,6 @@
     </a>
 </p>
 
-<hr />
-
-> [!WARNING]
-> Currently under development. There are known issues, and it has not been released yet.
-
 ## Documentation
 
 Check out the docs [here](https://vitepress-templ-preview.indaco.dev).
