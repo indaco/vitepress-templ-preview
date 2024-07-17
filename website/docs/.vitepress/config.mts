@@ -15,6 +15,16 @@ export default defineConfig({
   title: 'vitepress-templ-preview',
   description:
     'A VitePress plugin to preview your templ components while documenting them.',
+  head: [
+    [
+      'link',
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/assets/favicons/logo-small.svg',
+      },
+    ],
+  ],
   lastUpdated: true,
   sitemap: {
     hostname: 'https://vitepress-templ-preview.indaco.dev',
