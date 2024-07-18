@@ -17,7 +17,8 @@ export class CodeExtractor {
   };
 
   private static readonly packageRegex = /package\s+\w+/;
-  private static readonly importRegex = /import\s+\(.*?\)|import\s+.*?;/gs;
+  private static readonly importRegex =
+    /import\s+(?:\(\s*[^]*?\s*\)|\".*?\")/gs;
   private static readonly constRegex = /const\s+(?:\([^]*?\)|[^\n;]+(;\s*)?)/gs;
   private static readonly varRegex = /var\s+(?:\([^]*?\)|[^\n;]+(;\s*)?)/gs;
   private static readonly typeRegex =
@@ -60,17 +61,17 @@ export class CodeExtractor {
       .filter(Boolean) as string[];
 
     const allCode = [
-      packageMatch ? packageMatch[0] : '',
-      ...importStatements,
-      ...constStatements,
-      ...varStatements,
-      ...typeStatements,
-      ...templBlocks,
+      packageMatch ? packageMatch[0].trim() : '',
+      ...importStatements.map((stmt) => stmt.trim()),
+      ...constStatements.map((stmt) => stmt.trim()),
+      ...varStatements.map((stmt) => stmt.trim()),
+      ...typeStatements.map((stmt) => stmt.trim()),
+      ...templBlocks.map((block) => block.trim()),
     ]
       .filter(Boolean)
       .join('\n\n');
 
-    return [allCode];
+    return [allCode.trim()];
   }
 
   private getPackageMatch(): RegExpMatchArray | null {

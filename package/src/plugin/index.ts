@@ -144,10 +144,10 @@ function generateTemplPreviewComponentHtml(
   componentProps: VTPComponentProps,
   extractorOptions?: CodeExtractorOptions,
 ): string {
-  const extractor = new CodeExtractor(
-    componentProps.codeContent,
-    extractorOptions,
-  );
+  // Decode the escape sequences in the codeContent
+  const decodedCodeContent = unescapeFromJSON(componentProps.codeContent);
+
+  const extractor = new CodeExtractor(decodedCodeContent, extractorOptions);
   const templBlocks = extractor.extract();
 
   const _props = {
