@@ -34,8 +34,8 @@ Your `templ` code can include various elements like package declarations, import
 | Option           | Type      | Default | Description                                                   |
 | :--------------- | :-------- | :------ | ------------------------------------------------------------- |
 | `goExportedOnly` | _boolean_ | `false` | Whether or not include exported functions only.               |
-| `goPackage`      | _boolean_ | `false` | Include the `package` statement in the extracted code blocks. |
-| `goImports`      | _boolean_ | `false` | Include `import` statements in the extracted code blocks.     |
+| `goPackage`      | _boolean_ | `true`  | Include the `package` statement in the extracted code blocks. |
+| `goImports`      | _boolean_ | `true`  | Include `import` statements in the extracted code blocks.     |
 | `goConsts`       | _boolean_ | `false` | Include `const` declarations in the extracted code blocks.    |
 | `goVars`         | _boolean_ | `false` | Include `var` declarations in the extracted code blocks.      |
 | `goTypes`        | _boolean_ | `false` | Include `type` definitions in the extracted code blocks.      |
