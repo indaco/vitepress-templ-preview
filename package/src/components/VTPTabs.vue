@@ -113,6 +113,8 @@ button:not(.active):hover {
 }
 
 .preview-content {
+  display: flex;
+  justify-content: center;
   padding-block: 20px;
   padding-inline: 0;
 }

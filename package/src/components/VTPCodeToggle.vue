@@ -74,6 +74,11 @@ onMounted(async () => {
   margin-block: 1rem;
 }
 
+.preview-content {
+  display: flex;
+  justify-content: center;
+}
+
 button {
   display: flex;
   align-items: center;

@@ -153,6 +153,8 @@ button:focus-visible {
 }
 
 .preview-content {
+  display: flex;
+  justify-content: center;
   padding: 20px 0;
 }
 </style>
