@@ -549,7 +549,7 @@ const viteTemplPreviewPlugin = async (
         renderTemplPreview(serverCommand, tokens, idx, context, id);
 
       const rendered = mdInstance.render(code);
-      if (!rendered.includes('templ-preview-component')) return;
+      if (!rendered.includes('VTPLivePreview')) return;
       return {
         code: rendered,
         map: null,
