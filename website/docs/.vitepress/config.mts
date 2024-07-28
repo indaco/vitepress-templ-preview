@@ -1,4 +1,8 @@
 import { defineConfig } from 'vitepress';
+import {
+  getVersionFromPackageJson,
+  injectNPMPackageVersion,
+} from '../src/plugins/injectVersion';
 import viteTemplPreviewPlugin from 'vitepress-templ-preview';
 import type { VTPUserConfig } from 'vitepress-templ-preview/types';
 import {
@@ -9,6 +13,8 @@ import {
 const vtpOptions: VTPUserConfig = {
   inputDir: 'examples',
 };
+
+const pkgVersion = getVersionFromPackageJson();
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -46,7 +52,7 @@ export default defineConfig({
         ],
       },
       {
-        text: 'v0.1.2',
+        text: pkgVersion.replace(/\"/g, ''),
         items: [
           {
             text: 'Changelog',
@@ -114,7 +120,10 @@ export default defineConfig({
     codeTransformers: [transformerNotationDiff(), transformerNotationFocus()],
   },
   vite: {
-    plugins: [viteTemplPreviewPlugin(vtpOptions)],
+    plugins: [
+      injectNPMPackageVersion(pkgVersion),
+      viteTemplPreviewPlugin(vtpOptions),
+    ],
     build: {
       chunkSizeWarningLimit: 1000,
     },

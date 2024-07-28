@@ -1,6 +1,6 @@
 # What is it?
 
-<p><Badge type="tip" text="v0.1.2" /></p>
+<VersionBadge />
 
 `vitepress-templ-preview` offers a solution for [templ](https://templ.guide/) component previews within [VitePress](https://vitepress.dev/) projects.
 
