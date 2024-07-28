@@ -130,13 +130,13 @@ To embed and preview a `templ` component in your markdown files, use the `templ-
 Edit the `components/hello/index.md` file by adding:
 
 ```html
-<templ-demo src="hello-demo" />
+<templ-demo src="hello-demo"></templ-demo>
 ```
 
 Alternatively, you can use the self-closing format:
 
 ```html
-<templ-demo src="hello-demo"></templ-demo>
+<templ-demo src="hello-demo" />
 ```
 
 > [!IMPORTANT]
