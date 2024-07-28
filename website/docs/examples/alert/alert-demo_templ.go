@@ -146,7 +146,7 @@ func alertCss() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style type=\"text/css\">\n            .alert {\n                padding: 1rem;\n                color: #173418;\n                position: relative;\n                border-radius: 0.24rem;\n            }\n\n            .alert h3 {\n                margin: 0;\n                width: fit-content;\n            }\n\n            .alert.success {\n                background-color: #4CAF50;\n            }\n\n            .closebtn {\n                color: #EDF7EE;\n                font-weight: bold;\n                float: right;\n                cursor: pointer;\n                border-radius: 100vh;\n            }\n\n            .closebtn:hover {\n                color: #2E6930;\n            }\n        </style>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<style type=\"text/css\">\n            .alert {\n                width: 100%;\n                padding: 1rem;\n                color: #173418;\n                position: relative;\n                border-radius: 0.24rem;\n            }\n\n            .alert h3 {\n                margin: 0;\n                width: fit-content;\n            }\n\n            .alert.success {\n                background-color: #4CAF50;\n            }\n\n            .closebtn {\n                color: #EDF7EE;\n                font-weight: bold;\n                float: right;\n                cursor: pointer;\n                border-radius: 100vh;\n            }\n\n            .closebtn:hover {\n                color: #2E6930;\n            }\n        </style>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
