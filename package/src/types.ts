@@ -1,6 +1,11 @@
 import MarkdownIt from 'markdown-it';
 import { BundledTheme } from 'shiki';
 
+/**
+ * The mode in which the static template plugin operates.
+ * - 'bundle': Generates a bundled output.
+ * - 'inline': Generates inline output.
+ */
 export type StaticTemplPlusMode = 'bundle' | 'inline';
 
 /**
@@ -48,49 +53,155 @@ export interface PluginConfig {
   runTemplGenerate: boolean;
 }
 
+/**
+ * Partial configuration for the vite-templ-preview plugin,
+ * allowing users to override specific options.
+ */
 export type VTPUserConfig = Partial<PluginConfig>;
 
+/**
+ * Context provided to the plugin, containing various utilities and options.
+ */
 export interface PluginContext {
+  /**
+   * MarkdownIt instance for processing Markdown content.
+   */
   md: MarkdownIt;
+
+  /**
+   * The root directory of the Vite server.
+   */
   serverRoot: string;
+
+  /**
+   * Options provided to the plugin.
+   */
   pluginOptions: Partial<PluginConfig>;
+
+  /**
+   * Cache for storing file contents.
+   */
   fileCache: Record<string, CachedFile>;
+
+  /**
+   * Watched Markdown files and their corresponding sets of dependent files.
+   */
   watchedMdFiles: Record<string, Set<string>>;
+
+  /**
+   * Theme configuration for light and dark modes.
+   */
   theme: { light: BundledTheme; dark: BundledTheme };
 }
 
+/**
+ * Represents a cached file with its content.
+ */
 export interface CachedFile {
+  /**
+   * The content of the cached file.
+   */
   content: string;
 }
 
+/**
+ * Represents the attributes of an HTML tag.
+ */
 export interface TagAttrs {
   [key: string]: string;
 }
 
+/**
+ * Options for extracting code details.
+ */
+export interface CodeExtractorOptions {
+  /**
+   * Whether to extract only exported Go symbols.
+   */
+  goExportedOnly?: boolean;
+
+  /**
+   * Whether to include Go package declarations.
+   */
+  goPackage?: boolean;
+
+  /**
+   * Whether to include Go imports.
+   */
+  goImports?: boolean;
+
+  /**
+   * Whether to include Go variable declarations.
+   */
+  goVars?: boolean;
+
+  /**
+   * Whether to include Go constant declarations.
+   */
+  goConsts?: boolean;
+
+  /**
+   * Whether to include Go type declarations.
+   */
+  goTypes?: boolean;
+}
+
+/**
+ * Represents a user message with a headline and message content.
+ */
+export interface UserMessage {
+  /**
+   * The headline of the message.
+   */
+  headline: string;
+
+  /**
+   * The content of the message.
+   */
+  message: string;
+}
+
+/**
+ * Styles available for buttons in the Vue rendering components.
+ * - 'alt': Alternative style.
+ * - 'brand': Brand style.
+ */
 export type ButtonStyle = 'alt' | 'brand';
 
+/**
+ * Properties for the Vuew rendering components.
+ */
 export interface VTPComponentProps {
+  /**
+   * The content of the code to be displayed.
+   */
   codeContent: string;
+
+  /**
+   * The HTML content to be displayed.
+   */
   htmlContent: string;
+
+  /**
+   * Themes for light and dark modes.
+   */
   themes: {
     light: BundledTheme;
     dark: BundledTheme;
   };
+
+  /**
+   * Style for the button.
+   */
   buttonStyle: ButtonStyle;
+
+  /**
+   * Whether to show the preview first.
+   */
   isPreviewFirst: boolean;
+
+  /**
+   * Whether to show only the preview.
+   */
   isPreviewOnly: boolean;
 }
-
-export interface CodeExtractorOptions {
-  goExportedOnly?: boolean;
-  goPackage?: boolean;
-  goImports?: boolean;
-  goVars?: boolean;
-  goConsts?: boolean;
-  goTypes?: boolean;
-}
-
-export type UserMessage = {
-  headline: string;
-  message: string;
-};
