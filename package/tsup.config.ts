@@ -20,5 +20,6 @@ export default defineConfig({
   splitting: false,
   sourcemap: false,
   clean: false,
+  minify: true,
   external: ['markdown-it', 'shiki', 'vue', 'vitepress'],
 });
