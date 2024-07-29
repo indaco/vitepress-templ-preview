@@ -1,10 +1,15 @@
-<script setup lang="ts">
+<script lang="ts">
 import type { VTPComponentProps } from '../types';
+
+export interface VTPCardProps extends VTPComponentProps {}
+</script>
+
+<script setup lang="ts">
 import { onMounted, nextTick } from 'vue';
 import { executeScriptsTick, useHighlighter } from '../shared';
 import ConditionalWrapper from './ConditionalWrapper.vue';
 
-const props = defineProps<VTPComponentProps>();
+const props = defineProps<VTPCardProps>();
 const { highlightedCode, highlightCode } = useHighlighter();
 
 onMounted(async () => {

@@ -1,9 +1,11 @@
-<script setup lang="ts">
+<script lang="ts">
 interface Props {
   fill: string;
   size: number;
 }
+</script>
 
+<script setup lang="ts">
 const props = withDefaults(defineProps<Props>(), {
   size: 16,
 });

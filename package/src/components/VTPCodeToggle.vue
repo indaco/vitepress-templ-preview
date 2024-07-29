@@ -1,12 +1,17 @@
-<script setup lang="ts">
+<script lang="ts">
 import type { Ref } from 'vue';
 import type { VTPComponentProps } from '../types';
+
+export interface VTPCodeToggleProps extends VTPComponentProps {}
+</script>
+
+<script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
 import { executeScriptsTick, useHighlighter } from '../shared';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
 
-const props = defineProps<VTPComponentProps>();
+const props = defineProps<VTPCodeToggleProps>();
 const isCodeSectionVisible: Ref<boolean> = ref(false);
 const { highlightedCode, highlightCode } = useHighlighter();
 

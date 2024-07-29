@@ -1,10 +1,15 @@
-<script setup lang="ts">
+<script lang="ts">
 import type { VTPComponentProps } from '../types';
+
+export interface VTPTabsProps extends VTPComponentProps {}
+</script>
+
+<script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
 import { executeScriptsTick, useHighlighter } from '../shared';
 import VTPCard from './VTPCard.vue';
 
-const props = defineProps<VTPComponentProps>();
+const props = defineProps<VTPTabsProps>();
 const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
 

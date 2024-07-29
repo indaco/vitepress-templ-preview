@@ -1,8 +1,10 @@
-<script setup lang="ts">
+<script lang="ts">
 interface Props {
   isPreviewFirst: boolean;
 }
+</script>
 
+<script setup lang="ts">
 const props = defineProps<Props>();
 </script>
 
