@@ -22,15 +22,15 @@
       "types": "./dist/types/shared.d.ts",
       "default": "./dist/shared.esm.js"
     },
-    "./types": {
-      "types": "./dist/types/types.d.ts"
-    },
     "./components": {
       "types": "./dist/types/components/index.d.ts",
-      "default": "./dist/vitepress-templ-preview.es.js"
+      "default": "./dist/components/vtp-vue-components.es.js"
     },
     "./style.css": {
-      "default": "./dist/style.css"
+      "default": "./dist/components/style.css"
+    },
+    "./types": {
+      "types": "./dist/types/types.d.ts"
     }
   },
   "typesVersions": {
