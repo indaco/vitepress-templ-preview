@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { VTPComponentProps } from '../types';
 
-export interface VTPIconTabsProps extends VTPComponentProps {}
+interface VTPIconTabsProps extends VTPComponentProps {}
 </script>
 
 <script setup lang="ts">
@@ -159,6 +159,9 @@ button:focus-visible {
 .preview-content {
   display: flex;
   justify-content: center;
-  padding: 20px 0;
+  flex-flow: row wrap;
+  row-gap: 0.75rem;
+  margin-block: 2rem;
+  padding-inline: 0;
 }
 </style>

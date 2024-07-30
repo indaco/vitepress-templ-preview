@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { VTPComponentProps } from '../types';
 
-export interface VTPCardProps extends VTPComponentProps {}
+interface VTPCardProps extends VTPComponentProps {}
 </script>
 
 <script setup lang="ts">
@@ -65,6 +65,8 @@ onMounted(async () => {
 .preview-content {
   display: flex;
   justify-content: center;
+  flex-flow: row wrap;
+  row-gap: 0.75rem;
 }
 
 button {
@@ -94,7 +96,7 @@ button:hover {
 .code-content {
   display: grid;
   grid-template-rows: 1fr;
-  margin-block: 1rem;
+  margin-block: 1.5rem;
   background-color: var(--vp-code-block-bg);
   border-radius: 5px;
 }

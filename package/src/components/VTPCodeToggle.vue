@@ -2,7 +2,7 @@
 import type { Ref } from 'vue';
 import type { VTPComponentProps } from '../types';
 
-export interface VTPCodeToggleProps extends VTPComponentProps {}
+interface VTPCodeToggleProps extends VTPComponentProps {}
 </script>
 
 <script setup lang="ts">
@@ -82,6 +82,8 @@ onMounted(async () => {
 .preview-content {
   display: flex;
   justify-content: center;
+  flex-flow: row wrap;
+  row-gap: 0.75rem;
 }
 
 button {
@@ -127,7 +129,6 @@ button {
 .code-content {
   display: grid;
   grid-template-rows: 0fr;
-  margin-block: 1rem;
   transition: grid-template-rows 500ms;
   background-color: var(--vp-code-block-bg);
   border-radius: 5px;

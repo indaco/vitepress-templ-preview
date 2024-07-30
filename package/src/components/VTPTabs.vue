@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { VTPComponentProps } from '../types';
 
-export interface VTPTabsProps extends VTPComponentProps {}
+interface VTPTabsProps extends VTPComponentProps {}
 </script>
 
 <script setup lang="ts">
@@ -120,7 +120,9 @@ button:not(.active):hover {
 .preview-content {
   display: flex;
   justify-content: center;
-  padding-block: 20px;
+  flex-flow: row wrap;
+  row-gap: 0.75rem;
+  margin-block: 2rem;
   padding-inline: 0;
 }
 </style>
