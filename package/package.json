@@ -1,6 +1,6 @@
 {
   "name": "vitepress-templ-preview",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A VitePress plugin to preview your templ components while documenting them.",
   "homepage": "https://vitepress-templ-preview.indaco.dev",
   "bugs": {
