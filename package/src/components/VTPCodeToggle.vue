@@ -6,7 +6,7 @@ interface VTPCodeToggleProps extends VTPComponentProps {}
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
 import { executeScriptsTick, useHighlighter } from '../shared';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
@@ -14,6 +14,12 @@ import VTPCard from './VTPCard.vue';
 const props = defineProps<VTPCodeToggleProps>();
 const isCodeSectionVisible: Ref<boolean> = ref(false);
 const { highlightedCode, highlightCode } = useHighlighter();
+
+// Access the current instance to generate a unique ID
+const instance = getCurrentInstance();
+const uid = instance
+  ? instance.uid.toString()
+  : Math.random().toString(36).substring(2, 11);
 
 function toggleCodeSection(): void {
   isCodeSectionVisible.value = !isCodeSectionVisible.value;
@@ -39,6 +45,7 @@ onMounted(async () => {
         <button
           @click="toggleCodeSection"
           :class="`button-${props.buttonStyle}`"
+          :aria-controls="'code-content-' + uid"
           aria-label="view the source code"
         >
           <slot name="code-icon">
@@ -46,7 +53,11 @@ onMounted(async () => {
           </slot>
           {{ isCodeSectionVisible ? 'Hide Code' : 'Show Code' }}
         </button>
-        <div class="code-content" :aria-hidden="!isCodeSectionVisible">
+        <div
+          class="code-content"
+          :id="'code-content-' + uid"
+          :aria-hidden="!isCodeSectionVisible"
+        >
           <div>
             <div class="language-templ vp-adaptive-theme">
               <button title="Copy Code" class="copy"></button>

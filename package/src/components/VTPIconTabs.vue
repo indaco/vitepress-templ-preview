@@ -5,7 +5,7 @@ interface VTPIconTabsProps extends VTPComponentProps {}
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, computed } from 'vue';
+import { ref, onMounted, nextTick, computed, getCurrentInstance } from 'vue';
 import ViewIcon from './ViewIcon.vue';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
@@ -14,6 +14,12 @@ import { executeScriptsTick, useHighlighter } from '../shared';
 const props = defineProps<VTPIconTabsProps>();
 const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
+
+// Access the current instance to generate a unique ID
+const instance = getCurrentInstance();
+const uid = instance
+  ? instance.uid.toString()
+  : Math.random().toString(36).substring(2, 11);
 
 const fillColor = (tab: string) => {
   return computed(() => {
@@ -49,11 +55,13 @@ onMounted(async () => {
       <div class="tabs" role="tablist">
         <button
           role="tab"
+          :id="'tab-preview-' + uid"
           :aria-selected="activeTab === 'preview'"
           :class="{ active: activeTab === 'preview' }"
           @click="activeTab = 'preview'"
-          @keydown="(e: any) => handleKeydown(e, 'preview')"
+          @keydown="(e) => handleKeydown(e, 'preview')"
           tabindex="0"
+          :aria-controls="'tabpanel-preview-' + uid"
           aria-label="preview the component"
         >
           <slot name="preview-icon">
@@ -62,11 +70,13 @@ onMounted(async () => {
         </button>
         <button
           role="tab"
+          :id="'tab-code-' + uid"
           :aria-selected="activeTab === 'code'"
           :class="{ active: activeTab === 'code' }"
           @click="activeTab = 'code'"
-          @keydown="(e: any) => handleKeydown(e, 'code')"
+          @keydown="(e) => handleKeydown(e, 'code')"
           tabindex="0"
+          :aria-controls="'tabpanel-code-' + uid"
           aria-label="view the source code"
         >
           <slot name="code-icon">
@@ -75,7 +85,11 @@ onMounted(async () => {
         </button>
       </div>
     </div>
-    <div class="tab-content" role="tabpanel">
+    <div
+      class="tab-content"
+      role="tabpanel"
+      :id="'tabpanel-' + activeTab + '-' + uid"
+    >
       <div
         v-if="activeTab === 'preview'"
         class="preview-content"
