@@ -137,7 +137,7 @@ export function executeCommandSync(command: string): void {
  * @param server - The Vite server instance.
  * @param isFirstServerRun - Flag to indicate if this is from the first run of the server.
  */
-async function updateCacheAndInvalidate(
+export async function updateCacheAndInvalidate(
   serverRoot: string,
   finalOptions: PluginConfig,
   fileCache: Record<string, CachedFile>,
@@ -203,8 +203,7 @@ async function updateCacheAndInvalidate(
  * @param server - The Vite server instance.
  * @param isFirstServerRun - Flag to indicate if this is from the first run of the server.
  */
-export async function executeAndUpdateCache(
-  command: string,
+export async function updateCache(
   serverRoot: string,
   finalOptions: PluginConfig,
   fileCache: Record<string, CachedFile>,
@@ -212,7 +211,6 @@ export async function executeAndUpdateCache(
   server: any,
   isFirstServerRun: boolean = true,
 ) {
-  executeCommandSync(command);
   await updateCacheAndInvalidate(
     serverRoot,
     finalOptions,

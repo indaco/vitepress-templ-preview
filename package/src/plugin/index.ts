@@ -19,14 +19,15 @@ import { UserMessages } from '../user-messages';
 import {
   checkBinaries,
   escapeForJSON,
-  executeAndUpdateCache,
   executeCommandSync,
   getCachedFileContent,
   unescapeFromJSON,
+  updateCache,
   watchFileChanges,
 } from '../utils';
 import { BundledTheme } from 'shiki';
 import { Logger } from '../logger';
+import HtmlStylesOptimizer from '../styles-optimizer';
 import { CodeExtractor } from '../code-extractor';
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
@@ -402,6 +403,7 @@ const viteTemplPreviewPlugin = async (
   let serverRoot: string;
   let serverCommand: 'build' | 'serve';
   let userThemes: any;
+  let stylesOptimizer: HtmlStylesOptimizer;
 
   return {
     name: 'vite:templ-preview',
@@ -409,6 +411,9 @@ const viteTemplPreviewPlugin = async (
     configResolved(config) {
       serverRoot = config.root;
       serverCommand = config.command;
+      stylesOptimizer = HtmlStylesOptimizer.getInstance(
+        path.join(serverRoot, resolvedPluginOptions.inputDir),
+      );
 
       if ((config as any).vitepress) {
         const { markdown } = (config as any).vitepress;
@@ -453,6 +458,7 @@ const viteTemplPreviewPlugin = async (
       );
 
       executeCommandSync(staticTemplcmd);
+      stylesOptimizer.run();
     },
     async configureServer(server) {
       if (serverCommand === 'serve') {
@@ -471,8 +477,9 @@ const viteTemplPreviewPlugin = async (
           serverRoot,
           resolvedPluginOptions,
         );
-        executeAndUpdateCache(
-          staticTemplcmd,
+        executeCommandSync(staticTemplcmd);
+        stylesOptimizer.run();
+        updateCache(
           serverRoot,
           resolvedPluginOptions,
           fileCache,
@@ -491,8 +498,9 @@ const viteTemplPreviewPlugin = async (
             serverRoot,
             resolvedPluginOptions,
           );
-          executeAndUpdateCache(
-            cmd,
+          executeCommandSync(cmd);
+          stylesOptimizer.run();
+          updateCache(
             serverRoot,
             resolvedPluginOptions,
             fileCache,
