@@ -74,11 +74,11 @@ onMounted(async () => {
       :id="'tabpanel-' + activeTab + '-' + uid"
     >
       <div
-        v-if="activeTab === 'preview'"
+        v-show="activeTab === 'preview'"
         class="preview-content"
         v-html="props.htmlContent"
       ></div>
-      <div v-if="activeTab === 'code'" class="code-content">
+      <div v-show="activeTab === 'code'" class="code-content">
         <div class="language-templ vp-adaptive-theme">
           <button title="Copy Code" class="copy"></button>
           <span class="lang">templ</span>
