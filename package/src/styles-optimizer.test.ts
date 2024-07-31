@@ -5,7 +5,7 @@ import HtmlStylesOptimizer from './styles-optimizer';
 
 // Helper function to create a temporary directory for testing
 function createTempDir() {
-  const tempDir = path.join(__dirname, 'temp');
+  const tempDir = path.join(__dirname, 'temp', `test-styles}`);
   fs.mkdirSync(tempDir, { recursive: true });
   return tempDir;
 }
