@@ -28,6 +28,7 @@ import {
 import { BundledTheme } from 'shiki';
 import { Logger } from '../logger';
 import HtmlStylesOptimizer from '../styles-optimizer';
+import HtmlScriptsOptimizer from '../scripts-optimizer';
 import { CodeExtractor } from '../code-extractor';
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
@@ -404,6 +405,7 @@ const viteTemplPreviewPlugin = async (
   let serverCommand: 'build' | 'serve';
   let userThemes: any;
   let stylesOptimizer: HtmlStylesOptimizer;
+  let scriptsOptimizer: HtmlScriptsOptimizer;
 
   return {
     name: 'vite:templ-preview',
@@ -411,9 +413,13 @@ const viteTemplPreviewPlugin = async (
     configResolved(config) {
       serverRoot = config.root;
       serverCommand = config.command;
-      stylesOptimizer = HtmlStylesOptimizer.getInstance(
-        path.join(serverRoot, resolvedPluginOptions.inputDir),
+
+      const inputDirectory = path.join(
+        serverRoot,
+        resolvedPluginOptions.inputDir,
       );
+      stylesOptimizer = HtmlStylesOptimizer.getInstance(inputDirectory);
+      scriptsOptimizer = HtmlScriptsOptimizer.getInstance(inputDirectory);
 
       if ((config as any).vitepress) {
         const { markdown } = (config as any).vitepress;
@@ -458,7 +464,10 @@ const viteTemplPreviewPlugin = async (
       );
 
       executeCommandSync(staticTemplcmd);
+
+      // Consolidating html style and script tags across static-templ generated html files
       stylesOptimizer.run();
+      scriptsOptimizer.run();
     },
     async configureServer(server) {
       if (serverCommand === 'serve') {
@@ -478,7 +487,11 @@ const viteTemplPreviewPlugin = async (
           resolvedPluginOptions,
         );
         executeCommandSync(staticTemplcmd);
+
+        // Consolidating html style and script tags across static-templ generated html files
         stylesOptimizer.run();
+        scriptsOptimizer.run();
+
         updateCache(
           serverRoot,
           resolvedPluginOptions,
@@ -499,7 +512,11 @@ const viteTemplPreviewPlugin = async (
             resolvedPluginOptions,
           );
           executeCommandSync(cmd);
+
+          // Consolidating html style and script tags across static-templ generated html files
           stylesOptimizer.run();
+          scriptsOptimizer.run();
+
           updateCache(
             serverRoot,
             resolvedPluginOptions,

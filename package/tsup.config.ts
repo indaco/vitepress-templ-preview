@@ -7,6 +7,7 @@ export default defineConfig({
     'src/logger.ts',
     'src/shared.ts',
     'src/styles-optimizer.ts',
+    'src/scripts-optimizer.ts',
     'src/user-messages.ts',
     'src/utils.ts',
     'src/plugin/index.ts',
