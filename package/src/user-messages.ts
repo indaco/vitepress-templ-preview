@@ -58,4 +58,12 @@ export const UserMessages: Record<string, UserMessage> = {
 })
 `,
   },
+  CSS_OPTIMIZER: {
+    headline: 'Styles tags optimization',
+    message: 'Consolidating CSS styles across files to avoid duplications.',
+  },
+  JS_OPTIMIZER: {
+    headline: 'Script tags optimization',
+    message: 'Consolidating JS scripst across files to avoid duplications.',
+  },
 };

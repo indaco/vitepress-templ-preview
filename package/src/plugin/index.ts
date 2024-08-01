@@ -466,7 +466,9 @@ const viteTemplPreviewPlugin = async (
       executeCommandSync(staticTemplcmd);
 
       // Consolidating html style and script tags across static-templ generated html files
+      Logger.info(UserMessages.CSS_OPTIMIZER);
       stylesOptimizer.run();
+      Logger.info(UserMessages.JS_OPTIMIZER);
       scriptsOptimizer.run();
     },
     async configureServer(server) {
@@ -489,7 +491,9 @@ const viteTemplPreviewPlugin = async (
         executeCommandSync(staticTemplcmd);
 
         // Consolidating html style and script tags across static-templ generated html files
+        Logger.info(UserMessages.CSS_OPTIMIZER);
         stylesOptimizer.run();
+        Logger.info(UserMessages.JS_OPTIMIZER);
         scriptsOptimizer.run();
 
         updateCache(
@@ -514,7 +518,9 @@ const viteTemplPreviewPlugin = async (
           executeCommandSync(cmd);
 
           // Consolidating html style and script tags across static-templ generated html files
+          Logger.info(UserMessages.CSS_OPTIMIZER);
           stylesOptimizer.run();
+          Logger.info(UserMessages.JS_OPTIMIZER);
           scriptsOptimizer.run();
 
           updateCache(
