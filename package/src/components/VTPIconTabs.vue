@@ -131,8 +131,8 @@ onMounted(async () => {
 
 button {
   cursor: pointer;
-  padding-block: 0.375rem;
-  padding-inline: 0.75rem;
+  padding-block: 0.275rem;
+  padding-inline: 0.5rem;
   font-size: inherit;
   border-radius: 100vh;
   color: var(--vp-button-alt-text);
