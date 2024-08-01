@@ -60,7 +60,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "pnpm clean && pnpm build:plugin && pnpm build:components && pnpm postbuild",
+    "build": "pnpm clean && pnpm test && pnpm build:plugin && pnpm build:components && pnpm postbuild",
     "postbuild": "publint .",
     "build:components": "vue-tsc && vite build",
     "build:plugin": "tsup",
