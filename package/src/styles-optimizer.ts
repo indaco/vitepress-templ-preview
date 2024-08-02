@@ -29,23 +29,33 @@ class HtmlStylesOptimizer {
   }
 
   /**
-   * Recursively reads all HTML files from the specified directory and its subdirectories.
-   * @param {string} dir - The directory to read HTML files from.
-   * @returns {string[]} An array of HTML file paths.
+   * Recursively reads all directories from the specified directory.
+   * @param {string} dir - The directory to read subdirectories from.
+   * @returns {string[]} An array of directory paths.
    */
-  private readHtmlFilesRecursive(dir: string): string[] {
-    let results: string[] = [];
+  private readDirectoriesRecursive(dir: string): string[] {
+    let results: string[] = [dir];
     const list = fs.readdirSync(dir);
     list.forEach((file) => {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
       if (stat && stat.isDirectory()) {
-        results = results.concat(this.readHtmlFilesRecursive(filePath));
-      } else if (path.extname(file) === '.html') {
-        results.push(filePath);
+        results = results.concat(this.readDirectoriesRecursive(filePath));
       }
     });
     return results;
+  }
+
+  /**
+   * Reads all HTML files from the specified directory.
+   * @param {string} dir - The directory to read HTML files from.
+   * @returns {string[]} An array of HTML file paths.
+   */
+  private readHtmlFiles(dir: string): string[] {
+    return fs
+      .readdirSync(dir)
+      .filter((file) => path.extname(file) === '.html')
+      .map((file) => path.join(dir, file));
   }
 
   /**
@@ -96,64 +106,68 @@ class HtmlStylesOptimizer {
    * Main function to optimize styles by deduplicating and consolidating style tags across multiple HTML files.
    */
   public run(): void {
-    const htmlFiles = this.readHtmlFilesRecursive(this.inputDirectory);
-    if (htmlFiles.length <= 1) {
-      return;
-    }
+    const directories = this.readDirectoriesRecursive(this.inputDirectory);
 
-    const allStyleTags = new Map<string, string[]>();
-    const uniqueStyleTags = new Set<string>();
-    const duplicateStyleTags = new Set<string>();
+    directories.forEach((dir) => {
+      const htmlFiles = this.readHtmlFiles(dir);
+      if (htmlFiles.length <= 1) {
+        return;
+      }
 
-    // Extract style tags from all HTML files and categorize them
-    for (const file of htmlFiles) {
-      const htmlContent = fs.readFileSync(file, 'utf-8');
-      const styleTags = this.extractStyleTags(htmlContent);
-      allStyleTags.set(file, styleTags);
+      const allStyleTags = new Map<string, string[]>();
+      const uniqueStyleTags = new Set<string>();
+      const duplicateStyleTags = new Set<string>();
 
-      // Identify duplicate style tags
-      styleTags.forEach((tag) => {
-        if (uniqueStyleTags.has(tag)) {
-          duplicateStyleTags.add(tag);
-        } else {
-          uniqueStyleTags.add(tag);
+      // Extract style tags from all HTML files and categorize them
+      for (const file of htmlFiles) {
+        const htmlContent = fs.readFileSync(file, 'utf-8');
+        const styleTags = this.extractStyleTags(htmlContent);
+        allStyleTags.set(file, styleTags);
+
+        // Identify duplicate style tags
+        styleTags.forEach((tag) => {
+          if (uniqueStyleTags.has(tag)) {
+            duplicateStyleTags.add(tag);
+          } else {
+            uniqueStyleTags.add(tag);
+          }
+        });
+      }
+
+      // Process each file and update styles
+      let isFirstFile = true;
+      for (const file of htmlFiles) {
+        let htmlContent = fs.readFileSync(file, 'utf-8');
+        const styleTags = allStyleTags.get(file) || [];
+        const remainingStyleTags = styleTags.filter(
+          (tag) => !duplicateStyleTags.has(tag),
+        );
+
+        // Remove all original style tags and trim content
+        htmlContent = this.removeStyleTags(htmlContent);
+
+        // Add remaining (non-duplicate) style tags back to the file
+        if (remainingStyleTags.length > 0) {
+          const remainingStyleContent = `<style type="text/css">\n${remainingStyleTags.join('\n')}\n</style>\n`;
+          htmlContent = remainingStyleContent + htmlContent;
         }
-      });
-    }
 
-    // Process each file and update styles
-    let isFirstFile = true;
-    for (const file of htmlFiles) {
-      let htmlContent = fs.readFileSync(file, 'utf-8');
-      const styleTags = allStyleTags.get(file) || [];
-      const remainingStyleTags = styleTags.filter(
-        (tag) => !duplicateStyleTags.has(tag),
-      );
+        // Add the auto-clean message if duplicate styles were removed and it's not the first file
+        if (styleTags.length > remainingStyleTags.length && !isFirstFile) {
+          const autoCleanMessage =
+            '<!-- [vitepress-templ-plugin] Duplicated styles founded and moved to avoid duplication -->\n';
+          htmlContent = autoCleanMessage + htmlContent;
+        }
 
-      // Remove all original style tags and trim content
-      htmlContent = this.removeStyleTags(htmlContent);
+        fs.writeFileSync(file, htmlContent);
 
-      // Add remaining (non-duplicate) style tags back to the file
-      if (remainingStyleTags.length > 0) {
-        const remainingStyleContent = `<style type="text/css">\n${remainingStyleTags.join('\n')}\n</style>\n`;
-        htmlContent = remainingStyleContent + htmlContent;
+        if (isFirstFile) {
+          // Insert unique styles in the first file
+          this.insertUniqueStyleTags(file, duplicateStyleTags);
+          isFirstFile = false;
+        }
       }
-
-      // Add the auto-clean message if duplicate styles were removed and it's not the first file
-      if (styleTags.length > remainingStyleTags.length && !isFirstFile) {
-        const autoCleanMessage =
-          '<!-- [vitepress-templ-plugin] Duplicated styles founded and moved to avoid duplication -->\n';
-        htmlContent = autoCleanMessage + htmlContent;
-      }
-
-      fs.writeFileSync(file, htmlContent);
-
-      if (isFirstFile) {
-        // Insert unique styles in the first file
-        this.insertUniqueStyleTags(file, duplicateStyleTags);
-        isFirstFile = false;
-      }
-    }
+    });
   }
 }
 
