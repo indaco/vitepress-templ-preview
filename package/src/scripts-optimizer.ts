@@ -29,23 +29,33 @@ class HtmlScriptsOptimizer {
   }
 
   /**
-   * Recursively reads all HTML files from the specified directory and its subdirectories.
-   * @param {string} dir - The directory to read HTML files from.
-   * @returns {string[]} An array of HTML file paths.
+   * Recursively reads all directories from the specified directory.
+   * @param {string} dir - The directory to read subdirectories from.
+   * @returns {string[]} An array of directory paths.
    */
-  private readHtmlFilesRecursive(dir: string): string[] {
-    let results: string[] = [];
+  private readDirectoriesRecursive(dir: string): string[] {
+    let results: string[] = [dir];
     const list = fs.readdirSync(dir);
     list.forEach((file) => {
       const filePath = path.join(dir, file);
       const stat = fs.statSync(filePath);
       if (stat && stat.isDirectory()) {
-        results = results.concat(this.readHtmlFilesRecursive(filePath));
-      } else if (path.extname(file) === '.html') {
-        results.push(filePath);
+        results = results.concat(this.readDirectoriesRecursive(filePath));
       }
     });
     return results;
+  }
+
+  /**
+   * Reads all HTML files from the specified directory.
+   * @param {string} dir - The directory to read HTML files from.
+   * @returns {string[]} An array of HTML file paths.
+   */
+  private readHtmlFiles(dir: string): string[] {
+    return fs
+      .readdirSync(dir)
+      .filter((file) => path.extname(file) === '.html')
+      .map((file) => path.join(dir, file));
   }
 
   /**
@@ -96,64 +106,68 @@ class HtmlScriptsOptimizer {
    * Main function to optimize scripts by deduplicating and consolidating script tags across multiple HTML files.
    */
   public run(): void {
-    const htmlFiles = this.readHtmlFilesRecursive(this.inputDirectory);
-    if (htmlFiles.length <= 1) {
-      return;
-    }
+    const directories = this.readDirectoriesRecursive(this.inputDirectory);
 
-    const allScriptTags = new Map<string, string[]>();
-    const uniqueScriptTags = new Set<string>();
-    const duplicateScriptTags = new Set<string>();
+    directories.forEach((dir) => {
+      const htmlFiles = this.readHtmlFiles(dir);
+      if (htmlFiles.length <= 1) {
+        return;
+      }
 
-    // Extract script tags from all HTML files and categorize them
-    for (const file of htmlFiles) {
-      const htmlContent = fs.readFileSync(file, 'utf-8');
-      const scriptTags = this.extractScriptTags(htmlContent);
-      allScriptTags.set(file, scriptTags);
+      const allScriptTags = new Map<string, string[]>();
+      const uniqueScriptTags = new Set<string>();
+      const duplicateScriptTags = new Set<string>();
 
-      // Identify duplicate script tags
-      scriptTags.forEach((tag) => {
-        if (uniqueScriptTags.has(tag)) {
-          duplicateScriptTags.add(tag);
-        } else {
-          uniqueScriptTags.add(tag);
+      // Extract script tags from all HTML files and categorize them
+      for (const file of htmlFiles) {
+        const htmlContent = fs.readFileSync(file, 'utf-8');
+        const scriptTags = this.extractScriptTags(htmlContent);
+        allScriptTags.set(file, scriptTags);
+
+        // Identify duplicate script tags
+        scriptTags.forEach((tag) => {
+          if (uniqueScriptTags.has(tag)) {
+            duplicateScriptTags.add(tag);
+          } else {
+            uniqueScriptTags.add(tag);
+          }
+        });
+      }
+
+      // Process each file and update scripts
+      let isFirstFile = true;
+      for (const file of htmlFiles) {
+        let htmlContent = fs.readFileSync(file, 'utf-8');
+        const scriptTags = allScriptTags.get(file) || [];
+        const remainingScriptTags = scriptTags.filter(
+          (tag) => !duplicateScriptTags.has(tag),
+        );
+
+        // Remove all original script tags and trim content
+        htmlContent = this.removeScriptTags(htmlContent);
+
+        // Add remaining (non-duplicate) script tags back to the file
+        if (remainingScriptTags.length > 0) {
+          const remainingScriptContent = `<script type="text/javascript">\n${remainingScriptTags.join('\n')}\n</script>\n`;
+          htmlContent = remainingScriptContent + htmlContent;
         }
-      });
-    }
 
-    // Process each file and update scripts
-    let isFirstFile = true;
-    for (const file of htmlFiles) {
-      let htmlContent = fs.readFileSync(file, 'utf-8');
-      const scriptTags = allScriptTags.get(file) || [];
-      const remainingScriptTags = scriptTags.filter(
-        (tag) => !duplicateScriptTags.has(tag),
-      );
+        // Add the auto-clean message if duplicate scripts were removed and it's not the first file
+        if (scriptTags.length > remainingScriptTags.length && !isFirstFile) {
+          const autoCleanMessage =
+            '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->\n';
+          htmlContent = autoCleanMessage + htmlContent;
+        }
 
-      // Remove all original script tags and trim content
-      htmlContent = this.removeScriptTags(htmlContent);
+        fs.writeFileSync(file, htmlContent);
 
-      // Add remaining (non-duplicate) script tags back to the file
-      if (remainingScriptTags.length > 0) {
-        const remainingScriptContent = `<script type="text/javascript">\n${remainingScriptTags.join('\n')}\n</script>\n`;
-        htmlContent = remainingScriptContent + htmlContent;
+        if (isFirstFile) {
+          // Insert unique scripts in the first file
+          this.insertUniqueScriptTags(file, duplicateScriptTags);
+          isFirstFile = false;
+        }
       }
-
-      // Add the auto-clean message if duplicate scripts were removed and it's not the first file
-      if (scriptTags.length > remainingScriptTags.length && !isFirstFile) {
-        const autoCleanMessage =
-          '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->\n';
-        htmlContent = autoCleanMessage + htmlContent;
-      }
-
-      fs.writeFileSync(file, htmlContent);
-
-      if (isFirstFile) {
-        // Insert unique scripts in the first file
-        this.insertUniqueScriptTags(file, duplicateScriptTags);
-        isFirstFile = false;
-      }
-    }
+    });
   }
 }
 
