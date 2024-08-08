@@ -97,7 +97,7 @@ class HtmlScriptsOptimizer {
     const htmlContent = fs.readFileSync(filePath, 'utf-8');
     const newScriptContent = `<script type="text/javascript">\n${Array.from(scriptTags).join('\n')}\n</script>\n`;
     const autoCleanMessage =
-      '<!-- [vitepress-templ-plugin] All scripts are consolidated here to avoid duplication -->\n';
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - All scripts are consolidated here to avoid duplication -->\n';
     const newHtmlContent = autoCleanMessage + newScriptContent + htmlContent;
     fs.writeFileSync(filePath, newHtmlContent);
   }
@@ -155,7 +155,7 @@ class HtmlScriptsOptimizer {
         // Add the auto-clean message if duplicate scripts were removed and it's not the first file
         if (scriptTags.length > remainingScriptTags.length && !isFirstFile) {
           const autoCleanMessage =
-            '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->\n';
+            '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->\n';
           htmlContent = autoCleanMessage + htmlContent;
         }
 

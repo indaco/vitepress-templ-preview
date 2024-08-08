@@ -71,18 +71,18 @@ describe('HtmlScriptsOptimizer', () => {
 
     // Check the first file
     expect(resultContent1).toContain(
-      '<!-- [vitepress-templ-plugin] All scripts are consolidated here to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - All scripts are consolidated here to avoid duplication -->',
     );
     expect(resultContent1).toContain("console.log('script1');");
     expect(resultContent1).toContain("console.log('script2');");
     expect(resultContent1).not.toMatch(/function greetings\(\) {/);
     expect(resultContent1).not.toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
 
     // Check the second file
     expect(resultContent2).toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent2).not.toContain("console.log('script1');");
     expect(resultContent2).not.toContain("console.log('script2');");
@@ -90,7 +90,7 @@ describe('HtmlScriptsOptimizer', () => {
 
     // Check the third file
     expect(resultContent3).toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain("console.log('script2');");
     expect(resultContent3).toMatch(/function greetings\(\) {/);
@@ -142,12 +142,12 @@ describe('HtmlScriptsOptimizer', () => {
     expect(resultContent1).toContain("console.log('script2');");
     expect(resultContent1).not.toContain("console.log('script3');");
     expect(resultContent1).not.toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
 
     // Check the second file
     expect(resultContent2).toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent2).not.toContain("console.log('script1');");
     expect(resultContent2).not.toContain("console.log('script2');");
@@ -155,7 +155,7 @@ describe('HtmlScriptsOptimizer', () => {
 
     // Check the third file
     expect(resultContent3).toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain("console.log('script2');");
     expect(resultContent3).toContain("console.log('script3');");
@@ -210,12 +210,12 @@ describe('HtmlScriptsOptimizer', () => {
     expect(resultContent1).toContain("console.log('script2');");
     expect(resultContent1).toContain("console.log('script3');");
     expect(resultContent1).not.toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
 
     // Check the second file
     expect(resultContent2).toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent2).not.toContain("console.log('script1');");
     expect(resultContent2).not.toContain("console.log('script2');");
@@ -223,7 +223,7 @@ describe('HtmlScriptsOptimizer', () => {
 
     // Check the third file
     expect(resultContent3).toContain(
-      '<!-- [vitepress-templ-plugin] Duplicated scripts found and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain("console.log('script2');");
     expect(resultContent3).not.toContain("console.log('script3');");
