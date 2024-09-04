@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "vitepress-templ-preview"
+  name: "Vitepress Templ Preview Plugin"
   text: ""
   tagline: "A VitePress plugin to preview your templ components while documenting them."
   image:
