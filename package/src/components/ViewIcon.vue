@@ -1,13 +1,13 @@
 <script lang="ts">
 interface Props {
   fill: string;
-  size: number;
+  size?: number; // Make size optional
 }
 </script>
 
 <script setup lang="ts">
 const props = withDefaults(defineProps<Props>(), {
-  size: 16,
+  size: 16, // Default value for size
 });
 </script>
 
