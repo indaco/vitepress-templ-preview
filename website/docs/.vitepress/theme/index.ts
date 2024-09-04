@@ -4,6 +4,7 @@ import { VPBadge } from 'vitepress/theme';
 import VersionBadge from '../../src/components/VersionBadge.vue';
 import { VTPIconTabs } from 'vitepress-templ-preview/components';
 import 'vitepress-templ-preview/style.css';
+import 'virtual:group-icons.css';
 
 export default {
   extends: DefaultTheme,

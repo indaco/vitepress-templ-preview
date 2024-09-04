@@ -9,6 +9,10 @@ import {
   transformerNotationDiff,
   transformerNotationFocus,
 } from '@shikijs/transformers';
+import {
+  groupIconMdPlugin,
+  groupIconVitePlugin,
+} from 'vitepress-plugin-group-icons';
 
 const vtpOptions: VTPUserConfig = {
   inputDir: 'examples',
@@ -117,12 +121,20 @@ export default defineConfig({
     },
   },
   markdown: {
+    config(md) {
+      md.use(groupIconMdPlugin);
+    },
     codeTransformers: [transformerNotationDiff(), transformerNotationFocus()],
   },
   vite: {
     plugins: [
       injectNPMPackageVersion(pkgVersion),
       viteTemplPreviewPlugin(vtpOptions),
+      groupIconVitePlugin({
+        customIcon: {
+          '.mts': 'vscode-icons:file-type-typescript',
+        },
+      }),
     ],
     build: {
       chunkSizeWarningLimit: 1000,
