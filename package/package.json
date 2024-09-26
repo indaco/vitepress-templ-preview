@@ -71,23 +71,23 @@
     "test:watch": "vitest watch"
   },
   "devDependencies": {
-    "@shikijs/markdown-it": "^1.16.1",
+    "@shikijs/markdown-it": "^1.19.0",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^20.16.4",
-    "@vitejs/plugin-vue": "^5.1.3",
-    "@vitest/ui": "^2.0.5",
+    "@types/node": "^20.16.9",
+    "@vitejs/plugin-vue": "^5.1.4",
+    "@vitest/ui": "^2.1.1",
     "ansis": "^3.3.2",
     "markdown-it": "^14.1.0",
-    "publint": "^0.2.10",
+    "publint": "^0.2.11",
     "rimraf": "^6.0.1",
-    "shiki": "^1.16.1",
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4",
-    "vite": "^5.4.3",
+    "shiki": "^1.19.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
     "vitepress": "^1.3.4",
-    "vitest": "^2.0.5",
-    "vue": "^3.5.0",
-    "vue-tsc": "^2.1.4"
+    "vitest": "^2.1.1",
+    "vue": "^3.5.9",
+    "vue-tsc": "^2.1.6"
   },
   "packageManager": "pnpm@9.9.0"
 }
