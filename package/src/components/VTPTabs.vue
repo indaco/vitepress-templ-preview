@@ -135,7 +135,7 @@ button:not(.active):hover {
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
-  row-gap: 0.75rem;
+  gap: 0.75rem;
   margin-block: 2rem;
   padding-inline: 0;
 }
