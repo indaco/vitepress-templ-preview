@@ -94,7 +94,7 @@ onMounted(async () => {
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
-  row-gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 button {
