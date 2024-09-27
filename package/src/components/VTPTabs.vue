@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { VTPComponentProps } from '../types';
 
-interface VTPTabsProps extends VTPComponentProps {}
+type VTPTabsProps = VTPComponentProps;
 </script>
 
 <script setup lang="ts">
@@ -41,48 +41,48 @@ onMounted(async () => {
     <div class="wrapper">
       <div class="tabs" role="tablist">
         <button
-          role="tab"
           :id="'tab-preview-' + uid"
+          role="tab"
           :aria-selected="activeTab === 'preview'"
           :class="{ active: activeTab === 'preview' }"
-          @click="activeTab = 'preview'"
-          @keydown="(e) => handleKeydown(e, 'preview')"
           tabindex="0"
           :aria-controls="'tabpanel-preview-' + uid"
           aria-label="preview the component"
+          @click="activeTab = 'preview'"
+          @keydown="(e) => handleKeydown(e, 'preview')"
         >
           Preview
         </button>
         <button
-          role="tab"
           :id="'tab-code-' + uid"
+          role="tab"
           :aria-selected="activeTab === 'code'"
           :class="{ active: activeTab === 'code' }"
-          @click="activeTab = 'code'"
-          @keydown="(e) => handleKeydown(e, 'code')"
           tabindex="0"
           :aria-controls="'tabpanel-code-' + uid"
           aria-label="view the source code"
+          @click="activeTab = 'code'"
+          @keydown="(e) => handleKeydown(e, 'code')"
         >
           Code
         </button>
       </div>
     </div>
     <div
+      :id="'tabpanel-' + activeTab + '-' + uid"
       class="tab-content"
       role="tabpanel"
-      :id="'tabpanel-' + activeTab + '-' + uid"
     >
       <div
         v-show="activeTab === 'preview'"
         class="preview-content"
         v-html="props.htmlContent"
-      ></div>
+      />
       <div v-show="activeTab === 'code'" class="code-content">
         <div class="language-templ vp-adaptive-theme">
-          <button title="Copy Code" class="copy"></button>
+          <button title="Copy Code" class="copy" />
           <span class="lang">templ</span>
-          <span class="vp-code" v-html="highlightedCode"></span>
+          <span class="vp-code" v-html="highlightedCode" />
         </div>
       </div>
     </div>

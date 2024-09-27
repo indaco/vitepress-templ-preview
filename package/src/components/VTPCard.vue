@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { VTPComponentProps } from '../types';
 
-interface VTPCardProps extends VTPComponentProps {}
+type VTPCardProps = VTPComponentProps;
 </script>
 
 <script setup lang="ts">
@@ -23,18 +23,18 @@ onMounted(async () => {
 
 <template>
   <div class="container">
-    <ConditionalWrapper :isPreviewFirst="props.isPreviewFirst">
+    <ConditionalWrapper :is-preview-first="props.isPreviewFirst">
       <template #preview>
         <div class="preview">
-          <div class="preview-content" v-html="props.htmlContent"></div>
+          <div class="preview-content" v-html="props.htmlContent" />
         </div>
       </template>
-      <template #code v-if="!props.isPreviewOnly">
+      <template v-if="!props.isPreviewOnly" #code>
         <div class="code-content">
           <div class="language-templ vp-adaptive-theme">
-            <button title="Copy Code" class="copy"></button>
+            <button title="Copy Code" class="copy" />
             <span class="lang">templ</span>
-            <span class="vp-code" v-html="highlightedCode"></span>
+            <span class="vp-code" v-html="highlightedCode" />
           </div>
         </div>
       </template>

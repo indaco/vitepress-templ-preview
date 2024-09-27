@@ -11,12 +11,12 @@ const props = defineProps<Props>();
 <template>
   <div>
     <template v-if="props.isPreviewFirst">
-      <slot name="preview"></slot>
-      <slot name="code"></slot>
+      <slot name="preview" />
+      <slot name="code" />
     </template>
     <template v-else>
-      <slot name="code"></slot>
-      <slot name="preview"></slot>
+      <slot name="code" />
+      <slot name="preview" />
     </template>
   </div>
 </template>

@@ -2,7 +2,7 @@
 import type { Ref } from 'vue';
 import type { VTPComponentProps } from '../types';
 
-interface VTPCodeToggleProps extends VTPComponentProps {}
+type VTPCodeToggleProps = VTPComponentProps;
 </script>
 
 <script setup lang="ts">
@@ -39,14 +39,14 @@ onMounted(async () => {
   <template v-else>
     <div class="container">
       <div class="preview">
-        <div class="preview-content" v-html="props.htmlContent"></div>
+        <div class="preview-content" v-html="props.htmlContent" />
       </div>
       <div class="code-section">
         <button
-          @click="toggleCodeSection"
           :class="`button-${props.buttonStyle}`"
           :aria-controls="'code-content-' + uid"
           aria-label="view the source code"
+          @click="toggleCodeSection"
         >
           <slot name="code-icon">
             <CodeIcon :fill="`var(--vp-button-${props.buttonStyle}-text)`" />
@@ -54,15 +54,15 @@ onMounted(async () => {
           {{ isCodeSectionVisible ? 'Hide Code' : 'Show Code' }}
         </button>
         <div
-          class="code-content"
           :id="'code-content-' + uid"
+          class="code-content"
           :aria-hidden="!isCodeSectionVisible"
         >
           <div>
             <div class="language-templ vp-adaptive-theme">
-              <button title="Copy Code" class="copy"></button>
+              <button title="Copy Code" class="copy" />
               <span class="lang">templ</span>
-              <span class="vp-code" v-html="highlightedCode"></span>
+              <span class="vp-code" v-html="highlightedCode" />
             </div>
           </div>
         </div>
