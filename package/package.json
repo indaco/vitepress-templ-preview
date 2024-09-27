@@ -74,7 +74,7 @@
   "devDependencies": {
     "@shikijs/markdown-it": "^1.19.0",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^20.16.9",
+    "@types/node": "^22.7.3",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vitest/ui": "^2.1.1",
     "ansis": "^3.3.2",
