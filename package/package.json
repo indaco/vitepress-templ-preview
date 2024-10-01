@@ -72,7 +72,7 @@
     "test:watch": "vitest watch"
   },
   "devDependencies": {
-    "@shikijs/markdown-it": "^1.19.0",
+    "@shikijs/markdown-it": "^1.21.0",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.16.9",
     "@vitejs/plugin-vue": "^5.1.4",
