@@ -74,6 +74,11 @@ export interface PluginContext {
   serverRoot: string;
 
   /**
+   * Command that Vite is running ("build" or "serve").
+   */
+  serverCommand: 'build' | 'serve';
+
+  /**
    * Options provided to the plugin.
    */
   pluginOptions: Partial<PluginConfig>;

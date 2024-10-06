@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { execSync, spawnSync } from 'node:child_process';
 import type { CachedFile, PluginConfig, UserMessage } from './types';
 import path from 'node:path';

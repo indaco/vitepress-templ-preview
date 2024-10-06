@@ -2,15 +2,17 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
-    'src/types.ts',
     'src/code-extractor.ts',
     'src/logger.ts',
+    'src/scripts-optimizer.ts',
     'src/shared.ts',
     'src/styles-optimizer.ts',
-    'src/scripts-optimizer.ts',
+    'src/types.ts',
     'src/user-messages.ts',
     'src/utils.ts',
+    'src/plugin/helpers.ts',
     'src/plugin/index.ts',
+    'src/plugin/markdown-it-templ-preview.ts',
   ],
   outExtension({ format }) {
     return {
