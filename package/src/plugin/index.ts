@@ -4,6 +4,7 @@ import type {
   PluginContext,
   CachedFile,
   UserMessage,
+  VTPUserConfig,
 } from '../types';
 import path from 'node:path';
 import { Plugin } from 'vite';
@@ -64,7 +65,9 @@ const defaultPluginOptions: PluginConfig = {
   runTemplGenerate: true,
 };
 
-async function viteTemplPreviewPlugin(options?: PluginConfig): Promise<Plugin> {
+async function viteTemplPreviewPlugin(
+  options?: VTPUserConfig,
+): Promise<Plugin> {
   const resolvedPluginOptions: PluginConfig = {
     ...defaultPluginOptions,
     ...options,
