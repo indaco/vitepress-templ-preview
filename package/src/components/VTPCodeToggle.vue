@@ -7,11 +7,12 @@ type VTPCodeToggleProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { executeScriptsTick, useHighlighter } from '../shared';
+import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPCodeToggleProps>();
+const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
 const isCodeSectionVisible: Ref<boolean> = ref(false);
 const { highlightedCode, highlightCode } = useHighlighter();
 
@@ -39,7 +40,7 @@ onMounted(async () => {
   <template v-else>
     <div class="container">
       <div class="preview">
-        <div class="preview-content" v-html="props.htmlContent" />
+        <div class="preview-content" v-html="sanitizedHtmlContent" />
       </div>
       <div class="code-section">
         <button

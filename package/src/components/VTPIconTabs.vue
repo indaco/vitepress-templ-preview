@@ -9,9 +9,10 @@ import { ref, onMounted, nextTick, computed, getCurrentInstance } from 'vue';
 import ViewIcon from './ViewIcon.vue';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
-import { executeScriptsTick, useHighlighter } from '../shared';
+import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
 
 const props = defineProps<VTPIconTabsProps>();
+const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
 const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
 
@@ -93,7 +94,7 @@ onMounted(async () => {
       <div
         v-show="activeTab === 'preview'"
         class="preview-content"
-        v-html="props.htmlContent"
+        v-html="sanitizedHtmlContent"
       />
       <div v-show="activeTab === 'code'" class="code-content">
         <div class="language-templ vp-adaptive-theme">

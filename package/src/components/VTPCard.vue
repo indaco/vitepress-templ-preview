@@ -6,10 +6,11 @@ type VTPCardProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { onMounted, nextTick } from 'vue';
-import { executeScriptsTick, useHighlighter } from '../shared';
+import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
 import ConditionalWrapper from './ConditionalWrapper.vue';
 
 const props = defineProps<VTPCardProps>();
+const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
 const { highlightedCode, highlightCode } = useHighlighter();
 
 onMounted(async () => {
@@ -26,7 +27,7 @@ onMounted(async () => {
     <ConditionalWrapper :is-preview-first="props.isPreviewFirst">
       <template #preview>
         <div class="preview">
-          <div class="preview-content" v-html="props.htmlContent" />
+          <div class="preview-content" v-html="sanitizedHtmlContent" />
         </div>
       </template>
       <template v-if="!props.isPreviewOnly" #code>

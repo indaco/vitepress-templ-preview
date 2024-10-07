@@ -1,14 +1,28 @@
-import { ref } from 'vue';
+import { Ref, ref } from 'vue';
 import { BundledTheme, createHighlighter } from 'shiki';
 
 const domContentLoadedRegex =
   /document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*(function\s*\([^)]*\)\s*\{|\([^)]*\)\s*=>\s*\{)([\s\S]*?(\{[\s\S]*?\}[\s\S]*?)*)\}\s*\);?\s*|document\.addEventListener\s*\(\s*['"]DOMContentLoaded['"]\s*,\s*(\w+)\s*\);?\s*/;
 
 /**
- * Custom hook to use the Shiki highlighter.
- * @returns {Object} An object containing the highlighted code and the highlightCode function.
+ * The return type of the `useHighlighter` function.
  */
-export function useHighlighter() {
+interface UseHighlighterReturn {
+  highlightedCode: Ref<string>;
+  highlightCode: (
+    codeContent: string,
+    themes: { light: BundledTheme; dark: BundledTheme },
+  ) => Promise<void>;
+}
+
+/**
+ * Custom hook to use the Shiki highlighter for syntax highlighting code content.
+ *
+ * @returns {Object} An object containing:
+ * - `highlightedCode`: A ref that holds the highlighted HTML string.
+ * - `highlightCode`: A function to highlight the provided code content based on the specified themes.
+ */
+export function useHighlighter(): UseHighlighterReturn {
   const highlightedCode = ref('');
 
   /**
@@ -41,6 +55,21 @@ export function useHighlighter() {
     highlightedCode,
     highlightCode,
   };
+}
+
+/**
+ * Normalizes quotes in strings that contain nested or mismatched double quotes due to JSON-stringify by replacing the outer double quotes with single quotes.
+ *
+ * @param {string} input - The input string that may contain nested or mismatched double quotes.
+ * @returns {string} - The modified string with the outermost double quotes replaced by single quotes.
+ */
+export function normalizeQuotes(input: string): string {
+  return input.replace(
+    /"([^"]*\[[^'"]*="[^'"]*"\][^"]*)"/g,
+    function (match, p1) {
+      return `'${p1}'`;
+    },
+  );
 }
 
 /**
