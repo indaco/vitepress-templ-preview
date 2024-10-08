@@ -2,6 +2,7 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
+    'src/cache-service.ts',
     'src/code-extractor.ts',
     'src/highlighter.ts',
     'src/logger.ts',

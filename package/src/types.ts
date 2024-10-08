@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import { BundledTheme } from 'shiki';
+import { CacheService } from './cache-service';
 
 /**
  * The mode in which the static template plugin operates.
@@ -60,7 +61,7 @@ export interface PluginConfig {
 export type VTPUserConfig = Partial<PluginConfig>;
 
 /**
- * Context provided to the plugin, containing various utilities and options.
+ * Context provided to the plugin, containing various utilities, options, and services.
  */
 export interface PluginContext {
   /**
@@ -84,19 +85,15 @@ export interface PluginContext {
   pluginOptions: Partial<PluginConfig>;
 
   /**
-   * Cache for storing file contents.
-   */
-  fileCache: Record<string, CachedFile>;
-
-  /**
-   * Watched Markdown files and their corresponding sets of dependent files.
-   */
-  watchedMdFiles: Record<string, Set<string>>;
-
-  /**
    * Theme configuration for light and dark modes.
    */
   theme: { light: BundledTheme; dark: BundledTheme };
+
+  /**
+   * CacheService instance for managing file caching, file watching, and module invalidation.
+   * This service provides methods to retrieve cached content, watch file changes, and invalidate modules.
+   */
+  cacheService: CacheService;
 }
 
 /**

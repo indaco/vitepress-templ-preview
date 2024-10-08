@@ -2,7 +2,6 @@
 import type {
   PluginConfig,
   PluginContext,
-  CachedFile,
   UserMessage,
   VTPUserConfig,
 } from '../types';
@@ -12,8 +11,9 @@ import { MarkdownOptions } from 'vitepress';
 import markdownItTemplPreviewPlugin from './markdown-it-templ-preview';
 import MarkdownIt from 'markdown-it';
 import { UserMessages } from '../user-messages';
-import { checkBinaries, executeCommandSync, updateCache } from '../utils';
+import { checkBinaries, executeCommandSync } from '../utils';
 import { Logger } from '../logger';
+import { CacheService } from '../cache-service';
 import HtmlStylesOptimizer from '../styles-optimizer';
 import HtmlScriptsOptimizer from '../scripts-optimizer';
 import { BundledTheme } from 'shiki';
@@ -73,12 +73,13 @@ async function viteTemplPreviewPlugin(
     ...options,
   };
 
-  const fileCache: Record<string, CachedFile> = {};
-  const watchedMdFiles: Record<string, Set<string>> = {};
   const defaultThemes: { light: BundledTheme; dark: BundledTheme } = {
     light: 'github-light',
     dark: 'github-dark',
   };
+
+  // Initialize CacheService with default cache size
+  const cacheService = new CacheService(100);
 
   let mdInstance: MarkdownIt;
   let serverRoot: string;
@@ -175,12 +176,12 @@ async function viteTemplPreviewPlugin(
         Logger.info(UserMessages.JS_OPTIMIZER);
         scriptsOptimizer.run();
 
-        updateCache(
+        // Use CacheService to update cache and invalidate
+        await cacheService.updateCacheAndInvalidate(
+          server,
           serverRoot,
           resolvedPluginOptions,
-          fileCache,
-          watchedMdFiles,
-          server,
+          true,
         );
       }
     },
@@ -202,24 +203,15 @@ async function viteTemplPreviewPlugin(
           Logger.info(UserMessages.JS_OPTIMIZER);
           scriptsOptimizer.run();
 
-          updateCache(
+          // Use CacheService to update the cache after file change
+          cacheService.updateCacheAndInvalidate(
+            server,
             serverRoot,
             resolvedPluginOptions,
-            fileCache,
-            watchedMdFiles,
-            server,
-            false,
           );
 
           setTimeout(() => {
-            if (watchedMdFiles[file]) {
-              watchedMdFiles[file].forEach((mdFile) => {
-                const module = server.moduleGraph.getModuleById(mdFile);
-                if (module) {
-                  server.moduleGraph.invalidateModule(module);
-                }
-              });
-            }
+            cacheService.watchFileChanges(file, file);
 
             server.ws.send({
               type: 'full-reload',
@@ -249,10 +241,9 @@ async function viteTemplPreviewPlugin(
             resolvedPluginOptions.outputDir!,
           ),
         },
-        fileCache,
-        watchedMdFiles,
         theme: { ...defaultThemes, ...userThemes },
         serverCommand,
+        cacheService,
       };
 
       markdownItTemplPreviewPlugin(mdInstance, context, id);

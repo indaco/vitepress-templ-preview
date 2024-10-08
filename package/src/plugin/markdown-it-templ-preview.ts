@@ -15,11 +15,7 @@ import {
 } from './helpers';
 import type { StateCore, Token } from 'markdown-it/index.js';
 import { UserMessages } from '../user-messages';
-import {
-  escapeForJSON,
-  getCachedFileContent,
-  watchFileChanges,
-} from '../utils';
+import { escapeForJSON } from '../utils';
 import { Logger } from '../logger';
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
@@ -73,8 +69,7 @@ function renderTemplPreview(
   id: string,
 ): string {
   const token = tokens[idx];
-  const { md, serverRoot, pluginOptions, fileCache, watchedMdFiles, theme } =
-    context;
+  const { md, serverRoot, pluginOptions, theme, cacheService } = context;
 
   // Mandatory attribute on the tag.
   const srcAttr = token.attrs?.find((attr) => attr[0] === 'src');
@@ -129,19 +124,17 @@ function renderTemplPreview(
   let codeContent = token.content;
 
   if (serverCommand === 'serve') {
-    htmlContent = getCachedFileContent(
-      fileCache,
+    htmlContent = cacheService.getCachedContent(
       resolvedPaths.htmlFile,
       htmlContent,
     );
-    codeContent = getCachedFileContent(
-      fileCache,
+    codeContent = cacheService.getCachedContent(
       resolvedPaths.templFile,
       codeContent,
     );
 
-    watchFileChanges(watchedMdFiles, resolvedPaths.htmlFile, id);
-    watchFileChanges(watchedMdFiles, resolvedPaths.templFile, id);
+    cacheService.watchFileChanges(resolvedPaths.htmlFile, id);
+    cacheService.watchFileChanges(resolvedPaths.templFile, id);
   } else if (serverCommand === 'build') {
     htmlContent = fs.readFileSync(resolvedPaths.htmlFile, 'utf8');
     codeContent = fs.readFileSync(resolvedPaths.templFile, 'utf8');
