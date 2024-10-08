@@ -101,20 +101,19 @@ If you prefer to use a custom component instead of the predefined ones, it is ea
 ```vue
 <script setup lang="ts">
 import type { VTPComponentProps } from "vitepress-templ-plugin/types";
-import {
-  executeScriptsTick,
-  useHighlighter,
-} from "vitepress-templ-preview/shared";
+import { TemplScriptManager } from "vitepress-templ-preview/script-manager";
+import { useHighlighter } from "vitepress-templ-preview/highlighter";
 import { onMounted, nextTick } from "vue";
 
 const props = defineProps<VTPComponentProps>();
+const scriptManager = TemplScriptManager.getInstance();
 const { highlightedCode, highlightCode } = useHighlighter();
 
 onMounted(async () => {
   await highlightCode(props.codeContent, props.themes);
 
   nextTick(() => {
-    executeScriptsTick();
+    scriptManager.executeScriptsTick();
   });
 });
 </script>
