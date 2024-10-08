@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { platform } from 'os';
 import { execSync, spawnSync } from 'node:child_process';
 import type { UserMessage } from './types';
 import { Logger } from './logger';
@@ -10,11 +11,20 @@ import { UserMessages } from './user-messages';
  */
 export function checkBinaries(binaries: string[]): void {
   binaries.forEach((binary) => {
-    const result = spawnSync('which', [binary]);
+    let result;
+
+    if (platform() === 'win32') {
+      // Windows: Use 'where' command
+      result = spawnSync('where', [binary]);
+    } else {
+      // Other platforms: Use 'which' command
+      result = spawnSync('which', [binary]);
+    }
+
     if (result.status !== 0) {
       Logger.error(UserMessages.NO_BINARY, binary);
       throw new Error(
-        `[vitepress-templ-preview] ${UserMessages.NO_BINARY.headline}: ${UserMessages.NO_BINARY.message} "${binary}`,
+        `[vitepress-templ-preview] ${UserMessages.NO_BINARY.headline}: ${UserMessages.NO_BINARY.message} "${binary}"`,
       );
     }
   });
