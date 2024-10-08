@@ -1,5 +1,4 @@
 <script lang="ts">
-import type { Ref } from 'vue';
 import type { VTPComponentProps } from '../types';
 
 type VTPCodeToggleProps = VTPComponentProps;
@@ -7,15 +6,16 @@ type VTPCodeToggleProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { normalizeQuotes, useHighlighter } from '../shared';
+import { normalizeQuotes } from './index';
 import { TemplScriptManager } from '../script-manager';
+import { useHighlighter } from '../highlighter';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPCodeToggleProps>();
+const isCodeSectionVisible = ref(false);
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
 const scriptManager = TemplScriptManager.getInstance();
-const isCodeSectionVisible: Ref<boolean> = ref(false);
 const { highlightedCode, highlightCode } = useHighlighter();
 
 // Access the current instance to generate a unique ID

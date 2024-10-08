@@ -1,6 +1,6 @@
 {
   "name": "vitepress-templ-preview",
-  "version": "0.1.8",
+  "version": "0.1.9-rc.0",
   "description": "A VitePress plugin to preview your templ components while documenting them.",
   "homepage": "https://vitepress-templ-preview.indaco.dev",
   "bugs": {
@@ -18,13 +18,17 @@
       "types": "./dist/types/plugin/index.d.ts",
       "default": "./dist/plugin/index.esm.js"
     },
-    "./shared": {
-      "types": "./dist/types/shared.d.ts",
-      "default": "./dist/shared.esm.js"
+    "./highlighter": {
+      "types": "./dist/types/highlighter.d.ts",
+      "default": "./dist/highlighter.esm.js"
     },
     "./components": {
       "types": "./dist/types/components/index.d.ts",
       "default": "./dist/components/vtp-vue-components.es.js"
+    },
+    "./script-manager": {
+      "types": "./dist/types/script-manager.d.ts",
+      "default": "./dist/script-manager.esm.js"
     },
     "./style.css": {
       "default": "./dist/components/style.css"
@@ -47,8 +51,11 @@
       "types": [
         "./dist/types/types.d.ts"
       ],
-      "shared": [
-        "./dist/types/shared.d.ts"
+      "highlighter": [
+        "./dist/types/highlighter.d.ts"
+      ],
+      "./script-manager": [
+        "./dist/types/script-manager.d.ts"
       ],
       ".": [
         "./dist/types/index.d.ts"

@@ -6,8 +6,9 @@ type VTPTabsProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { normalizeQuotes, useHighlighter } from '../shared';
+import { normalizeQuotes } from './index';
 import { TemplScriptManager } from '../script-manager';
+import { useHighlighter } from '../highlighter';
 import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPTabsProps>();

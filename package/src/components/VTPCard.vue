@@ -6,8 +6,9 @@ type VTPCardProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { onMounted, nextTick } from 'vue';
-import { normalizeQuotes, useHighlighter } from '../shared';
+import { normalizeQuotes } from './index';
 import { TemplScriptManager } from '../script-manager';
+import { useHighlighter } from '../highlighter';
 import ConditionalWrapper from './ConditionalWrapper.vue';
 
 const props = defineProps<VTPCardProps>();
