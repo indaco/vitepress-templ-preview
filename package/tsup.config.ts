@@ -4,6 +4,7 @@ export default defineConfig({
   entry: [
     'src/code-extractor.ts',
     'src/logger.ts',
+    'src/script-manager.ts',
     'src/scripts-optimizer.ts',
     'src/shared.ts',
     'src/styles-optimizer.ts',

@@ -6,13 +6,15 @@ type VTPTabsProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
+import { normalizeQuotes, useHighlighter } from '../shared';
+import { TemplScriptManager } from '../script-manager';
 import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPTabsProps>();
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
-const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
+const scriptManager = TemplScriptManager.getInstance();
+const activeTab = ref('preview');
 
 // Access the current instance to generate a unique ID
 const instance = getCurrentInstance();
@@ -31,7 +33,7 @@ onMounted(async () => {
   await highlightCode(props.codeContent, props.themes);
 
   nextTick(() => {
-    executeScriptsTick();
+    scriptManager.executeScriptsTick();
   });
 });
 </script>

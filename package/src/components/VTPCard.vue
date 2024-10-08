@@ -6,18 +6,20 @@ type VTPCardProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { onMounted, nextTick } from 'vue';
-import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
+import { normalizeQuotes, useHighlighter } from '../shared';
+import { TemplScriptManager } from '../script-manager';
 import ConditionalWrapper from './ConditionalWrapper.vue';
 
 const props = defineProps<VTPCardProps>();
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
 const { highlightedCode, highlightCode } = useHighlighter();
+const scriptManager = TemplScriptManager.getInstance();
 
 onMounted(async () => {
   await highlightCode(props.codeContent, props.themes);
 
   nextTick(() => {
-    executeScriptsTick();
+    scriptManager.executeScriptsTick();
   });
 });
 </script>

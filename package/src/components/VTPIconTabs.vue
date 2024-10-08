@@ -6,13 +6,15 @@ type VTPIconTabsProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, computed, getCurrentInstance } from 'vue';
+import { normalizeQuotes, useHighlighter } from '../shared';
+import { TemplScriptManager } from '../script-manager';
 import ViewIcon from './ViewIcon.vue';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
-import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
 
 const props = defineProps<VTPIconTabsProps>();
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
+const scriptManager = TemplScriptManager.getInstance();
 const activeTab = ref('preview');
 const { highlightedCode, highlightCode } = useHighlighter();
 
@@ -44,7 +46,7 @@ onMounted(async () => {
   await highlightCode(props.codeContent, props.themes);
 
   nextTick(() => {
-    executeScriptsTick();
+    scriptManager.executeScriptsTick();
   });
 });
 </script>

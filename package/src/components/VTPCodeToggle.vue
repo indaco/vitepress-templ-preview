@@ -7,12 +7,14 @@ type VTPCodeToggleProps = VTPComponentProps;
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { normalizeQuotes, executeScriptsTick, useHighlighter } from '../shared';
+import { normalizeQuotes, useHighlighter } from '../shared';
+import { TemplScriptManager } from '../script-manager';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
 
 const props = defineProps<VTPCodeToggleProps>();
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
+const scriptManager = TemplScriptManager.getInstance();
 const isCodeSectionVisible: Ref<boolean> = ref(false);
 const { highlightedCode, highlightCode } = useHighlighter();
 
@@ -30,7 +32,7 @@ onMounted(async () => {
   await highlightCode(props.codeContent, props.themes);
 
   nextTick(() => {
-    executeScriptsTick();
+    scriptManager.executeScriptsTick();
   });
 });
 </script>
