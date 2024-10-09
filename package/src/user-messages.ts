@@ -64,6 +64,6 @@ export const UserMessages: Record<string, UserMessage> = {
   },
   JS_OPTIMIZER: {
     headline: 'Script tags optimization',
-    message: 'Consolidating JS scripst across files to avoid duplications.',
+    message: 'Consolidating JS scripts across files to avoid duplications.',
   },
 };
