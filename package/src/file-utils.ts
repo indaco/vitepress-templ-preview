@@ -4,7 +4,13 @@ import path from 'node:path';
 import { Logger } from './logger';
 import { UserMessages } from './user-messages';
 
-export interface CachedFile {
+/**
+ * Represents a cached file with its content.
+ */
+interface CachedFile {
+  /**
+   * The content of the cached file.
+   */
   content: string;
 }
 

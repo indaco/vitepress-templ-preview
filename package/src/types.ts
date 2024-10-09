@@ -97,16 +97,6 @@ export interface PluginContext {
 }
 
 /**
- * Represents a cached file with its content.
- */
-export interface CachedFile {
-  /**
-   * The content of the cached file.
-   */
-  content: string;
-}
-
-/**
  * Represents the attributes of an HTML tag.
  */
 export interface TagAttrs {
