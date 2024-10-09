@@ -52,6 +52,12 @@ export interface PluginConfig {
    * @default true
    */
   runTemplGenerate: boolean;
+
+  /**
+   * The maximum number of files to cache.
+   * @default 100
+   */
+  cacheSize: number;
 }
 
 /**

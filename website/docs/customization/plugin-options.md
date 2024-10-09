@@ -97,6 +97,7 @@ The following table lists the configurable options for the `viteTemplPreviewPlug
 | `outputDir`        | _string_  | `output`     | The directory relative to `goProjectDir` where the generated HTML files will be placed.                    |
 | `debug`            | _boolean_ | `false`      | Whether or not to keep the `static-templ` generation script after completion.                              |
 | `runTemplGenerate` | _boolean_ | `true`       | Whether the plugin should run the `templ generate` command for you.                                        |
+| `cacheSize`        | _number_  | `100`        | The maximum number of files to cache.                                                                      |
 
 To configure these options, set the values in your VitePress configuration file as shown below:
 
@@ -110,12 +111,13 @@ export default defineConfig({
   vite: {
     plugins: [
       viteTemplPreviewPlugin({
-        // goProjectDir: ""
-        // mode: "inline"
-        // inputDir: "components"
-        // outputDir: "output"
-        // debug: false
-        // runTemplGenerate: true
+        // goProjectDir: "",
+        // mode: "inline",
+        // inputDir: "components",
+        // outputDir: "output",
+        // debug: false,
+        // runTemplGenerate: true,
+        // cacheSize: 100,
       }),
     ],
   },

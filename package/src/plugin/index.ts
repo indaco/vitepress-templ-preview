@@ -63,6 +63,7 @@ const defaultPluginOptions: PluginConfig = {
   outputDir: 'output',
   debug: false,
   runTemplGenerate: true,
+  cacheSize: 100,
 };
 
 async function viteTemplPreviewPlugin(
@@ -79,7 +80,7 @@ async function viteTemplPreviewPlugin(
   };
 
   // Initialize CacheService with default cache size
-  const cacheService = new CacheService(100);
+  const cacheService = new CacheService(resolvedPluginOptions.cacheSize);
 
   let mdInstance: MarkdownIt;
   let serverRoot: string;
