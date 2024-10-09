@@ -59,7 +59,7 @@ export const UserMessages: Record<string, UserMessage> = {
 `,
   },
   CSS_OPTIMIZER: {
-    headline: 'Styles tags optimization',
+    headline: 'Style tags optimization',
     message: 'Consolidating CSS styles across files to avoid duplications.',
   },
   JS_OPTIMIZER: {
