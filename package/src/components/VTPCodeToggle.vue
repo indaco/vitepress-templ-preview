@@ -9,7 +9,7 @@ import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
 import { normalizeQuotes } from './index';
 import { TemplScriptManager } from '../script-manager';
 import { useHighlighter } from '../highlighter';
-import CodeIcon from './CodeIcon.vue';
+import CodeIcon from './icons/CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
 import ComponentPreviewer from './ComponentPreviewer.vue';
 import ComponentCoder from './ComponentCoder.vue';
