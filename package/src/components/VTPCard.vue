@@ -10,6 +10,8 @@ import { normalizeQuotes } from './index';
 import { TemplScriptManager } from '../script-manager';
 import { useHighlighter } from '../highlighter';
 import ConditionalWrapper from './ConditionalWrapper.vue';
+import ComponentPreviewer from './ComponentPreviewer.vue';
+import ComponentCoder from './ComponentCoder.vue';
 
 const props = defineProps<VTPCardProps>();
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
@@ -29,18 +31,10 @@ onMounted(async () => {
   <div class="container">
     <ConditionalWrapper :is-preview-first="props.isPreviewFirst">
       <template #preview>
-        <div class="preview">
-          <div class="preview-content" v-html="sanitizedHtmlContent" />
-        </div>
+        <ComponentPreviewer :content="sanitizedHtmlContent" />
       </template>
       <template v-if="!props.isPreviewOnly" #code>
-        <div class="code-content">
-          <div class="language-templ vp-adaptive-theme">
-            <button title="Copy Code" class="copy" />
-            <span class="lang">templ</span>
-            <span class="vp-code" v-html="highlightedCode" />
-          </div>
-        </div>
+        <ComponentCoder v-if="highlightedCode" :content="highlightedCode" />
       </template>
     </ConditionalWrapper>
   </div>
@@ -52,7 +46,7 @@ onMounted(async () => {
   padding: 0;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding-inline: 1.25rem;
   border-radius: 5px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
@@ -64,13 +58,6 @@ onMounted(async () => {
 
 .preview {
   margin-block: 1rem;
-}
-
-.preview-content {
-  display: flex;
-  justify-content: center;
-  flex-flow: row wrap;
-  gap: 0.5rem;
 }
 
 button {
@@ -95,13 +82,5 @@ button:hover {
   border-color: var(--vp-button-brand-hover-border);
   color: var(--vp-button-brand-hover-text);
   background-color: var(--vp-button-brand-hover-bg);
-}
-
-.code-content {
-  display: grid;
-  grid-template-rows: 1fr;
-  margin-block: 1.5rem;
-  background-color: var(--vp-code-block-bg);
-  border-radius: 5px;
 }
 </style>

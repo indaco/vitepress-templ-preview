@@ -11,6 +11,8 @@ import { TemplScriptManager } from '../script-manager';
 import { useHighlighter } from '../highlighter';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
+import ComponentPreviewer from './ComponentPreviewer.vue';
+import ComponentCoder from './ComponentCoder.vue';
 
 const props = defineProps<VTPCodeToggleProps>();
 const isCodeSectionVisible = ref(false);
@@ -41,9 +43,7 @@ onMounted(async () => {
   <VTPCard v-if="props.isPreviewOnly" v-bind="props" />
   <template v-else>
     <div class="container">
-      <div class="preview">
-        <div class="preview-content" v-html="sanitizedHtmlContent" />
-      </div>
+      <ComponentPreviewer :content="sanitizedHtmlContent" />
       <div class="code-section">
         <button
           :class="`button-${props.buttonStyle}`"
@@ -56,19 +56,12 @@ onMounted(async () => {
           </slot>
           {{ isCodeSectionVisible ? 'Hide Code' : 'Show Code' }}
         </button>
-        <div
+        <ComponentCoder
+          v-if="highlightedCode && isCodeSectionVisible"
           :id="'code-content-' + uid"
-          class="code-content"
+          :content="highlightedCode"
           :aria-hidden="!isCodeSectionVisible"
-        >
-          <div>
-            <div class="language-templ vp-adaptive-theme">
-              <button title="Copy Code" class="copy" />
-              <span class="lang">templ</span>
-              <span class="vp-code" v-html="highlightedCode" />
-            </div>
-          </div>
-        </div>
+        />
       </div>
     </div>
   </template>
@@ -77,7 +70,7 @@ onMounted(async () => {
 <style scoped>
 .container {
   margin-top: 1.5rem;
-  padding: 1.25rem;
+  padding-inline: 1.25rem;
   display: flex;
   flex-direction: column;
   border-radius: 5px;
@@ -91,13 +84,6 @@ onMounted(async () => {
 
 .preview {
   margin-block: 1rem;
-}
-
-.preview-content {
-  display: flex;
-  justify-content: center;
-  flex-flow: row wrap;
-  gap: 0.5rem;
 }
 
 button {
@@ -138,21 +124,5 @@ button {
   border-color: var(--vp-button-brand-hover-border);
   color: var(--vp-button-brand-hover-text);
   background-color: var(--vp-button-brand-hover-bg);
-}
-
-.code-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 500ms;
-  background-color: var(--vp-code-block-bg);
-  border-radius: 5px;
-}
-
-.code-content[aria-hidden='false'] {
-  grid-template-rows: 1fr;
-}
-
-.code-content > div {
-  overflow: hidden;
 }
 </style>

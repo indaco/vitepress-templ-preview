@@ -12,6 +12,8 @@ import { useHighlighter } from '../highlighter';
 import ViewIcon from './ViewIcon.vue';
 import CodeIcon from './CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
+import ComponentPreviewer from './ComponentPreviewer.vue';
+import ComponentCoder from './ComponentCoder.vue';
 
 const props = defineProps<VTPIconTabsProps>();
 const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
@@ -94,18 +96,15 @@ onMounted(async () => {
       class="tab-content"
       role="tabpanel"
     >
-      <div
+      <ComponentPreviewer
         v-show="activeTab === 'preview'"
-        class="preview-content"
-        v-html="sanitizedHtmlContent"
+        :content="sanitizedHtmlContent"
       />
-      <div v-show="activeTab === 'code'" class="code-content">
-        <div class="language-templ vp-adaptive-theme">
-          <button title="Copy Code" class="copy" />
-          <span class="lang">templ</span>
-          <span class="vp-code" v-html="highlightedCode" />
-        </div>
-      </div>
+      <ComponentCoder
+        v-if="highlightedCode"
+        v-show="activeTab === 'code'"
+        :content="highlightedCode"
+      />
     </div>
   </template>
 </template>
@@ -172,14 +171,5 @@ button:focus-visible {
 
 .tab-content {
   padding: 0;
-}
-
-.preview-content {
-  display: flex;
-  justify-content: center;
-  flex-flow: row wrap;
-  gap: 0.5rem;
-  margin-block: 2rem;
-  padding-inline: 0;
 }
 </style>
