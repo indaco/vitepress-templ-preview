@@ -167,7 +167,7 @@ export interface UserMessage {
 export type ButtonStyle = 'alt' | 'brand';
 
 /**
- * Properties for the Vuew rendering components.
+ * Properties for the Vue rendering components.
  */
 export interface VTPComponentProps {
   /**
