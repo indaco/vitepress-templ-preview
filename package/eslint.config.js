@@ -15,6 +15,7 @@ export default ts.config(
   {
     rules: {
       'vue/no-v-html': 'off',
+      'vue/max-attributes-per-line': 'off',
     },
   },
 );
