@@ -35,7 +35,7 @@ watch(
 
 .code-content[aria-hidden='false'] {
   grid-template-rows: 1fr;
-  margin-block: 0;
+  margin-block-end: 1.5rem;
 }
 
 .code-content[aria-hidden='true'] {
