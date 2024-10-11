@@ -6,6 +6,7 @@ The `vitepress-templ-preview` plugin comes with predefined Vue components for pr
 - [_VTPCodeToggle_](#vtpcodetoggle)
 - [_VTPTabs_](#vtptabs)
 - [_VTPIconTabs_](#vtpicontabs)
+- [_VTPToggle_](#vtptoggle)
 
 Components can be configured by passing `data` [attributes](#data-attributes) directly to the custom `templ-demo` [tag](/guide/getting-started.md#embed-in-the-markdown).
 
@@ -78,7 +79,21 @@ Your `templ` code can include various elements like package declarations, import
 
 ::: details Screenshot
 
-![VTPTabs](/assets/screenshots/icons-tab.gif)
+![VTPIconTabs](/assets/screenshots/icons-tab.gif)
+
+:::
+
+### VTPToggle
+
+| Prop          | Type      | Default              | Description                                   |
+| :------------ | :-------- | -------------------- | --------------------------------------------- |
+| `label`       | _string_  | `view the code`      | The text displayed next to the toggle button. |
+| `activeColor` | _string_  | `var(--vp-c-border)` | The color of the toggle button when active.   |
+| `showLabel`   | _boolean_ | `true`               | Whether the label should be shown.            |
+
+::: details Screenshot
+
+![VTPToggle](/assets/screenshots/toggle.gif)
 
 :::
 
