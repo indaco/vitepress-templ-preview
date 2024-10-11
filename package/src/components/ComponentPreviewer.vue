@@ -18,8 +18,8 @@ const props = defineProps<{ content: string }>();
   padding: 1rem;
   background-image: repeating-linear-gradient(
     135deg,
-    var(--vp-c-gray-soft) 0,
-    var(--vp-c-gray-soft) 1px,
+    var(--vp-c-border) 0,
+    var(--vp-c-border) 1px,
     transparent 1px,
     transparent 11px
   );
