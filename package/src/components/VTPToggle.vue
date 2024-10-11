@@ -108,40 +108,41 @@ onMounted(async () => {
 }
 
 .toggle-switch {
-  width: 40px;
-  height: 20px;
-  background-color: var(--vp-input-switch-bg-color);
-  border-radius: 10px;
   position: relative;
-  transition: background-color 0.3s;
+  width: 3rem;
+  height: 1.5rem;
+  background-color: var(--vp-input-switch-bg-color);
   border-width: 1px;
   border-style: solid;
   border-color: var(--vp-input-border-color);
+  border-radius: 2rem;
+  transition: background-color 0.3s;
 }
 
 .toggle-switch:hover {
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--vp-button-brand-bg);
 }
 
 .toggle-switch::after {
   content: '';
   width: 18px;
   height: 18px;
-  background-color: var(--vp-c-white);
+  background-color: var(--vp-c-text-3);
   border-radius: 50%;
   position: absolute;
-  top: 1px;
-  left: 1px;
+  top: 2px;
+  left: 2px;
   transition: transform 0.3s;
 }
 
 .is-checked .toggle-switch {
   background-color: var(--vp-button-brand-bg);
-  border-color: var(--vp-c-brand-1);
+  border-color: var(--vp-button-brand-bg);
 }
 
 .is-checked .toggle-switch::after {
-  transform: translateX(20px);
+  background-color: var(--vp-c-gray-3);
+  transform: translateX(1.5rem);
 }
 
 .toggle-label {
