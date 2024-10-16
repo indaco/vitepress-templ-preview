@@ -94,8 +94,12 @@ class HtmlScriptsOptimizer {
     filePath: string,
     scriptTags: Set<string>,
   ): void {
+    if (scriptTags.size === 0) return; // Avoid inserting if there are no script tags
+
     const htmlContent = fs.readFileSync(filePath, 'utf-8');
-    const newScriptContent = `<script type="text/javascript">\n${Array.from(scriptTags).join('\n')}\n</script>\n`;
+    const newScriptContent = `<script type="text/javascript">\n${Array.from(
+      scriptTags,
+    ).join('\n')}\n</script>\n`;
     const autoCleanMessage =
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - All scripts are consolidated here to avoid duplication -->\n';
     const newHtmlContent = autoCleanMessage + newScriptContent + htmlContent;
@@ -146,9 +150,11 @@ class HtmlScriptsOptimizer {
         // Remove all original script tags and trim content
         htmlContent = this.removeScriptTags(htmlContent);
 
-        // Add remaining (non-duplicate) script tags back to the file
+        // Add remaining (non-duplicate) script tags back to the file if any exist
         if (remainingScriptTags.length > 0) {
-          const remainingScriptContent = `<script type="text/javascript">\n${remainingScriptTags.join('\n')}\n</script>\n`;
+          const remainingScriptContent = `<script type="text/javascript">\n${remainingScriptTags.join(
+            '\n',
+          )}\n</script>\n`;
           htmlContent = remainingScriptContent + htmlContent;
         }
 
