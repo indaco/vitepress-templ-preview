@@ -82,18 +82,15 @@ class HtmlScriptsOptimizer {
     return htmlContent
       .replace(/<script[^>]*>[\s\S]*?<\/script>/g, '')
       .trim()
-      .replace(/^\s*$(?:\r\n?|\n)/gm, '');
+      .replace(/^\s*$(?:\r\n?|\n)/gm, ''); // Clean up empty lines
   }
 
   /**
-   * Inserts unique script tags wrapped in a single <script> tag at the top of the specified HTML file.
-   * @param {string} filePath - The path to the HTML file to insert script tags into.
-   * @param {Set<string>} scriptTags - The set of unique script tag contents to insert.
+   * Inserts all script tags into the first HTML file, including both unique and duplicate tags.
+   * @param {string} filePath - The path to the first HTML file to insert script tags into.
+   * @param {Set<string>} scriptTags - The set of all script tag contents to insert.
    */
-  private insertUniqueScriptTags(
-    filePath: string,
-    scriptTags: Set<string>,
-  ): void {
+  private insertAllScriptTags(filePath: string, scriptTags: Set<string>): void {
     if (scriptTags.size === 0) return; // Avoid inserting if there are no script tags
 
     const htmlContent = fs.readFileSync(filePath, 'utf-8');
@@ -102,12 +99,26 @@ class HtmlScriptsOptimizer {
     ).join('\n')}\n</script>\n`;
     const autoCleanMessage =
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - All scripts are consolidated here to avoid duplication -->\n';
-    const newHtmlContent = autoCleanMessage + newScriptContent + htmlContent;
+    const newHtmlContent =
+      htmlContent + '\n' + autoCleanMessage + newScriptContent;
+    fs.writeFileSync(filePath, newHtmlContent); // Write updated content with scripts
+  }
+
+  /**
+   * Adds the auto-clean message to files where script tags were removed.
+   * @param {string} filePath - The path to the HTML file to add the auto-clean message to.
+   */
+  private addAutoCleanMessage(filePath: string): void {
+    const autoCleanMessage =
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->\n';
+    const htmlContent = fs.readFileSync(filePath, 'utf-8');
+    const newHtmlContent = autoCleanMessage + htmlContent;
     fs.writeFileSync(filePath, newHtmlContent);
   }
 
   /**
    * Main function to optimize scripts by deduplicating and consolidating script tags across multiple HTML files.
+   * All script tags (both unique and duplicate) are moved to the first file.
    */
   public run(): void {
     const directories = this.readDirectoriesRecursive(this.inputDirectory);
@@ -118,59 +129,38 @@ class HtmlScriptsOptimizer {
         return;
       }
 
-      const allScriptTags = new Map<string, string[]>();
-      const uniqueScriptTags = new Set<string>();
-      const duplicateScriptTags = new Set<string>();
+      const allScriptTags = new Set<string>(); // A set to hold all script tags across files
 
-      // Extract script tags from all HTML files and categorize them
+      // Extract script tags from all HTML files and store them in a set
       for (const file of htmlFiles) {
         const htmlContent = fs.readFileSync(file, 'utf-8');
         const scriptTags = this.extractScriptTags(htmlContent);
-        allScriptTags.set(file, scriptTags);
-
-        // Identify duplicate script tags
-        scriptTags.forEach((tag) => {
-          if (uniqueScriptTags.has(tag)) {
-            duplicateScriptTags.add(tag);
-          } else {
-            uniqueScriptTags.add(tag);
-          }
-        });
+        scriptTags.forEach((tag) => allScriptTags.add(tag));
       }
 
-      // Process each file and update scripts
+      // Process each file: remove all script tags from every file except the first one
       let isFirstFile = true;
       for (const file of htmlFiles) {
         let htmlContent = fs.readFileSync(file, 'utf-8');
-        const scriptTags = allScriptTags.get(file) || [];
-        const remainingScriptTags = scriptTags.filter(
-          (tag) => !duplicateScriptTags.has(tag),
-        );
+        const scriptTagsInFile = this.extractScriptTags(htmlContent);
 
-        // Remove all original script tags and trim content
+        // Remove all original script tags
         htmlContent = this.removeScriptTags(htmlContent);
 
-        // Add remaining (non-duplicate) script tags back to the file if any exist
-        if (remainingScriptTags.length > 0) {
-          const remainingScriptContent = `<script type="text/javascript">\n${remainingScriptTags.join(
-            '\n',
-          )}\n</script>\n`;
-          htmlContent = remainingScriptContent + htmlContent;
+        // If script tags were removed from the file and it's not the first file, add the auto-clean message
+        if (scriptTagsInFile.length > 0 && !isFirstFile) {
+          htmlContent =
+            '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->\n' +
+            htmlContent;
         }
 
-        // Add the auto-clean message if duplicate scripts were removed and it's not the first file
-        if (scriptTags.length > remainingScriptTags.length && !isFirstFile) {
-          const autoCleanMessage =
-            '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->\n';
-          htmlContent = autoCleanMessage + htmlContent;
-        }
-
+        // Write back the cleaned-up content for all files (without script tags for non-first files)
         fs.writeFileSync(file, htmlContent);
 
+        // For the first file, insert all the unique and duplicate script tags at the end of the file
         if (isFirstFile) {
-          // Insert unique scripts in the first file
-          this.insertUniqueScriptTags(file, duplicateScriptTags);
-          isFirstFile = false;
+          this.insertAllScriptTags(file, allScriptTags);
+          isFirstFile = false; // Mark the first file as processed
         }
       }
     });

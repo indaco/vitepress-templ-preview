@@ -5,7 +5,7 @@ import HtmlScriptsOptimizer from './scripts-optimizer';
 
 // Helper function to create a temporary directory for testing
 function createTempDir() {
-  const tempDir = path.join(__dirname, 'temp', `test-scripts}`);
+  const tempDir = path.join(__dirname, 'temp', `test-scripts`);
   fs.mkdirSync(tempDir, { recursive: true });
   return tempDir;
 }
@@ -75,7 +75,7 @@ describe('HtmlScriptsOptimizer', () => {
     );
     expect(resultContent1).toContain("console.log('script1');");
     expect(resultContent1).toContain("console.log('script2');");
-    expect(resultContent1).not.toMatch(/function greetings\(\) {/);
+    expect(resultContent1).toMatch(/function greetings\(\) {/);
     expect(resultContent1).not.toContain(
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
@@ -93,7 +93,7 @@ describe('HtmlScriptsOptimizer', () => {
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain("console.log('script2');");
-    expect(resultContent3).toMatch(/function greetings\(\) {/);
+    expect(resultContent3).not.toMatch(/function greetings\(\) {/);
   });
 
   it('should handle multiple files with nested scripts correctly', () => {
@@ -140,7 +140,7 @@ describe('HtmlScriptsOptimizer', () => {
     // Check the first file
     expect(resultContent1).toContain("console.log('script1');");
     expect(resultContent1).toContain("console.log('script2');");
-    expect(resultContent1).not.toContain("console.log('script3');");
+    expect(resultContent1).toContain("console.log('script3');");
     expect(resultContent1).not.toContain(
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
@@ -157,8 +157,9 @@ describe('HtmlScriptsOptimizer', () => {
     expect(resultContent3).toContain(
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated scripts found and moved to avoid duplication -->',
     );
+    expect(resultContent3).not.toContain("console.log('script1');");
     expect(resultContent3).not.toContain("console.log('script2');");
-    expect(resultContent3).toContain("console.log('script3');");
+    expect(resultContent3).not.toContain("console.log('script3');");
   });
 
   it('should handle mixed scripts with different order correctly', () => {
