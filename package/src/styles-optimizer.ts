@@ -94,8 +94,12 @@ class HtmlStylesOptimizer {
     filePath: string,
     styleTags: Set<string>,
   ): void {
+    if (styleTags.size === 0) return; // Avoid inserting if there are no style tags
+
     const htmlContent = fs.readFileSync(filePath, 'utf-8');
-    const newStyleContent = `<style type="text/css">\n${Array.from(styleTags).join('\n')}\n</style>\n`;
+    const newStyleContent = `<style type="text/css">\n${Array.from(
+      styleTags,
+    ).join('\n')}\n</style>\n`;
     const autoCleanMessage =
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - All styles are consolidated here to avoid duplication -->\n';
     const newHtmlContent = autoCleanMessage + newStyleContent + htmlContent;
@@ -146,16 +150,18 @@ class HtmlStylesOptimizer {
         // Remove all original style tags and trim content
         htmlContent = this.removeStyleTags(htmlContent);
 
-        // Add remaining (non-duplicate) style tags back to the file
+        // Add remaining (non-duplicate) style tags back to the file if any exist
         if (remainingStyleTags.length > 0) {
-          const remainingStyleContent = `<style type="text/css">\n${remainingStyleTags.join('\n')}\n</style>\n`;
+          const remainingStyleContent = `<style type="text/css">\n${remainingStyleTags.join(
+            '\n',
+          )}\n</style>\n`;
           htmlContent = remainingStyleContent + htmlContent;
         }
 
         // Add the auto-clean message if duplicate styles were removed and it's not the first file
         if (styleTags.length > remainingStyleTags.length && !isFirstFile) {
           const autoCleanMessage =
-            '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->\n';
+            '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->\n';
           htmlContent = autoCleanMessage + htmlContent;
         }
 

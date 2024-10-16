@@ -75,12 +75,12 @@ describe('HtmlStylesOptimizer', () => {
     expect(resultContent1).toContain('.class2 { color: blue; }');
     expect(resultContent1).not.toContain('.class3 { color: green; }');
     expect(resultContent1).not.toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
 
     // Check the second file
     expect(resultContent2).toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
     expect(resultContent2).not.toContain('.class1 { color: red; }');
     expect(resultContent2).not.toContain('.class2 { color: blue; }');
@@ -88,7 +88,7 @@ describe('HtmlStylesOptimizer', () => {
 
     // Check the third file
     expect(resultContent3).toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain('.class2 { color: blue; }');
     expect(resultContent3).toContain('.class3 { color: green; }');
@@ -140,12 +140,12 @@ describe('HtmlStylesOptimizer', () => {
     expect(resultContent1).toContain('.class2 { color: blue; }');
     expect(resultContent1).not.toContain('.class3 { color: green; }');
     expect(resultContent1).not.toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
 
     // Check the second file
     expect(resultContent2).toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
     expect(resultContent2).not.toContain('.class1 { color: red; }');
     expect(resultContent2).not.toContain('.class2 { color: blue; }');
@@ -153,7 +153,7 @@ describe('HtmlStylesOptimizer', () => {
 
     // Check the third file
     expect(resultContent3).toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain('.class2 { color: blue; }');
     expect(resultContent3).toContain('.class3 { color: green; }');
@@ -208,12 +208,12 @@ describe('HtmlStylesOptimizer', () => {
     expect(resultContent1).toContain('.class2 { color: blue; }');
     expect(resultContent1).toContain('.class3 { color: green; }');
     expect(resultContent1).not.toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
 
     // Check the second file
     expect(resultContent2).toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
     expect(resultContent2).not.toContain('.class2 { color: blue; }');
     expect(resultContent2).not.toContain('.class1 { color: red; }');
@@ -221,7 +221,7 @@ describe('HtmlStylesOptimizer', () => {
 
     // Check the third file
     expect(resultContent3).toContain(
-      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles founded and moved to avoid duplication -->',
+      '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->',
     );
     expect(resultContent3).not.toContain('.class3 { color: green; }');
     expect(resultContent3).not.toContain('.class2 { color: blue; }');
