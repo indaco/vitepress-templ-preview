@@ -12,6 +12,7 @@ const props = defineProps<{ content: string }>();
 .preview-content {
   display: flex;
   justify-content: center;
+  align-items: flex-end;
   flex-flow: row wrap;
   gap: 0.5rem;
   margin-block: 1rem;
