@@ -100,5 +100,5 @@
     "vue": "^3.5.12",
     "vue-tsc": "^2.1.10"
   },
-  "packageManager": "pnpm@9.11.0"
+  "packageManager": "pnpm@9.15.0"
 }
