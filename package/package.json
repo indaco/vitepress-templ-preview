@@ -31,7 +31,7 @@
       "default": "./dist/script-manager.esm.js"
     },
     "./style.css": {
-      "default": "./dist/components/style.css"
+      "default": "./dist/components/vitepress-templ-preview.css"
     },
     "./types": {
       "types": "./dist/types/types.d.ts"
@@ -82,7 +82,7 @@
     "@shikijs/markdown-it": "^1.24.2",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.10.2",
-    "@vitejs/plugin-vue": "^5.1.4",
+    "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/ui": "^2.1.8",
     "ansis": "^3.3.2",
     "eslint": "^9.16.0",
@@ -94,7 +94,7 @@
     "tsup": "^8.3.5",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.18.0",
-    "vite": "^5.4.10",
+    "vite": "^6.0.3",
     "vitepress": "^1.4.1",
     "vitest": "^2.1.8",
     "vue": "^3.5.13",
