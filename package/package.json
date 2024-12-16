@@ -75,6 +75,7 @@
     "lint": "eslint --fix 'src/**/*.vue'",
     "prepublish": "pnpm build",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "test:watch": "vitest watch"
   },
@@ -83,6 +84,7 @@
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.10.2",
     "@vitejs/plugin-vue": "^5.2.1",
+    "@vitest/coverage-istanbul": "^2.1.8",
     "@vitest/ui": "^2.1.8",
     "ansis": "^3.3.2",
     "eslint": "^9.16.0",
