@@ -1,9 +1,9 @@
 export class CSSLayerExtractor {
   // Singleton instance
-  private static instance: CSSLayerExtractor;
+  protected static instance: CSSLayerExtractor;
 
   // Private constructor to prevent instantiation
-  private constructor() {}
+  protected constructor() {}
 
   /**
    * Method to get the singleton instance.
@@ -25,11 +25,22 @@ export class CSSLayerExtractor {
   }
 
   /**
+   * Removes <style> tags but **keeps the inner content**.
+   * @param content - The CSS content that may contain <style> tags.
+   * @returns The content with <style> tags removed but inner CSS preserved.
+   */
+  protected removeStyleTags(content: string): string {
+    return content
+      .replace(/<style[^>]*>([\s\S]*?)<\/style>/g, '$1') // Capture inner content of <style> and remove the tags
+      .trim();
+  }
+
+  /**
    * Extracts the top-level @layer declarations from the content.
    * @param content - The CSS content to process.
    * @returns The top-level layer declarations as a string.
    */
-  public extractTopLayerDeclarations(content: string): string {
+  protected extractTopLayerDeclarations(content: string): string {
     const match = content.match(/@layer[^;]*;/g);
     return match ? match.join(' ') : '';
   }
@@ -39,19 +50,27 @@ export class CSSLayerExtractor {
    * @param content - The CSS content to process.
    * @returns The cleaned style tag.
    */
-  public cleanStyleTags(content: string): string {
+  /**
+   * Cleans the <style> tags from the provided content.
+   * @param content - The CSS content that may contain <style> tags.
+   * @returns The content as a single <style> block.
+   */
+  protected cleanStyleTags(content: string): string {
     const { extractedContent, cleanedContent } =
       this.extractAndRemoveLayerBlocks(content);
 
-    const finalContent = [...extractedContent, cleanedContent]
+    // Remove <style> tags from cleanedContent while preserving inner content
+    const cleanedInnerContent = this.removeStyleTags(cleanedContent);
+
+    const meaningfulContent = [...extractedContent, cleanedInnerContent]
       .map((str) => str.trim())
       .filter(Boolean)
       .join('\n')
       .trim();
 
-    if (!finalContent) return ''; // If final content is empty, return an empty string
+    if (!meaningfulContent) return '';
 
-    return `<style type="text/css">\n${finalContent}\n</style>`;
+    return `<style type="text/css">\n${meaningfulContent}\n</style>`;
   }
 
   /**
@@ -59,7 +78,7 @@ export class CSSLayerExtractor {
    * @param content - The CSS content to process.
    * @returns An array of extracted blocks.
    */
-  public extractLayerBlocks(content: string): string[] {
+  protected extractLayerBlocks(content: string): string[] {
     const extractedBlocks: string[] = [];
     let isInLayer = false;
     let currentBlock = '';
@@ -68,12 +87,11 @@ export class CSSLayerExtractor {
     for (let i = 0; i < content.length; i++) {
       const char = content[i];
 
-      // Detect start of @layer
       if (!isInLayer && content.slice(i, i + 6).startsWith('@layer')) {
         isInLayer = true;
-        i = content.indexOf('{', i); // Move to the first opening brace
+        i = content.indexOf('{', i);
         if (i === -1) break;
-        braceDepth = 1; // We are inside the first block
+        braceDepth = 1;
         continue;
       }
 
@@ -100,7 +118,7 @@ export class CSSLayerExtractor {
    * @param layerContent - The content of the layer.
    * @returns An array of extracted CSS rules.
    */
-  public extractCssRules(layerContent: string): string[] {
+  protected extractCssRules(layerContent: string): string[] {
     const cssRuleRegex = /[^{]+\{[^}]*\}/g;
     const matches = layerContent.match(cssRuleRegex) || [];
     return matches.map((rule) => rule.trim());
@@ -111,48 +129,26 @@ export class CSSLayerExtractor {
    * @param content - The CSS content to process.
    * @returns An object with the extracted content and the cleaned content.
    */
-  public extractAndRemoveLayerBlocks(content: string): {
+  protected extractAndRemoveLayerBlocks(content: string): {
     extractedContent: string[];
     cleanedContent: string;
   } {
-    let isInLayer = false;
-    let braceDepth = 0;
-    let currentBlock = '';
-    const extractedBlocks: string[] = [];
-    let cleanedContent = '';
+    // Step 1: Extract the layer blocks
+    const extractedContent = this.extractLayerBlocks(content);
 
-    for (let i = 0; i < content.length; i++) {
-      const char = content[i];
+    // Step 2: Remove the extracted layer content from the original content
+    let cleanedContent = content;
+    extractedContent.forEach((block) => {
+      const escapedBlock = block.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape for regex
+      const regex = new RegExp(`@layer[^}]*{[^}]*${escapedBlock}[^}]*}`, 'g');
+      cleanedContent = cleanedContent.replace(regex, '');
+    });
 
-      // Detect start of @layer
-      if (!isInLayer && content.slice(i, i + 6).startsWith('@layer')) {
-        isInLayer = true;
-        i = content.indexOf('{', i); // Move to first '{'
-        braceDepth = 1; // Start tracking the block
-        continue;
-      }
+    // Step 3: Flatten and clean the remaining content
+    cleanedContent = cleanedContent.replace(/}\s*}/g, '}').trim(); // Remove extra braces
+    cleanedContent = this.flattenCssContent(cleanedContent); // Flatten the remaining CSS
 
-      if (isInLayer) {
-        if (char === '{') braceDepth++;
-        if (char === '}') braceDepth--;
-
-        if (braceDepth > 0) currentBlock += char;
-
-        if (braceDepth === 0) {
-          const cleanedBlock = this.flattenCssContent(currentBlock);
-          if (cleanedBlock.trim()) extractedBlocks.push(cleanedBlock);
-          currentBlock = '';
-          isInLayer = false;
-        }
-      } else {
-        cleanedContent += char;
-      }
-    }
-
-    cleanedContent = cleanedContent.replace(/}\s*}/g, '}').trim();
-    cleanedContent = this.flattenCssContent(cleanedContent);
-
-    return { extractedContent: extractedBlocks, cleanedContent };
+    return { extractedContent, cleanedContent };
   }
 
   /**
@@ -160,7 +156,7 @@ export class CSSLayerExtractor {
    * @param content - The CSS content to process.
    * @returns The flattened CSS content.
    */
-  public flattenCssContent(content: string): string {
+  protected flattenCssContent(content: string): string {
     return content
       .replace(/\s*\n\s*/g, ' ') // Replace newlines with spaces
       .replace(/\s{2,}/g, ' ') // Replace multiple spaces with one
