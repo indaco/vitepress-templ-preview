@@ -76,6 +76,11 @@ describe('extractTopLayerDeclarations', () => {
     const cases = [
       { input: '@layer base;', expected: '@layer base;' },
       { input: '@layer reset, base;', expected: '@layer reset, base;' },
+      {
+        input: '@layer reset, base; .base { color: red; }',
+        expected: '@layer reset, base;',
+      },
+      { input: '.base { color: red; }', expected: '' },
     ];
 
     cases.forEach(({ input, expected }) => {
@@ -94,6 +99,15 @@ describe('extractLayerBlocks', () => {
           }
         `,
         expected: ['.base { color: red; }'],
+      },
+      {
+        input: `
+          @layer base, components {
+            .base { color: red; }
+            .component { color: blue; }
+          }
+        `,
+        expected: ['.base { color: red; } .component { color: blue; }'],
       },
     ];
 
@@ -133,6 +147,16 @@ describe('extractAndRemoveLayerBlocks', () => {
         expectedExtracted: ['.base { color: red; }'],
         expectedCleaned: '',
       },
+      {
+        input: `
+          @layer base {
+            .base { color: red; }
+          }
+          .non-layer-class { color: yellow; }
+        `,
+        expectedExtracted: ['.base { color: red; }'],
+        expectedCleaned: '.non-layer-class { color: yellow; }',
+      },
     ];
 
     cases.forEach(({ input, expectedExtracted, expectedCleaned }) => {
@@ -154,6 +178,22 @@ describe('flattenCssContent', () => {
         `,
         expected: '.base { color: red; } .component { color: blue; }',
       },
+      {
+        input: `
+          .base {
+            color: red;
+            border: 1px solid black;
+          }
+        `,
+        expected: '.base { color: red; border: 1px solid black; }',
+      },
+      {
+        input: `
+          .base { color: red; }
+          .component {}
+        `,
+        expected: '.base { color: red; } .component { }',
+      },
     ];
 
     cases.forEach(({ input, expected }) => {
@@ -169,6 +209,49 @@ describe('cleanStyleTags', () => {
       {
         input: `<style type="text/css"> @layer base { .base { color: red; } }</style>`,
         expected: `<style type="text/css">\n.base { color: red; }\n</style>`,
+      },
+      {
+        input:
+          '<style type="text/css"> @layer base { .base { color: red; } }</style>',
+        expected: '<style type="text/css">\n.base { color: red; }\n</style>',
+      },
+      {
+        input: '<style type="text/css"> .non-layer { color: blue; } </style>',
+        expected:
+          '<style type="text/css">\n.non-layer { color: blue; }\n</style>',
+      },
+      {
+        input:
+          '<style type="text/css"> @layer base { .base { color: red; } } .other { color: yellow; }</style>',
+        expected:
+          '<style type="text/css">\n.base { color: red; }\n.other { color: yellow; }\n</style>',
+      },
+      {
+        input:
+          '<style type="text/css">@layer reset, base, components, utilities;\n@layer base { .base { color: red; } } .other { color: yellow; }</style>',
+        expected:
+          '<style type="text/css">\n.base { color: red; }\n.other { color: yellow; }\n</style>',
+      },
+      {
+        input: `
+          <style type="text/css">
+            @layer base {
+              .base { color: red; }
+            }
+            @layer components {
+              .component { color: blue; }
+            }
+          </style>
+        `,
+        expected: `<style type="text/css">\n.base { color: red; }\n.component { color: blue; }\n</style>`,
+      },
+      {
+        input: `<style type="text/css"></style>`,
+        expected: '',
+      },
+      {
+        input: `<style type="text/css">\n</style>`,
+        expected: '',
       },
     ];
 
