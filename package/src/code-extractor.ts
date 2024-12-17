@@ -114,7 +114,6 @@ export class CodeExtractor {
     }
 
     // Track braces to find the matching closing brace
-    const startBraceIndex = endIndex;
     for (; endIndex < this.code.length; endIndex++) {
       if (this.code[endIndex] === '{') braceCount++;
       if (this.code[endIndex] === '}') braceCount--;
