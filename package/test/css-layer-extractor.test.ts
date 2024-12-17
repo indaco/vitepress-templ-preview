@@ -22,19 +22,11 @@ export class CSSLayerExtractorTestable extends CSSLayerExtractor {
     return this.extractLayerBlocks(content);
   }
 
-  public testExtractCssRules(layerContent: string): string[] {
-    return this.extractCssRules(layerContent);
-  }
-
   public testExtractAndRemoveLayerBlocks(content: string): {
     extractedContent: string[];
     cleanedContent: string;
   } {
     return this.extractAndRemoveLayerBlocks(content);
-  }
-
-  public testFlattenCssContent(content: string): string {
-    return this.flattenCssContent(content);
   }
 }
 
@@ -116,22 +108,34 @@ describe('extractLayerBlocks', () => {
       expect(result).toEqual(expected);
     });
   });
-});
 
-describe('extractCssRules', () => {
-  it('should extract CSS rules from a @layer content', () => {
-    const cases = [
-      { input: `.base { color: red; }`, expected: [`.base { color: red; }`] },
-      {
-        input: `.base { color: red; } .component { color: blue; }`,
-        expected: [`.base { color: red; }`, `.component { color: blue; }`],
-      },
+  it('should remove top definition for layers and extract @layer declaration', () => {
+    const input = `
+    @layer base, components;
+    @layer components {
+      :is(button,a).hans-btn{--hs-btn-font-family: var(--hs-font-family, var(--hs-font-sans));}
+    }
+    .not-in-layer { color: red; }
+  `;
+    const expected = [
+      ':is(button,a).hans-btn{--hs-btn-font-family: var(--hs-font-family, var(--hs-font-sans));}',
     ];
 
-    cases.forEach(({ input, expected }) => {
-      const result = extractor.testExtractCssRules(input);
-      expect(result).toEqual(expected);
-    });
+    const result = extractor.testExtractLayerBlocks(input);
+    expect(result).toEqual(expected);
+  });
+
+  it('should extract multiple @layer declarations on the same line', () => {
+    const input = `
+    @layer base, components;@layer components {:is(button,a).hans-btn{--hs-btn-font-family: var(--hs-font-family, var(--hs-font-sans));}}
+    .not-in-layer { color: red; }
+  `;
+    const expected = [
+      ':is(button,a).hans-btn{--hs-btn-font-family: var(--hs-font-family, var(--hs-font-sans));}',
+    ];
+
+    const result = extractor.testExtractLayerBlocks(input);
+    expect(result).toEqual(expected);
   });
 });
 
@@ -164,41 +168,6 @@ describe('extractAndRemoveLayerBlocks', () => {
         extractor.testExtractAndRemoveLayerBlocks(input);
       expect(extractedContent).toEqual(expectedExtracted);
       expect(cleanedContent).toBe(expectedCleaned);
-    });
-  });
-});
-
-describe('flattenCssContent', () => {
-  it('should flatten CSS content properly', () => {
-    const cases = [
-      {
-        input: `
-          .base { color: red; }
-          .component { color: blue; }
-        `,
-        expected: '.base { color: red; } .component { color: blue; }',
-      },
-      {
-        input: `
-          .base {
-            color: red;
-            border: 1px solid black;
-          }
-        `,
-        expected: '.base { color: red; border: 1px solid black; }',
-      },
-      {
-        input: `
-          .base { color: red; }
-          .component {}
-        `,
-        expected: '.base { color: red; } .component { }',
-      },
-    ];
-
-    cases.forEach(({ input, expected }) => {
-      const result = extractor.testFlattenCssContent(input);
-      expect(result).toBe(expected);
     });
   });
 });
