@@ -1,12 +1,42 @@
+import { CssLayerStateMachine } from './css-layer-state-machine';
+import { flattenCssContent } from './css-utils';
+
+/**
+ * @class CSSLayerExtractor
+ * @description
+ * Singleton class to extract, clean, and process CSS content containing `@layer` blocks.
+ *
+ * **Usage Example:**
+ * ```typescript
+ * const extractor = CSSLayerExtractor.getInstance();
+ * const result = extractor.run('<style>@layer base { .btn { color: red; } }</style>');
+ * console.log(result);
+ * // Output: <style type="text/css">\n.btn { color: red; }\n</style>
+ * ```
+ */
 export class CSSLayerExtractor {
-  // Singleton instance
+  /**
+   * Singleton instance of the `CSSLayerExtractor`.
+   * Ensures only one instance of the class exists.
+   *
+   * @protected
+   * @type {CSSLayerExtractor}
+   */
   protected static instance: CSSLayerExtractor;
 
-  // Private constructor to prevent instantiation
+  /**
+   * Private constructor to enforce singleton design.
+   * External instantiation is not allowed.
+   *
+   * @protected
+   */
   protected constructor() {}
 
   /**
-   * Method to get the singleton instance.
+   * Returns the singleton instance of the `CSSLayerExtractor`.
+   * If the instance does not exist, it will be created.
+   *
+   * @returns {CSSLayerExtractor} The singleton instance of the `CSSLayerExtractor`.
    */
   public static getInstance(): CSSLayerExtractor {
     if (!CSSLayerExtractor.instance) {
@@ -16,18 +46,20 @@ export class CSSLayerExtractor {
   }
 
   /**
-   * Main function that runs the "cleanStyleTags" logic.
-   * @param content - The CSS content to process.
-   * @returns The cleaned style tag.
+   * Entry point method to run the "cleanStyleTags" logic on the provided content.
+   *
+   * @param {string} content - The CSS content to be processed.
+   * @returns {string} The processed CSS content wrapped in a `<style>` tag.
    */
   public run(content: string): string {
     return this.cleanStyleTags(content);
   }
 
   /**
-   * Removes <style> tags but **keeps the inner content**.
-   * @param content - The CSS content that may contain <style> tags.
-   * @returns The content with <style> tags removed but inner CSS preserved.
+   * Removes the `<style>` tags but **preserves the inner content**.
+   *
+   * @param {string} content - The CSS content that may contain `<style>` tags.
+   * @returns {string} The content with `<style>` tags removed.
    */
   protected removeStyleTags(content: string): string {
     return content
@@ -36,9 +68,10 @@ export class CSSLayerExtractor {
   }
 
   /**
-   * Extracts the top-level @layer declarations from the content.
-   * @param content - The CSS content to process.
-   * @returns The top-level layer declarations as a string.
+   * Extracts the top-level `@layer` declarations from the CSS content.
+   *
+   * @param {string} content - The CSS content to be processed.
+   * @returns {string} The top-level `@layer` declarations as a single string.
    */
   protected extractTopLayerDeclarations(content: string): string {
     const match = content.match(/@layer[^;]*;/g);
@@ -46,14 +79,10 @@ export class CSSLayerExtractor {
   }
 
   /**
-   * Cleans the <style> tags by extracting and removing all @layer blocks.
-   * @param content - The CSS content to process.
-   * @returns The cleaned style tag.
-   */
-  /**
-   * Cleans the <style> tags from the provided content.
-   * @param content - The CSS content that may contain <style> tags.
-   * @returns The content as a single <style> block.
+   * Cleans the CSS content by removing unnecessary `<style>` tags, and flattening layers.
+   *
+   * @param {string} content - The CSS content to be cleaned.
+   * @returns {string} The cleaned and formatted content wrapped in a single `<style>` tag.
    */
   protected cleanStyleTags(content: string): string {
     const { extractedContent, cleanedContent } =
@@ -74,60 +103,22 @@ export class CSSLayerExtractor {
   }
 
   /**
-   * Extracts layer blocks from the content.
-   * @param content - The CSS content to process.
-   * @returns An array of extracted blocks.
+   * Extracts CSS content from all `@layer` blocks.
+   *
+   * @param {string} content - The CSS content to be processed.
+   * @returns {string[]} An array of extracted blocks of CSS from `@layer` declarations.
    */
   protected extractLayerBlocks(content: string): string[] {
-    const extractedBlocks: string[] = [];
-    let isInLayer = false;
-    let currentBlock = '';
-    let braceDepth = 0;
-
-    for (let i = 0; i < content.length; i++) {
-      const char = content[i];
-
-      if (!isInLayer && content.slice(i, i + 6).startsWith('@layer')) {
-        isInLayer = true;
-        i = content.indexOf('{', i);
-        if (i === -1) break;
-        braceDepth = 1;
-        continue;
-      }
-
-      if (isInLayer) {
-        if (char === '{') braceDepth++;
-        if (char === '}') braceDepth--;
-
-        if (braceDepth > 0) currentBlock += char;
-
-        if (braceDepth === 0) {
-          const cleanedBlock = this.flattenCssContent(currentBlock);
-          extractedBlocks.push(cleanedBlock);
-          currentBlock = '';
-          isInLayer = false;
-        }
-      }
-    }
-
-    return extractedBlocks;
+    const stateMachine = new CssLayerStateMachine();
+    return stateMachine.extractLayerBlocks(content);
   }
 
   /**
-   * Extracts individual CSS rules from a single @layer block.
-   * @param layerContent - The content of the layer.
-   * @returns An array of extracted CSS rules.
-   */
-  protected extractCssRules(layerContent: string): string[] {
-    const cssRuleRegex = /[^{]+\{[^}]*\}/g;
-    const matches = layerContent.match(cssRuleRegex) || [];
-    return matches.map((rule) => rule.trim());
-  }
-
-  /**
-   * Extracts and removes all @layer blocks from the content.
-   * @param content - The CSS content to process.
-   * @returns An object with the extracted content and the cleaned content.
+   * Extracts and removes `@layer` blocks from the content.
+   *
+   * @param {string} content - The CSS content to process.
+   * @returns {{ extractedContent: string[], cleanedContent: string }}
+   * An object containing the extracted content and the cleaned content.
    */
   protected extractAndRemoveLayerBlocks(content: string): {
     extractedContent: string[];
@@ -135,36 +126,45 @@ export class CSSLayerExtractor {
   } {
     // Step 1: Extract the layer blocks
     const extractedContent = this.extractLayerBlocks(content);
-
     // Step 2: Remove the extracted layer content from the original content
-    let cleanedContent = content;
-    extractedContent.forEach((block) => {
-      const escapedBlock = block.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape for regex
-      const regex = new RegExp(`@layer[^}]*{[^}]*${escapedBlock}[^}]*}`, 'g');
-      cleanedContent = cleanedContent.replace(regex, '');
-    });
-
+    let cleanedContent = this.removeLayerContent(content, extractedContent);
     // Step 3: Flatten and clean the remaining content
-    cleanedContent = cleanedContent.replace(/}\s*}/g, '}').trim(); // Remove extra braces
-    cleanedContent = this.flattenCssContent(cleanedContent); // Flatten the remaining CSS
+    cleanedContent = flattenCssContent(cleanedContent);
 
     return { extractedContent, cleanedContent };
   }
 
   /**
-   * Flattens CSS content by removing extra newlines and spaces.
-   * @param content - The CSS content to process.
-   * @returns The flattened CSS content.
+   * Removes `@layer` content blocks from the provided CSS content.
+   *
+   * This method iterates over the extracted `@layer` blocks and removes them from the original content.
+   *
+   * @private
+   * @param {string} content - The original CSS content containing `@layer` declarations.
+   * @param {string[]} extractedContent - An array of extracted CSS blocks from `@layer` declarations.
+   *
+   * @returns {string} The cleaned CSS content with `@layer` declarations removed.
+   *
    */
-  protected flattenCssContent(content: string): string {
-    return content
-      .replace(/\s*\n\s*/g, ' ') // Replace newlines with spaces
-      .replace(/\s{2,}/g, ' ') // Replace multiple spaces with one
-      .replace(/;\s*/g, '; ') // Add a space after semicolon
-      .replace(/\s*}\s*/g, ' } ') // Space after closing brace
-      .replace(/\s*{\s*/g, ' { ') // Space around opening brace
-      .replace(/}\s*}/g, '}') // Remove double closing braces
-      .replace(/;\s*}/g, '; }') // Semicolon before closing brace
-      .trim();
+  private removeLayerContent(
+    content: string,
+    extractedContent: string[],
+  ): string {
+    let cleanedContent = content;
+
+    // Loop over each extracted block to remove its corresponding @layer declaration
+    extractedContent.forEach((block) => {
+      // Escape special characters in the block for regex use
+      const escapedBlock = block.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      // regex to match the full @layer declaration containing this block
+      const regex = new RegExp(`@layer[^}]*{[^}]*${escapedBlock}[^}]*}`, 'g');
+      // Remove the matched @layer declaration from the cleaned content
+      cleanedContent = cleanedContent.replace(regex, '');
+    });
+
+    // Remove any residual double closing braces (this can happen if nested layers are present)
+    cleanedContent = cleanedContent.replace(/}\s*}/g, '}').trim(); //
+    return cleanedContent;
   }
 }
