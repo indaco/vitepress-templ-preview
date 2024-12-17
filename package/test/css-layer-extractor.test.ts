@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CSSLayerExtractor } from './css-layer-extractor';
+import { CSSLayerExtractor } from '../src/css-layer-extractor';
 
 // This subclass exposes protected methods as public for testing purposes
 export class CSSLayerExtractorTestable extends CSSLayerExtractor {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CodeExtractor } from './code-extractor';
+import { CodeExtractor } from '../src/code-extractor';
 
 describe('CodeExtractor', () => {
   const codeSample = `

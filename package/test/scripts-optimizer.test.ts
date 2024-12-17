@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import HtmlScriptsOptimizer from './scripts-optimizer';
+import HtmlScriptsOptimizer from '../src/scripts-optimizer';
 
 // Helper function to create a temporary directory for testing
 function createTempDir() {
