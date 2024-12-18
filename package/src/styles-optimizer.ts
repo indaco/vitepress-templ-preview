@@ -1,5 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { CSSLayerExtractor } from './css-layer-extractor';
+import { hasLayerDefinition } from './css-utils';
 
 /**
  * Class to optimize HTML styles by deduplicating and consolidating style tags.
@@ -7,6 +9,7 @@ import * as path from 'node:path';
 class HtmlStylesOptimizer {
   private static instance: HtmlStylesOptimizer;
   private inputDirectory: string;
+  private cssLayerExtractor: CSSLayerExtractor;
 
   /**
    * Private constructor to prevent direct class instantiation.
@@ -14,6 +17,7 @@ class HtmlStylesOptimizer {
    */
   private constructor(inputDirectory: string) {
     this.inputDirectory = inputDirectory;
+    this.cssLayerExtractor = CSSLayerExtractor.getInstance();
   }
 
   /**
@@ -26,6 +30,23 @@ class HtmlStylesOptimizer {
       HtmlStylesOptimizer.instance = new HtmlStylesOptimizer(inputDirectory);
     }
     return HtmlStylesOptimizer.instance;
+  }
+
+  /**
+   * Main function to optimize styles by deduplicating and consolidating style tags across multiple HTML files.
+   */
+  public run(): void {
+    const directories = this.readDirectoriesRecursive(this.inputDirectory);
+
+    directories.forEach((dir) => {
+      const htmlFiles = this.readHtmlFiles(dir);
+      if (htmlFiles.length <= 1) return;
+
+      const { allStyleTags, fileContents, duplicateStyles } =
+        this.collectStylesFromFiles(htmlFiles);
+
+      this.processFiles(htmlFiles, allStyleTags, fileContents, duplicateStyles);
+    });
   }
 
   /**
@@ -59,6 +80,60 @@ class HtmlStylesOptimizer {
   }
 
   /**
+   * Collects all styles from all files and categorizes them as unique or duplicate.
+   */
+  private collectStylesFromFiles(htmlFiles: string[]): {
+    allStyleTags: Map<string, string[]>;
+    fileContents: Map<string, string>;
+    duplicateStyles: Set<string>;
+  } {
+    const allStyleTags = new Map<string, string[]>();
+    const fileContents = new Map<string, string>();
+    const styleOccurrences = new Map<string, Set<string>>();
+
+    for (const file of htmlFiles) {
+      const htmlContent = fs.readFileSync(file, 'utf-8');
+      const styleTags = this.extractAndProcessStyleTags(htmlContent);
+
+      allStyleTags.set(file, styleTags);
+      fileContents.set(file, htmlContent);
+
+      // Track occurrences of styles across files (top-level and extracted styles)
+      styleTags.forEach((style) => {
+        if (!styleOccurrences.has(style)) {
+          styleOccurrences.set(style, new Set());
+        }
+        styleOccurrences.get(style)!.add(file);
+      });
+    }
+
+    // Identify duplicate styles
+    const duplicateStyles = new Set<string>();
+    styleOccurrences.forEach((files, style) => {
+      if (files.size > 1) {
+        duplicateStyles.add(style);
+      }
+    });
+
+    return { allStyleTags, fileContents, duplicateStyles };
+  }
+
+  /**
+   * Extracts and processes style tags from the given HTML content.
+   */
+  private extractAndProcessStyleTags(htmlContent: string): string[] {
+    const styleTags = this.extractStyleTags(htmlContent);
+    return styleTags.map((css) => {
+      if (hasLayerDefinition(css)) {
+        // Flatten the content and remove @layer declarations
+        const cleanedCss = this.cssLayerExtractor.run(css);
+        return cleanedCss;
+      }
+      return css.trim();
+    });
+  }
+
+  /**
    * Extracts style tags from the given HTML content.
    * @param {string} htmlContent - The HTML content to extract style tags from.
    * @returns {string[]} An array of style tag contents.
@@ -74,6 +149,52 @@ class HtmlStylesOptimizer {
   }
 
   /**
+   * Processes files by consolidating and updating styles.
+   */
+  private processFiles(
+    htmlFiles: string[],
+    allStyleTags: Map<string, string[]>,
+    fileContents: Map<string, string>,
+    duplicateStyles: Set<string>,
+  ): void {
+    let isFirstFile = true;
+
+    for (const file of htmlFiles) {
+      let htmlContent = fileContents.get(file) ?? '';
+
+      const styleTags = allStyleTags.get(file) ?? [];
+      const { uniqueStyleTags, duplicatedStyleTags } = this.splitStyleTags(
+        styleTags,
+        duplicateStyles,
+      );
+
+      // ** Remove style tags from content **
+      htmlContent = this.removeStyleTags(htmlContent);
+
+      // ** Add unique styles (only for the current file) **
+      if (uniqueStyleTags.length > 0) {
+        const uniqueStylesContent = `<style type="text/css">\n${uniqueStyleTags.join('\n')}\n</style>\n`;
+        htmlContent = uniqueStylesContent + htmlContent;
+      }
+
+      // ** Add the auto-clean message if duplicates were removed **
+      if (duplicatedStyleTags.length > 0 && !isFirstFile) {
+        const autoCleanMessage =
+          '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->\n';
+        htmlContent = autoCleanMessage + htmlContent;
+      }
+
+      fs.writeFileSync(file, htmlContent);
+
+      // ** Consolidate duplicated styles into the first file **
+      if (isFirstFile) {
+        this.insertUniqueStyleTags(file, duplicateStyles);
+        isFirstFile = false;
+      }
+    }
+  }
+
+  /**
    * Removes style tags from the given HTML content.
    * @param {string} htmlContent - The HTML content to remove style tags from.
    * @returns {string} The HTML content without style tags.
@@ -86,20 +207,16 @@ class HtmlStylesOptimizer {
   }
 
   /**
-   * Inserts unique style tags wrapped in a single <style> tag at the top of the specified HTML file.
-   * @param {string} filePath - The path to the HTML file to insert style tags into.
-   * @param {Set<string>} styleTags - The set of unique style tag contents to insert.
+   * Inserts all unique style tags into the first file.
    */
   private insertUniqueStyleTags(
     filePath: string,
     styleTags: Set<string>,
   ): void {
-    if (styleTags.size === 0) return; // Avoid inserting if there are no style tags
+    if (styleTags.size === 0) return;
 
     const htmlContent = fs.readFileSync(filePath, 'utf-8');
-    const newStyleContent = `<style type="text/css">\n${Array.from(
-      styleTags,
-    ).join('\n')}\n</style>\n`;
+    const newStyleContent = `<style type="text/css">\n${Array.from(styleTags).join('\n')}\n</style>\n`;
     const autoCleanMessage =
       '<!-- [vitepress-templ-plugin] - DO NOT EDIT - All styles are consolidated here to avoid duplication -->\n';
     const newHtmlContent = autoCleanMessage + newStyleContent + htmlContent;
@@ -107,73 +224,22 @@ class HtmlStylesOptimizer {
   }
 
   /**
-   * Main function to optimize styles by deduplicating and consolidating style tags across multiple HTML files.
+   * Splits style tags into two categories:
+   * 1. Unique styles that remain in the file.
+   * 2. Duplicated styles that will be removed from the file.
    */
-  public run(): void {
-    const directories = this.readDirectoriesRecursive(this.inputDirectory);
+  private splitStyleTags(
+    styleTags: string[],
+    duplicateStyles: Set<string>,
+  ): { uniqueStyleTags: string[]; duplicatedStyleTags: string[] } {
+    const uniqueStyleTags = styleTags.filter(
+      (tag) => !duplicateStyles.has(tag),
+    );
+    const duplicatedStyleTags = styleTags.filter((tag) =>
+      duplicateStyles.has(tag),
+    );
 
-    directories.forEach((dir) => {
-      const htmlFiles = this.readHtmlFiles(dir);
-      if (htmlFiles.length <= 1) {
-        return;
-      }
-
-      const allStyleTags = new Map<string, string[]>();
-      const uniqueStyleTags = new Set<string>();
-      const duplicateStyleTags = new Set<string>();
-
-      // Extract style tags from all HTML files and categorize them
-      for (const file of htmlFiles) {
-        const htmlContent = fs.readFileSync(file, 'utf-8');
-        const styleTags = this.extractStyleTags(htmlContent);
-        allStyleTags.set(file, styleTags);
-
-        // Identify duplicate style tags
-        styleTags.forEach((tag) => {
-          if (uniqueStyleTags.has(tag)) {
-            duplicateStyleTags.add(tag);
-          } else {
-            uniqueStyleTags.add(tag);
-          }
-        });
-      }
-
-      // Process each file and update styles
-      let isFirstFile = true;
-      for (const file of htmlFiles) {
-        let htmlContent = fs.readFileSync(file, 'utf-8');
-        const styleTags = allStyleTags.get(file) || [];
-        const remainingStyleTags = styleTags.filter(
-          (tag) => !duplicateStyleTags.has(tag),
-        );
-
-        // Remove all original style tags and trim content
-        htmlContent = this.removeStyleTags(htmlContent);
-
-        // Add remaining (non-duplicate) style tags back to the file if any exist
-        if (remainingStyleTags.length > 0) {
-          const remainingStyleContent = `<style type="text/css">\n${remainingStyleTags.join(
-            '\n',
-          )}\n</style>\n`;
-          htmlContent = remainingStyleContent + htmlContent;
-        }
-
-        // Add the auto-clean message if duplicate styles were removed and it's not the first file
-        if (styleTags.length > remainingStyleTags.length && !isFirstFile) {
-          const autoCleanMessage =
-            '<!-- [vitepress-templ-plugin] - DO NOT EDIT - Duplicated styles found and moved to avoid duplication -->\n';
-          htmlContent = autoCleanMessage + htmlContent;
-        }
-
-        fs.writeFileSync(file, htmlContent);
-
-        if (isFirstFile) {
-          // Insert unique styles in the first file
-          this.insertUniqueStyleTags(file, duplicateStyleTags);
-          isFirstFile = false;
-        }
-      }
-    });
+    return { uniqueStyleTags, duplicatedStyleTags };
   }
 }
 

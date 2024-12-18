@@ -3,67 +3,81 @@ import type { UserMessage } from './types';
 export const UserMessages: Record<string, UserMessage> = {
   GENERIC_ERROR: {
     headline: 'Error',
-    message: '',
+    message: 'An unexpected error occurred. Please try again later.',
   },
   UNKNOWN_MODE_ERROR: {
-    headline: 'Unknown mode for static-templ',
-    message: '',
+    headline: 'Unknown Mode',
+    message: 'The specified mode for static-templ is not recognized.',
   },
   MODE_NOT_DEFINED: {
-    headline: 'No static-templ mode',
-    message: 'No mode has been defined in options',
+    headline: 'Mode Not Defined',
+    message:
+      'No mode has been defined in the options. Please specify a valid mode.',
   },
   NO_SRC_ATTR_ERROR: {
-    headline: 'NO src attribute found',
-    message: "The 'src' attribute is required and must not be empty.",
+    headline: 'Missing src Attribute',
+    message:
+      "The 'src' attribute is required and must not be empty. Please provide a valid source.",
   },
   NO_BINARY: {
-    headline: 'Command not found',
-    message: 'is not installed or not found in PATH.',
+    headline: 'Command Not Found',
+    message:
+      'The specified command is not installed or was not found in the system PATH.',
   },
   EXEC_SYSTEM_CMD: {
-    headline: 'Executing system command',
-    message: '',
+    headline: 'Executing System Command',
+    message:
+      'The system is currently executing a command. Please wait for completion.',
   },
   EXEC_SYSTEM_CMD_ERROR: {
-    headline: 'Error executing command',
-    message: 'Something went wrong executing the system command',
+    headline: 'Command Execution Error',
+    message:
+      'An error occurred while executing the system command. Check for system errors or missing binaries.',
   },
   READING_FILE_ERROR: {
-    headline: 'Error reading file',
-    message: 'Something went wrong reading the file',
+    headline: 'File Read Error',
+    message:
+      'An error occurred while reading the file. Please check if the file exists and is accessible.',
   },
   READING_DIR_ERROR: {
-    headline: 'Error reading directory',
-    message: 'Something went wrong reading the directory',
+    headline: 'Directory Read Error',
+    message:
+      'An error occurred while reading the directory. Ensure the directory path is correct and accessible.',
   },
   WATCHING_FILES: {
-    headline: 'Watching Templ files at',
-    message: '',
+    headline: 'Watching Templ Files',
+    message:
+      'The system is now watching Templ files for changes in the specified directory.',
   },
   UPDATE_CACHE: {
-    headline: 'Updated cache for',
-    message: '',
+    headline: 'Cache Updated',
+    message:
+      'The cache has been successfully updated for the specified resources.',
   },
   MISSING_MARKDOWN_OBJ_ERROR: {
-    headline: 'markdown-it Configuration Error',
+    headline: 'Markdown-it Configuration Error',
     message:
-      'You forgot to set the `markdown` object in the VitePress configuration file.',
+      'The `markdown` object is missing in the VitePress configuration file. Please add it.',
   },
   MISSING_MARKDOWN_OBJ_HINT: {
-    headline: 'HINT - update the vitepress config file',
-    message: `\n//.vitepress/config.js\nexport default defineConfig({
+    headline: 'Configuration Hint',
+    message: `To resolve the error, add the following snippet to your VitePress configuration file:\n\n\`\`\`javascript
+// .vitepress/config.js
+export default defineConfig({
   // ...
   markdown: {}, /* an empty object is enough */
 })
-`,
+\`\`\`
+    `,
   },
   CSS_OPTIMIZER: {
-    headline: 'Style tags optimization',
-    message: 'Consolidating CSS styles across files to avoid duplications.',
+    headline: 'CSS Optimization',
+    message:
+      'Consolidating CSS styles across files to avoid duplications and improve load times.',
   },
   JS_OPTIMIZER: {
-    headline: 'Script tags optimization',
-    message: 'Consolidating JS scripts across files to avoid duplications.',
+    headline: 'JS Optimization',
+    message:
+      'Consolidating JavaScript files to avoid duplications and improve performance.',
   },
 };
