@@ -33,3 +33,4 @@ temp
 
 # vitest
 coverage
+__snapshots__
