@@ -119,6 +119,10 @@ export function extractInnerCode(templBlocks: string[]): string[] {
   return templBlocks.map((block) => {
     const startIndex = block.indexOf('{') + 1;
     const endIndex = block.lastIndexOf('}');
-    return block.slice(startIndex, endIndex).trim();
+    if (startIndex === 0 || endIndex === -1) return ''; // Handle blocks without curly braces
+
+    const extractedContent = block.slice(startIndex, endIndex);
+    // Convert escaped newlines to actual newlines, then trim whitespace
+    return extractedContent.replace(/\\n/g, '\n').trim();
   });
 }
