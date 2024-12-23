@@ -4,9 +4,8 @@ export default defineConfig({
   entry: [
     'src/cache-service.ts',
     'src/code-extractor.ts',
-    'src/css-layer-extractor.ts',
-    'src/css-layer-state-machine.ts',
-    'src/css-utils.ts',
+    'src/css-ast-parser.ts',
+    'src/css-tokenizer.ts',
     'src/highlighter.ts',
     'src/logger.ts',
     'src/script-manager.ts',
