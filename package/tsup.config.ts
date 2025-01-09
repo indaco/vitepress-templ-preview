@@ -2,10 +2,10 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
   entry: [
+    'src/internals/css-processor/**/*.ts',
+    'src/plugin/*.ts',
     'src/cache-service.ts',
     'src/code-extractor.ts',
-    'src/css-ast-parser.ts',
-    'src/css-tokenizer.ts',
     'src/highlighter.ts',
     'src/logger.ts',
     'src/script-manager.ts',
@@ -14,9 +14,6 @@ export default defineConfig({
     'src/types.ts',
     'src/user-messages.ts',
     'src/utils.ts',
-    'src/plugin/helpers.ts',
-    'src/plugin/index.ts',
-    'src/plugin/markdown-it-templ-preview.ts',
   ],
   outExtension({ format }) {
     return {
