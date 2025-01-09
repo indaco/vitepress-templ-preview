@@ -13,7 +13,46 @@ Check out the docs [here](https://vitepress-templ-preview.indaco.dev).
 
 ## Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+We welcome contributions! Whether it's reporting a bug, suggesting a feature, or submitting a pull request, your input helps improve this project.
+
+### Known Issues
+
+When running `pnpm web:dev` to start the sample website, you might encounter the following error:
+
+```bash
+> vitepress dev docs
+
+failed to load config from /Users/indaco/Code/GitHub/indaco/vitepress-templ-preview/website/docs/.vitepress/config.mts
+failed to start server. error:
+Cannot find module '../data/patch.json'
+Require stack:
+- /Users/indaco/Code/GitHub/indaco/vitepress-templ-preview/package/dist/plugin/index.esm.js
+Error: Cannot find module '../data/patch.json'
+```
+
+**Cause**
+
+This issue is related to the `css-tree` package. The root cause seems to stem from how module exports are defined in its package.json.
+
+**Workaround**
+
+You can resolve this issue by modifying the exports field in node_modules/css-tree/package.json. Specifically, update the first exports entry like so:
+
+```json
+  "exports": {
+    ".": {
+-     "import": "./lib/index.js",
++     "import": "./cjs/index.cjs",
+      "require": "./cjs/index.cjs"
+    },
+   ...
+```
+
+This workaround was discussed in [bun/issues/13076](https://github.com/oven-sh/bun/issues/13076#issuecomment-2550735879).
+
+**Note**
+
+While this is a temporary fix, keep an eye on updates to css-tree or related dependencies for a permanent resolution. If you encounter additional issues or have insights into fixing this differently, feel free to open an issue!
 
 ## License
 
