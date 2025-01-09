@@ -2,32 +2,32 @@ package alert
 
 var (
 	alertCSSHandle = templ.NewOnceHandle()
-	alertJSHandle = templ.NewOnceHandle()
+	alertJSHandle  = templ.NewOnceHandle()
 )
 
 templ AlertDemo() {
-    @alertCss()
-    @alertJSHandle.Once() {
-        <script type="text/javascript">
+	@alertCss()
+	@alertJSHandle.Once() {
+		<script type="text/javascript">
             function closeAlert(element) {
                 element.parentElement.style.display = 'none';
             };
         </script>
-    }
-    @alert("Success", "Files were successfully uploaded")
+	}
+	@alert("Success", "Files were successfully uploaded")
 }
 
 templ alert(title string, text string) {
-    <div class="alert success">
-        <span class="closebtn" onclick="closeAlert(this)">x</span>
-        <h3>{ title }</h3>
-        <p>{ text }</p>
-    </div>
+	<div class="alert success">
+		<span class="closebtn" onclick="closeAlert(this)">x</span>
+		<h3>{ title }</h3>
+		<p>{ text }</p>
+	</div>
 }
 
 templ alertCss() {
-    @alertCSSHandle.Once() {
-        <style type="text/css">
+	@alertCSSHandle.Once() {
+		<style type="text/css">
             .alert {
                 width: 100%;
                 padding: 1rem;
@@ -57,5 +57,5 @@ templ alertCss() {
                 color: #2E6930;
             }
         </style>
-    }
+	}
 }
