@@ -54,6 +54,11 @@ export const UserMessages: Record<string, UserMessage> = {
     message:
       'The cache has been successfully updated for the specified resources.',
   },
+  MISSING_MARKDOWN_INSTANCE_ERROR: {
+    headline: 'Markdown instance is not initialized.',
+    message:
+      'The Markdown instance seems to be not initialized from the vitepress config.',
+  },
   MISSING_MARKDOWN_OBJ_ERROR: {
     headline: 'Markdown-it Configuration Error',
     message:

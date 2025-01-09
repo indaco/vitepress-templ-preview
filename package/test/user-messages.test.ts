@@ -56,6 +56,7 @@ describe('UserMessages', () => {
       'READING_DIR_ERROR',
       'WATCHING_FILES',
       'UPDATE_CACHE',
+      'MISSING_MARKDOWN_INSTANCE_ERROR',
       'MISSING_MARKDOWN_OBJ_ERROR',
       'MISSING_MARKDOWN_OBJ_HINT',
       'CSS_OPTIMIZER',
