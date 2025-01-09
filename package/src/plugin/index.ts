@@ -7,7 +7,7 @@ import type {
 } from '../types';
 import path from 'node:path';
 import { Plugin } from 'vite';
-import { MarkdownOptions } from 'vitepress';
+import { createMarkdownRenderer, MarkdownOptions } from 'vitepress';
 import markdownItTemplPreviewPlugin from './markdown-it-templ-preview';
 import MarkdownIt from 'markdown-it';
 import { UserMessages } from '../user-messages';
@@ -92,40 +92,43 @@ async function viteTemplPreviewPlugin(
   return {
     name: 'vite:templ-preview',
     enforce: 'pre',
-    configResolved(config) {
+    async configResolved(config) {
+      const vitepressConfig = (config as any).vitepress;
+      if (!vitepressConfig) {
+        Logger.errorHighlighted(UserMessages.GENERIC_ERROR);
+        throw new Error(
+          `[vitepress-templ-preview] ${UserMessages.GENERIC_ERROR.headline} ${UserMessages.GENERIC_ERROR.message} -> in configResolvd`,
+        );
+      }
+
+      const md = await createMarkdownRenderer(
+        vitepressConfig.srcDir,
+        vitepressConfig.markdown,
+        vitepressConfig.base,
+        vitepressConfig.logger,
+      );
+      mdInstance = md;
+
+      if (!mdInstance) {
+        Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_OBJ_ERROR);
+        Logger.warning(UserMessages.MISSING_MARKDOWN_OBJ_HINT);
+        throw new Error(
+          `[vitepress-templ-preview] ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.headline} ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.message}`,
+        );
+      }
+
+      const markdownOptions = (config as any).vitepress?.markdown;
+      userThemes = (markdownOptions as MarkdownOptions).theme;
+
       serverRoot = config.root;
       serverCommand = config.command;
-
       const inputDirectory = path.join(
         serverRoot,
         resolvedPluginOptions.inputDir,
       );
+
       stylesOptimizer = HtmlStylesOptimizer.getInstance(inputDirectory);
       scriptsOptimizer = HtmlScriptsOptimizer.getInstance(inputDirectory);
-
-      if ((config as any).vitepress) {
-        const { markdown } = (config as any).vitepress;
-        if (!markdown) {
-          Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_OBJ_ERROR);
-          Logger.warning(UserMessages.MISSING_MARKDOWN_OBJ_HINT);
-          throw new Error(
-            `[vitepress-templ-preview] ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.headline} ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.message}`,
-          );
-        }
-        userThemes = (markdown as MarkdownOptions).theme;
-
-        if (typeof markdown.config === 'function') {
-          const originalConfig = markdown.config;
-          markdown.config = (md: MarkdownIt) => {
-            originalConfig(md);
-            mdInstance = md;
-          };
-        } else {
-          markdown.config = (md: MarkdownIt) => {
-            mdInstance = md;
-          };
-        }
-      }
     },
     async buildStart() {
       checkBinaries([STATIC_TEMPL_BIN]);
@@ -227,6 +230,13 @@ async function viteTemplPreviewPlugin(
 
       // Check if the markdown contains the templ demo parameters
       if (!TEMPL_DEMO_REGEX.test(code)) return;
+
+      if (!mdInstance) {
+        Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_INSTANCE_ERROR);
+        throw new Error(
+          `[vitepress-templ-preview] ${UserMessages.MISSING_MARKDOWN_INSTANCE_ERROR.headline} ${UserMessages.MISSING_MARKDOWN_INSTANCE_ERROR.message}`,
+        );
+      }
 
       const context: PluginContext = {
         md: mdInstance,
