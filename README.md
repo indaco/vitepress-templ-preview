@@ -22,12 +22,9 @@ When running `pnpm web:dev` to start the sample website, you might encounter the
 ```bash
 > vitepress dev docs
 
-failed to load config from /Users/indaco/Code/GitHub/indaco/vitepress-templ-preview/website/docs/.vitepress/config.mts
+failed to load config from <path>/vitepress-templ-preview/website/docs/.vitepress/config.mts
 failed to start server. error:
 Cannot find module '../data/patch.json'
-Require stack:
-- /Users/indaco/Code/GitHub/indaco/vitepress-templ-preview/package/dist/plugin/index.esm.js
-Error: Cannot find module '../data/patch.json'
 ```
 
 **Cause**
