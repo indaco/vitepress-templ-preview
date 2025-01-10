@@ -6,10 +6,13 @@ import type {
   VTPUserConfig,
 } from '../types';
 import path from 'node:path';
-import { Plugin } from 'vite';
-import { createMarkdownRenderer, MarkdownOptions } from 'vitepress';
+import { Plugin, ResolvedConfig } from 'vite';
+import {
+  createMarkdownRenderer,
+  MarkdownOptions,
+  MarkdownRenderer,
+} from 'vitepress';
 import markdownItTemplPreviewPlugin from './markdown-it-templ-preview';
-import MarkdownIt from 'markdown-it';
 import { UserMessages } from '../user-messages';
 import { checkBinaries, executeCommandSync } from '../utils';
 import { Logger } from '../logger';
@@ -82,7 +85,7 @@ async function viteTemplPreviewPlugin(
   // Initialize CacheService with default cache size
   const cacheService = new CacheService(resolvedPluginOptions.cacheSize);
 
-  let mdInstance: MarkdownIt;
+  let mdInstance: MarkdownRenderer;
   let serverRoot: string;
   let serverCommand: 'build' | 'serve';
   let userThemes: any;
@@ -92,24 +95,25 @@ async function viteTemplPreviewPlugin(
   return {
     name: 'vite:templ-preview',
     enforce: 'pre',
-    async configResolved(config) {
+    async configResolved(config: ResolvedConfig) {
+      serverRoot = config.root;
+      serverCommand = config.command;
+
       const vitepressConfig = (config as any).vitepress;
       if (!vitepressConfig) {
         Logger.errorHighlighted(UserMessages.GENERIC_ERROR);
         throw new Error(
-          `[vitepress-templ-preview] ${UserMessages.GENERIC_ERROR.headline} ${UserMessages.GENERIC_ERROR.message} -> in configResolvd`,
+          `[vitepress-templ-preview] ${UserMessages.GENERIC_ERROR.headline} ${UserMessages.GENERIC_ERROR.message} -> in configResolved`,
         );
       }
 
-      const md = await createMarkdownRenderer(
-        vitepressConfig.srcDir,
-        vitepressConfig.markdown,
-        vitepressConfig.base,
-        vitepressConfig.logger,
+      const inputDirectory = path.join(
+        serverRoot,
+        resolvedPluginOptions.inputDir,
       );
-      mdInstance = md;
 
-      if (!mdInstance) {
+      const markdownOptions: MarkdownOptions = vitepressConfig.markdown;
+      if (!markdownOptions) {
         Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_OBJ_ERROR);
         Logger.warning(UserMessages.MISSING_MARKDOWN_OBJ_HINT);
         throw new Error(
@@ -117,16 +121,13 @@ async function viteTemplPreviewPlugin(
         );
       }
 
-      const markdownOptions = (config as any).vitepress?.markdown;
-      userThemes = (markdownOptions as MarkdownOptions).theme;
-
-      serverRoot = config.root;
-      serverCommand = config.command;
-      const inputDirectory = path.join(
-        serverRoot,
-        resolvedPluginOptions.inputDir,
+      mdInstance = await createMarkdownRenderer(
+        vitepressConfig.srcDir,
+        vitepressConfig.markdown,
+        vitepressConfig.base,
+        vitepressConfig.logger,
       );
-
+      userThemes = markdownOptions.theme;
       stylesOptimizer = HtmlStylesOptimizer.getInstance(inputDirectory);
       scriptsOptimizer = HtmlScriptsOptimizer.getInstance(inputDirectory);
     },
