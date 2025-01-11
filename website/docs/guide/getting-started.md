@@ -76,6 +76,35 @@ export default {
 > [!INFO]
 > Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.
 
+### Search
+
+Define a custom `_render` function to preprocess the Markdown content and remove `<templ-demo>` tags from the Markdown source to prevent build errors.
+
+The `vitepress-templ-preview` plugin provides a `sanitizeMarkdownForSearch` helper to streamline this process.
+
+```ts [config.mts]
+import { sanitizeMarkdownForSearch } from 'vitepress-templ-preview/sanitizer'; // [!code ++]
+
+export default defineConfig({
+  /* ... */
+  themeConfig: {
+      search: {
+        provider: 'local',
+        options: {
+          _render(src, env, md) {
+            sanitizeMarkdownForSearch(src, env, md) // [!code ++]
+          },
+        },
+      },
+      /* ... */
+    });
+  /* ... */
+});
+```
+
+> [!IMPORTANT]
+> Additionally, `renderForLocalSearch` accepts a fourth parameter to specify the `inputDir`, if it has been set in the plugin options. For details, refer to the [Plugin Options](/customization/plugin-options).
+
 ## Templ Project Setup
 
 1. Initialize a new Go project within the VitePress project root folder `docs` as you would for a normal `templ` project. Refer to the [official doc](https://templ.guide/quick-start/creating-a-simple-templ-component).

@@ -3,8 +3,11 @@ import {
   getVersionFromPackageJson,
   injectNPMPackageVersion,
 } from '../src/plugins/injectVersion';
-import viteTemplPreviewPlugin from 'vitepress-templ-preview';
+
 import type { VTPUserConfig } from 'vitepress-templ-preview/types';
+import viteTemplPreviewPlugin from 'vitepress-templ-preview';
+import { sanitizeMarkdownForSearch } from 'vitepress-templ-preview/sanitizer';
+
 import {
   transformerNotationDiff,
   transformerNotationFocus,
@@ -42,8 +45,12 @@ export default defineConfig({
   themeConfig: {
     search: {
       provider: 'local',
+      options: {
+        _render(src, env, md) {
+          return sanitizeMarkdownForSearch(src, env, md, vtpOptions.inputDir!);
+        },
+      },
     },
-
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
