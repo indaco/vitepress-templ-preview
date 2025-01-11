@@ -18,7 +18,7 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['markdown-it', 'shiki', 'shikiTempl', 'vue', 'vitepress'],
+      external: ['markdown-it', 'shiki', 'vue', 'vitepress'],
       output: {
         // disable warning on src/index.ts using both default and named export
         exports: 'named',
@@ -27,7 +27,6 @@ export default defineConfig({
         globals: {
           vue: 'Vue',
           shiki: 'shiki',
-          shikiTempl: 'shiki-templ',
         },
       },
     },
