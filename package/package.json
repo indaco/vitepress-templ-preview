@@ -1,6 +1,6 @@
 {
   "name": "vitepress-templ-preview",
-  "version": "0.2.1-beta.0",
+  "version": "0.2.1-beta.2",
   "description": "A VitePress plugin to preview your templ components while documenting them.",
   "homepage": "https://vitepress-templ-preview.indaco.dev",
   "bugs": {
@@ -17,6 +17,10 @@
     ".": {
       "types": "./dist/types/plugin/index.d.ts",
       "default": "./dist/plugin/index.esm.js"
+    },
+    "./sanitizer": {
+      "types": "./dist/types/plugin/sanitizer.d.ts",
+      "default": "./dist/plugin/sanitizer.esm.js"
     },
     "./highlighter": {
       "types": "./dist/types/highlighter.d.ts",
@@ -54,7 +58,7 @@
       "highlighter": [
         "./dist/types/highlighter.d.ts"
       ],
-      "./script-manager": [
+      "script-manager": [
         "./dist/types/script-manager.d.ts"
       ],
       ".": [
