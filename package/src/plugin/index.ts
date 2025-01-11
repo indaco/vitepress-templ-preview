@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { PluginContext, UserMessage, VTPUserConfig } from '../types';
+import type { PluginContext, VTPUserConfig } from '../types';
+import type { VTPMessage } from './messages';
 import path from 'node:path';
 import { Plugin, ResolvedConfig } from 'vite';
 import { createMarkdownRenderer, MarkdownRenderer } from 'vitepress';
-import { UserMessages } from '../user-messages';
-import { Logger } from '../logger';
-import { CacheService } from '../cache-service';
-import HtmlStylesOptimizer from '../styles-optimizer';
-import HtmlScriptsOptimizer from '../scripts-optimizer';
+import { UserMessages } from './messages';
+import { Logger } from './logger';
+import { CacheService } from './cache-service/cache-service';
+import HtmlStylesOptimizer from './optimizer/styles-optimizer';
+import HtmlScriptsOptimizer from './optimizer/scripts-optimizer';
 import { BundledTheme } from 'shiki';
 import { TemplTaskRunner } from './templ-runner';
-import { executeCommandSync } from '../utils';
+import { executeCommandSync } from './helpers/os';
 import { ConfigResolver } from './config';
 import { CommandBuilder } from './command-builder';
 import { MarkdownProcessor } from './md-processor';
@@ -130,7 +131,7 @@ async function viteTemplPreviewPlugin(
         const { file, server, modules } = ctx;
 
         if (file.endsWith('.templ')) {
-          Logger.info(<UserMessage>{ headline: 'File changed', message: file });
+          Logger.info(<VTPMessage>{ headline: 'File changed', message: file });
           const cmd = CommandBuilder.buildStaticTemplCommand(
             serverRoot,
             resolvedOptions,

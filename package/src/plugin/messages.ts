@@ -1,6 +1,19 @@
-import type { UserMessage } from './types';
+/**
+ * Represents a user message with a headline and message content.
+ */
+export interface VTPMessage {
+  /**
+   * The headline of the message.
+   */
+  headline: string;
 
-export const UserMessages: Record<string, UserMessage> = {
+  /**
+   * The content of the message.
+   */
+  message: string;
+}
+
+export const UserMessages: Record<string, VTPMessage> = {
   GENERIC_ERROR: {
     headline: 'Error',
     message: 'An unexpected error occurred. Please try again later.',

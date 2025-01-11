@@ -1,4 +1,4 @@
-import { CodeExtractorOptions } from './types';
+import { CodeExtractorOptions } from '../types';
 
 /**
  * Class to extract templated blocks of code.

@@ -1,10 +1,10 @@
 import ansis from 'ansis';
-import { UserMessage } from './types';
+import { VTPMessage } from './messages';
 
 export class Logger {
   static PREFIX = 'vitepress-templ-preview';
 
-  static makeMessage(msg: UserMessage, others: string[]): string {
+  static makeMessage(msg: VTPMessage, others: string[]): string {
     let message = msg.message;
     if (msg.message && others.length > 0) {
       message += ' ';
@@ -25,22 +25,22 @@ export class Logger {
     console.log(`${color(`[${prefix}]`)} ${formattedMessage}`);
   }
 
-  static info(msg: UserMessage, ...others: string[]) {
+  static info(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.log(msg.headline, message, Logger.PREFIX, ansis.bold.blue);
   }
 
-  static success(msg: UserMessage, ...others: string[]) {
+  static success(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.log(msg.headline, message, Logger.PREFIX, ansis.bold.green);
   }
 
-  static error(msg: UserMessage, ...others: string[]) {
+  static error(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.log(msg.headline, message, Logger.PREFIX, ansis.bold.red);
   }
 
-  static warning(msg: UserMessage, ...others: string[]) {
+  static warning(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.log(msg.headline, message, Logger.PREFIX, ansis.bold.yellow);
   }
@@ -56,7 +56,7 @@ export class Logger {
     );
   }
 
-  static infoHighlighted(msg: UserMessage, ...others: string[]) {
+  static infoHighlighted(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.logHighlighted(
       msg.headline,
@@ -66,7 +66,7 @@ export class Logger {
     );
   }
 
-  static successHighlighted(msg: UserMessage, ...others: string[]) {
+  static successHighlighted(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.logHighlighted(
       msg.headline,
@@ -76,7 +76,7 @@ export class Logger {
     );
   }
 
-  static errorHighlighted(msg: UserMessage, ...others: string[]) {
+  static errorHighlighted(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.logHighlighted(
       msg.headline,
@@ -86,7 +86,7 @@ export class Logger {
     );
   }
 
-  static warningHighlighted(msg: UserMessage, ...others: string[]) {
+  static warningHighlighted(msg: VTPMessage, ...others: string[]) {
     const message = this.makeMessage(msg, others);
     this.logHighlighted(
       msg.headline,

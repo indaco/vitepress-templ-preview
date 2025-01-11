@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { CssRuleAnalyzer } from '../../src/internals/css-processor/rule-analyzer';
-import { LayerProcessor } from '../../src/internals/css-processor/strategies/layer-processor';
-import { CssTokenProcessor } from '../../src/internals/css-processor/css-token-processor';
+import { CssRuleAnalyzer } from '../../src/plugin/css-processor/rule-analyzer';
+import { LayerProcessor } from '../../src/plugin/css-processor/strategies/layer-processor';
+import { CssTokenProcessor } from '../../src/plugin/css-processor/css-token-processor';
 
 describe('CssRuleAnalyzer', () => {
   const cssProcessor = new CssTokenProcessor([new LayerProcessor()]);

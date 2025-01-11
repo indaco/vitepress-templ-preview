@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as path from 'node:path';
-import { FileCache, FileWatcher, ModuleInvalidator } from './file-utils';
-import { Logger } from './logger';
-import { UserMessages } from './user-messages';
-import { PluginConfig, UserMessage } from './types';
+import { Logger } from '../logger';
+import type { VTPMessage } from '../messages';
+import { UserMessages } from '../messages';
+import { PluginConfig } from '../../types';
 import { ViteDevServer } from 'vite';
+import { FileCache } from './file-cache';
+import { FileWatcher } from './file-watcher';
+import { ModuleInvalidator } from './invalidator';
 
 /**
  * Service to coordinate file caching, directory watching, and module invalidation.
@@ -115,7 +118,7 @@ export class CacheService {
       });
     }, delay);
 
-    Logger.info(<UserMessage>{
+    Logger.info(<VTPMessage>{
       headline: 'Cache updated and client reloaded for file:',
       message: file,
     });

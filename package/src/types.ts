@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import { BundledTheme } from 'shiki';
-import { CacheService } from './cache-service';
+import { CacheService } from './plugin/cache-service/cache-service';
 
 /**
  * The mode in which the static template plugin operates.
@@ -103,13 +103,6 @@ export interface PluginContext {
 }
 
 /**
- * Represents the attributes of an HTML tag.
- */
-export interface TagAttrs {
-  [key: string]: string;
-}
-
-/**
  * Options for extracting code details.
  */
 export interface CodeExtractorOptions {
@@ -142,21 +135,6 @@ export interface CodeExtractorOptions {
    * Whether to include Go type declarations.
    */
   goTypes?: boolean;
-}
-
-/**
- * Represents a user message with a headline and message content.
- */
-export interface UserMessage {
-  /**
-   * The headline of the message.
-   */
-  headline: string;
-
-  /**
-   * The content of the message.
-   */
-  message: string;
 }
 
 /**

@@ -1,6 +1,5 @@
 import type {
   PluginContext,
-  TagAttrs,
   VTPComponentProps,
   ButtonStyle,
   CodeExtractorOptions,
@@ -12,11 +11,12 @@ import {
   getAttributeOrElse,
   generateTemplPreviewComponentHtml,
   handleOpMode,
-} from './helpers';
+} from './helpers/helpers';
 import type { StateCore, Token } from 'markdown-it/index.js';
-import { UserMessages } from '../user-messages';
-import { escapeForJSON } from '../utils';
-import { Logger } from '../logger';
+import { UserMessages } from './messages';
+import { escapeForJSON } from './helpers/strings';
+import { Logger } from './logger';
+import { TagAttrs } from './types';
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 

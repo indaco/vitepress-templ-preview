@@ -1,16 +1,16 @@
 import type {
   PluginConfig,
-  TagAttrs,
   VTPComponentProps,
   CodeExtractorOptions,
-} from '../types';
+} from '../../types';
 import path from 'node:path';
 import MarkdownIt from 'markdown-it';
 import type { Token } from 'markdown-it/index.js';
-import { UserMessages } from '../user-messages';
-import { unescapeFromJSON } from '../utils';
+import { UserMessages } from '../messages';
+import { unescapeFromJSON } from './strings';
 import { Logger } from '../logger';
 import { CodeExtractor } from '../code-extractor';
+import { TagAttrs } from '../types';
 
 // Function to parse attributes from the matched tag
 export function parseAttrs(attrsString: string): TagAttrs {

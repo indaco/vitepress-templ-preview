@@ -1,18 +1,19 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { CssRuleAnalyzer } from './internals/css-processor/rule-analyzer';
+import { CssRuleAnalyzer } from '../css-processor/rule-analyzer';
 import {
   CssTokenProcessor,
   DEFAULT_TOKEN_PROCESSOR_OPTIONS,
-} from './internals/css-processor/css-token-processor';
-import { CssTokenizer } from './internals/css-processor/css-tokenizer';
-import { LayerProcessor } from './internals/css-processor/strategies/layer-processor';
-import { TokenProcessorStrategyOptions } from './internals/css-processor/strategies/token-processor-strategy';
+} from '../css-processor/css-token-processor';
+import { CssTokenizer } from '../css-processor/css-tokenizer';
+import { LayerProcessor } from '../css-processor/strategies/layer-processor';
+import { TokenProcessorStrategyOptions } from '../css-processor/strategies/token-processor-strategy';
+import { HtmlTagOptimizer } from './optimizer';
 
 /**
  * Class to optimize HTML styles by deduplicating and consolidating styles tags.
  */
-class HtmlStylesOptimizer {
+class HtmlStylesOptimizer implements HtmlTagOptimizer {
   /** Singleton instance of the HtmlStylesOptimizer class.*/
   private static instance: HtmlStylesOptimizer;
 

@@ -1,10 +1,11 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { HtmlTagOptimizer } from './optimizer';
 
 /**
  * Class to optimize HTML scripts by deduplicating and consolidating script tags.
  */
-class HtmlScriptsOptimizer {
+class HtmlScriptsOptimizer implements HtmlTagOptimizer {
   private static instance: HtmlScriptsOptimizer;
 
   /** Message inserted for consolidated scripts in the first file. */

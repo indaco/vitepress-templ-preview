@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { UserMessages } from '../src/user-messages';
-import type { UserMessage } from '../src/types';
+import { UserMessages } from '../src/plugin/messages';
+import type { VTPMessage } from '../src/plugin/messages';
 
 describe('UserMessages', () => {
   it('should have a valid headline and message for each message entry', () => {
-    Object.values(UserMessages).forEach((message: UserMessage) => {
+    Object.values(UserMessages).forEach((message: VTPMessage) => {
       // Check if the headline is a non-empty string
       expect(message.headline).toBeDefined();
       expect(typeof message.headline).toBe('string');
@@ -25,7 +25,7 @@ describe('UserMessages', () => {
     ];
 
     Object.entries(UserMessages).forEach(
-      ([key, message]: [string, UserMessage]) => {
+      ([key, message]: [string, VTPMessage]) => {
         if (!allowedEmptyMessages.includes(key)) {
           expect(message.message.trim().length).toBeGreaterThan(0);
         }

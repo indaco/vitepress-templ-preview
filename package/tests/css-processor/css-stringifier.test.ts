@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CssTokenizer } from '../../src/internals/css-processor/css-tokenizer';
-import { CssStringifier } from '../../src/internals/css-processor/css-stringifier';
+import { CssTokenizer } from '../../src/plugin/css-processor/css-tokenizer';
+import { CssStringifier } from '../../src/plugin/css-processor/css-stringifier';
 
 describe('CssStringifiers', () => {
   let tokenizer: CssTokenizer;

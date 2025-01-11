@@ -1,7 +1,7 @@
 import { MarkdownRenderer } from 'vitepress';
 import { PluginContext } from '../types';
-import { UserMessages } from '../user-messages';
-import { Logger } from '../logger';
+import { UserMessages } from './messages';
+import { Logger } from './logger';
 import markdownItTemplPreviewPlugin from './markdown-it-templ-preview';
 
 export class MarkdownProcessor {

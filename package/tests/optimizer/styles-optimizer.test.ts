@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import HtmlStylesOptimizer from '../src/styles-optimizer';
+import HtmlStylesOptimizer from '../../src/plugin/optimizer/styles-optimizer';
 
 // Helper function to create a temporary directory for testing
 function createTempDir() {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import * as fsp from 'node:fs/promises';
-import { FileCache } from '../src/file-utils';
+import { FileCache } from '../../src/plugin/cache-service/file-cache';
 
 vi.mock('node:fs/promises', () => ({
   writeFile: vi.fn(),

@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import {
   CssTokenizer,
   Token,
-} from '../../src/internals/css-processor/css-tokenizer';
-import { CssTokenProcessor } from '../../src/internals/css-processor/css-token-processor';
-import { LayerProcessor } from '../../src/internals/css-processor/strategies/layer-processor';
-import { TokenProcessorStrategyOptions } from '../../src/internals/css-processor/strategies/token-processor-strategy';
+} from '../../src/plugin/css-processor/css-tokenizer';
+import { CssTokenProcessor } from '../../src/plugin/css-processor/css-token-processor';
+import { LayerProcessor } from '../../src/plugin/css-processor/strategies/layer-processor';
+import { TokenProcessorStrategyOptions } from '../../src/plugin/css-processor/strategies/token-processor-strategy';
 
 describe('CssTokenProcessor', () => {
   it('should throw an error when execute is called without a strategy set', () => {

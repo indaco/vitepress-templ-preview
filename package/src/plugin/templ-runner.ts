@@ -1,5 +1,5 @@
 import { PluginConfig } from '../types';
-import { checkBinaries, executeCommandSync } from '../utils';
+import { checkBinaries, executeCommandSync } from './helpers/os';
 import { CommandBuilder } from './command-builder';
 
 export class TemplTaskRunner {
