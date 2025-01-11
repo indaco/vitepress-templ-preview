@@ -3,7 +3,8 @@ import * as path from 'node:path';
 import { FileCache, FileWatcher, ModuleInvalidator } from './file-utils';
 import { Logger } from './logger';
 import { UserMessages } from './user-messages';
-import { PluginConfig } from './types';
+import { PluginConfig, UserMessage } from './types';
+import { ViteDevServer } from 'vite';
 
 /**
  * Service to coordinate file caching, directory watching, and module invalidation.
@@ -94,6 +95,31 @@ export class CacheService {
     this.moduleInvalidator.addFile(filePath, id);
   }
 
+  /**
+   * Handles a file change event with an optional delay before sending reload events.
+   * @param server - Vite's Dev Server instance.
+   * @param file - The file path that triggered the change.
+   * @param delay - Delay in milliseconds before handling the file change.
+   */
+  public handleFileChange(
+    server: ViteDevServer,
+    file: string,
+    delay: number = 500,
+  ): void {
+    setTimeout(() => {
+      this.watchFileChanges(file, file);
+
+      // Send a full-reload event to the client
+      server.ws.send({
+        type: 'full-reload',
+      });
+    }, delay);
+
+    Logger.info(<UserMessage>{
+      headline: 'Cache updated and client reloaded for file:',
+      message: file,
+    });
+  }
   /**
    * Clears the entire file cache.
    */

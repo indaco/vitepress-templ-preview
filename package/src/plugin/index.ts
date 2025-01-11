@@ -1,94 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
-  PluginConfig,
-  PluginContext,
-  UserMessage,
-  VTPUserConfig,
-} from '../types';
+import type { PluginContext, UserMessage, VTPUserConfig } from '../types';
 import path from 'node:path';
 import { Plugin, ResolvedConfig } from 'vite';
-import {
-  createMarkdownRenderer,
-  MarkdownOptions,
-  MarkdownRenderer,
-} from 'vitepress';
-import markdownItTemplPreviewPlugin from './markdown-it-templ-preview';
+import { createMarkdownRenderer, MarkdownRenderer } from 'vitepress';
 import { UserMessages } from '../user-messages';
-import { checkBinaries, executeCommandSync } from '../utils';
 import { Logger } from '../logger';
 import { CacheService } from '../cache-service';
 import HtmlStylesOptimizer from '../styles-optimizer';
 import HtmlScriptsOptimizer from '../scripts-optimizer';
 import { BundledTheme } from 'shiki';
+import { TemplTaskRunner } from './templ-runner';
+import { executeCommandSync } from '../utils';
+import { ConfigResolver } from './config';
+import { CommandBuilder } from './command-builder';
+import { MarkdownProcessor } from './md-processor';
 
-const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
-const TEMPL_BIN = 'templ';
-const STATIC_TEMPL_BIN = 'static-templ';
+type ServerCommand = 'build' | 'serve';
+type ThemeConfig = { light: BundledTheme; dark: BundledTheme };
 
-/**
- * Builds the command string for generating HTML files from Templ files.
- *
- * @param serverRoot - The root directory of the server.
- * @param resolvedOptions - The plugin options.
- * @returns The command string.
- */
-function buildTemplGenerateCommandStr(
-  serverRoot: string,
-  resolvedOptions: PluginConfig,
-): string {
-  return `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${TEMPL_BIN} generate .`;
+const DefaultThemes: ThemeConfig = {
+  light: 'github-light',
+  dark: 'github-dark',
+} as const;
+
+function optimizeAssets(
+  stylesOptimizer: HtmlStylesOptimizer,
+  scriptsOptimizer: HtmlScriptsOptimizer,
+) {
+  Logger.info(UserMessages.CSS_OPTIMIZER);
+  stylesOptimizer.run();
+
+  Logger.info(UserMessages.JS_OPTIMIZER);
+  scriptsOptimizer.run();
 }
-
-/**
- * Builds the command string for generating HTML files from Templ files.
- * @param serverRoot - The root directory of the server.
- * @param resolvedOptions - The plugin options.
- * @returns The command string.
- */
-function buildStaticTemplCommandStr(
-  serverRoot: string,
-  resolvedOptions: PluginConfig,
-): string {
-  const baseCmd = `cd ${serverRoot}/${resolvedOptions.goProjectDir} && ${STATIC_TEMPL_BIN} -m ${resolvedOptions.mode} -i ${resolvedOptions.inputDir} -g=${resolvedOptions.runTemplGenerate} -d=${resolvedOptions.debug}`;
-
-  if (resolvedOptions.mode === 'bundle') {
-    return `${baseCmd} -o ${resolvedOptions.outputDir}`;
-  }
-
-  return baseCmd;
-}
-
-// Default values for the PluginOptions
-const defaultPluginOptions: PluginConfig = {
-  goProjectDir: '',
-  mode: 'inline',
-  inputDir: 'components',
-  outputDir: 'output',
-  debug: false,
-  runTemplGenerate: true,
-  cacheSize: 100,
-};
 
 async function viteTemplPreviewPlugin(
   options?: VTPUserConfig,
 ): Promise<Plugin> {
-  const resolvedPluginOptions: PluginConfig = {
-    ...defaultPluginOptions,
-    ...options,
-  };
-
-  const defaultThemes: { light: BundledTheme; dark: BundledTheme } = {
-    light: 'github-light',
-    dark: 'github-dark',
-  };
-
+  const resolvedOptions = ConfigResolver.resolve(options);
   // Initialize CacheService with default cache size
-  const cacheService = new CacheService(resolvedPluginOptions.cacheSize);
+  const cacheService = new CacheService(resolvedOptions.cacheSize);
 
-  let mdInstance: MarkdownRenderer;
+  let taskRunner: TemplTaskRunner;
+  let markdownProcessor: MarkdownProcessor;
   let serverRoot: string;
-  let serverCommand: 'build' | 'serve';
-  let userThemes: any;
+  let serverCommand: ServerCommand;
   let stylesOptimizer: HtmlStylesOptimizer;
   let scriptsOptimizer: HtmlScriptsOptimizer;
 
@@ -98,6 +54,7 @@ async function viteTemplPreviewPlugin(
     async configResolved(config: ResolvedConfig) {
       serverRoot = config.root;
       serverCommand = config.command;
+      taskRunner = new TemplTaskRunner(serverRoot, resolvedOptions);
 
       const vitepressConfig = (config as any).vitepress;
       if (!vitepressConfig) {
@@ -107,85 +64,63 @@ async function viteTemplPreviewPlugin(
         );
       }
 
-      const inputDirectory = path.join(
-        serverRoot,
-        resolvedPluginOptions.inputDir,
-      );
+      const inputDirectory = path.join(serverRoot, resolvedOptions.inputDir);
 
-      const markdownOptions: MarkdownOptions = vitepressConfig.markdown;
-      if (!markdownOptions) {
-        Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_OBJ_ERROR);
-        Logger.warning(UserMessages.MISSING_MARKDOWN_OBJ_HINT);
-        throw new Error(
-          `[vitepress-templ-preview] ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.headline} ${UserMessages.MISSING_MARKDOWN_OBJ_ERROR.message}`,
-        );
-      }
+      const userThemes: Partial<typeof DefaultThemes> =
+        vitepressConfig.markdown.theme || {};
 
-      mdInstance = await createMarkdownRenderer(
+      const mdInstance: MarkdownRenderer = await createMarkdownRenderer(
         vitepressConfig.srcDir,
         vitepressConfig.markdown,
         vitepressConfig.base,
         vitepressConfig.logger,
       );
-      userThemes = markdownOptions.theme;
+
       stylesOptimizer = HtmlStylesOptimizer.getInstance(inputDirectory);
       scriptsOptimizer = HtmlScriptsOptimizer.getInstance(inputDirectory);
-    },
-    async buildStart() {
-      checkBinaries([STATIC_TEMPL_BIN]);
 
-      if (!resolvedPluginOptions.runTemplGenerate) {
-        checkBinaries([TEMPL_BIN]);
-        const templCmd = buildTemplGenerateCommandStr(
-          serverRoot,
-          resolvedPluginOptions,
-        );
-        executeCommandSync(templCmd);
-      }
-
-      const staticTemplcmd = buildStaticTemplCommandStr(
+      const context: PluginContext = {
+        md: mdInstance,
         serverRoot,
-        resolvedPluginOptions,
-      );
+        pluginOptions: {
+          ...resolvedOptions,
+          inputDir: path.join(
+            resolvedOptions.goProjectDir!,
+            resolvedOptions.inputDir!,
+          ),
+          outputDir: path.join(
+            resolvedOptions.goProjectDir!,
+            resolvedOptions.outputDir!,
+          ),
+        },
+        theme: { ...DefaultThemes, ...userThemes },
+        serverCommand,
+        cacheService,
+      };
 
-      executeCommandSync(staticTemplcmd);
+      markdownProcessor = new MarkdownProcessor(mdInstance, context);
+    },
 
-      // Consolidating html style and script tags across static-templ generated html files
-      Logger.info(UserMessages.CSS_OPTIMIZER);
-      stylesOptimizer.run();
-      Logger.info(UserMessages.JS_OPTIMIZER);
-      scriptsOptimizer.run();
+    async buildStart() {
+      // Run templ fmt and templ generate
+      taskRunner.run();
+
+      // Consolidate html style and script tags across static-templ generated html files
+      optimizeAssets(stylesOptimizer, scriptsOptimizer);
     },
     async configureServer(server) {
       if (serverCommand === 'serve') {
-        checkBinaries([STATIC_TEMPL_BIN]);
+        // Run templ fmt and templ generate
+        taskRunner.run();
 
-        if (!resolvedPluginOptions.runTemplGenerate) {
-          checkBinaries([TEMPL_BIN]);
-          const templCmd = buildTemplGenerateCommandStr(
-            serverRoot,
-            resolvedPluginOptions,
-          );
-          executeCommandSync(templCmd);
-        }
-
-        const staticTemplcmd = buildStaticTemplCommandStr(
-          serverRoot,
-          resolvedPluginOptions,
-        );
-        executeCommandSync(staticTemplcmd);
-
-        // Consolidating html style and script tags across static-templ generated html files
-        Logger.info(UserMessages.CSS_OPTIMIZER);
-        stylesOptimizer.run();
-        Logger.info(UserMessages.JS_OPTIMIZER);
-        scriptsOptimizer.run();
+        // Consolidate html style and script tags across static-templ generated html files
+        optimizeAssets(stylesOptimizer, scriptsOptimizer);
 
         // Use CacheService to update cache and invalidate
-        await cacheService.updateCacheAndInvalidate(
+        cacheService.updateCacheAndInvalidate(
           server,
           serverRoot,
-          resolvedPluginOptions,
+          resolvedOptions,
           true,
         );
       }
@@ -196,76 +131,30 @@ async function viteTemplPreviewPlugin(
 
         if (file.endsWith('.templ')) {
           Logger.info(<UserMessage>{ headline: 'File changed', message: file });
-          const cmd = buildStaticTemplCommandStr(
+          const cmd = CommandBuilder.buildStaticTemplCommand(
             serverRoot,
-            resolvedPluginOptions,
+            resolvedOptions,
           );
           executeCommandSync(cmd);
 
-          // Consolidating html style and script tags across static-templ generated html files
-          Logger.info(UserMessages.CSS_OPTIMIZER);
-          stylesOptimizer.run();
-          Logger.info(UserMessages.JS_OPTIMIZER);
-          scriptsOptimizer.run();
+          // Consolidate html style and script tags across static-templ generated html files
+          optimizeAssets(stylesOptimizer, scriptsOptimizer);
 
           // Use CacheService to update the cache after file change
           cacheService.updateCacheAndInvalidate(
             server,
             serverRoot,
-            resolvedPluginOptions,
+            resolvedOptions,
           );
 
-          setTimeout(() => {
-            cacheService.watchFileChanges(file, file);
-
-            server.ws.send({
-              type: 'full-reload',
-            });
-          }, 500);
+          // Cache updated and client reloaded
+          cacheService.handleFileChange(server, file);
         }
         return modules;
       }
     },
     async transform(code, id) {
-      if (!id.endsWith('.md')) return;
-
-      // Check if the markdown contains the templ demo parameters
-      if (!TEMPL_DEMO_REGEX.test(code)) return;
-
-      if (!mdInstance) {
-        Logger.errorHighlighted(UserMessages.MISSING_MARKDOWN_INSTANCE_ERROR);
-        throw new Error(
-          `[vitepress-templ-preview] ${UserMessages.MISSING_MARKDOWN_INSTANCE_ERROR.headline} ${UserMessages.MISSING_MARKDOWN_INSTANCE_ERROR.message}`,
-        );
-      }
-
-      const context: PluginContext = {
-        md: mdInstance,
-        serverRoot,
-        pluginOptions: {
-          ...resolvedPluginOptions,
-          inputDir: path.join(
-            resolvedPluginOptions.goProjectDir!,
-            resolvedPluginOptions.inputDir!,
-          ),
-          outputDir: path.join(
-            resolvedPluginOptions.goProjectDir!,
-            resolvedPluginOptions.outputDir!,
-          ),
-        },
-        theme: { ...defaultThemes, ...userThemes },
-        serverCommand,
-        cacheService,
-      };
-
-      markdownItTemplPreviewPlugin(mdInstance, context, id);
-
-      const rendered = mdInstance.render(code);
-      if (!rendered.includes('VTPLivePreview')) return;
-      return {
-        code: rendered,
-        map: null,
-      };
+      return markdownProcessor.transform(code, id);
     },
   };
 }
