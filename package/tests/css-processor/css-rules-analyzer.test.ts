@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { CssRuleAnalyzer } from '../../src/plugin/css-processor/rule-analyzer';
+import { CssRulesAnalyzer } from '../../src/plugin/css-processor/css-rules-analyzer';
 import { LayerProcessor } from '../../src/plugin/css-processor/strategies/layer-processor';
 import { CssTokenProcessor } from '../../src/plugin/css-processor/css-token-processor';
 
 describe('CssRuleAnalyzer', () => {
-  const cssProcessor = new CssTokenProcessor([new LayerProcessor()]);
-  const analyzer = new CssRuleAnalyzer(cssProcessor);
+  const tokenProcessor = new CssTokenProcessor([new LayerProcessor()]);
+  const rulesAnalyzer = new CssRulesAnalyzer(tokenProcessor);
 
   it('should handle unique rules in multiple inputs', () => {
     const cssInputs = [
@@ -13,7 +13,7 @@ describe('CssRuleAnalyzer', () => {
       `.class2 { background: blue; }`,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(2);
     expect(result.duplicates.size).toBe(0);
@@ -30,7 +30,7 @@ describe('CssRuleAnalyzer', () => {
   it('should detect duplicate rules across inputs', () => {
     const cssInputs = [`.class1 { color: red; }`, `.class1 { color: red; }`];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(1);
@@ -54,7 +54,7 @@ describe('CssRuleAnalyzer', () => {
         .class4 { color: yellow; }`;
 
     const cssInputs = [inputOne, inputTwo, inputThree];
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(1);
     expect(result.duplicates.size).toBe(3);
@@ -96,7 +96,7 @@ describe('CssRuleAnalyzer', () => {
       `,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(2);
@@ -126,7 +126,7 @@ describe('CssRuleAnalyzer', () => {
       `@media (max-width: 600px) { .class1 { color: red; } }`,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(1);
@@ -155,7 +155,7 @@ describe('CssRuleAnalyzer', () => {
       `,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(1);
@@ -172,7 +172,7 @@ describe('CssRuleAnalyzer', () => {
   it('should handle empty inputs gracefully', () => {
     const cssInputs = ['', '', ''];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(0);
@@ -184,7 +184,7 @@ describe('CssRuleAnalyzer', () => {
       `  .class1 {    color:red;    }  `,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(1);
@@ -204,7 +204,7 @@ describe('CssRuleAnalyzer', () => {
       `.class1.class2:hover { color: red; }`,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(0);
     expect(result.duplicates.size).toBe(1);
@@ -224,7 +224,7 @@ describe('CssRuleAnalyzer', () => {
       `.class2 { background: blue }`,
     ];
 
-    const result = analyzer.analyze(cssInputs);
+    const result = rulesAnalyzer.analyze(cssInputs);
 
     expect(result.unique.size).toBe(2);
     expect(result.duplicates.size).toBe(0);

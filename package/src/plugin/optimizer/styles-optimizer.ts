@@ -1,6 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { CssRuleAnalyzer } from '../css-processor/rule-analyzer';
+import { CssRulesAnalyzer } from '../css-processor/css-rules-analyzer';
 import {
   CssTokenProcessor,
   DEFAULT_TOKEN_PROCESSOR_OPTIONS,
@@ -42,10 +42,10 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
   private inputDirectory: string;
 
   /** Instance of CssTokenProcessor to process and extract CSS layer contents. */
-  private cssProcessor: CssTokenProcessor;
+  private cssTokenProcessor: CssTokenProcessor;
 
-  /** Instance of CssRuleAnalyzer to analyze and process CSS rules. */
-  private cssRuleAnalyzer: CssRuleAnalyzer;
+  /** Instance of CssRulesAnalyzer to analyze and process CSS rules. */
+  private cssRulesAnalyzer: CssRulesAnalyzer;
 
   /** Options for the Token Processor Strategy. */
   private options: Required<TokenProcessorStrategyOptions>;
@@ -62,11 +62,14 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
     this.inputDirectory = inputDirectory;
     this.options = this.mergeOptions(options);
 
-    this.cssProcessor = new CssTokenProcessor(
+    this.cssTokenProcessor = new CssTokenProcessor(
       [new LayerProcessor()],
       this.options,
     );
-    this.cssRuleAnalyzer = new CssRuleAnalyzer(this.cssProcessor, this.options);
+    this.cssRulesAnalyzer = new CssRulesAnalyzer(
+      this.cssTokenProcessor,
+      this.options,
+    );
   }
 
   /**
@@ -106,8 +109,8 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
    */
   public updateOptions(options: TokenProcessorStrategyOptions): void {
     this.mergeOptions(options);
-    this.cssProcessor.setOptions(this.options);
-    this.cssRuleAnalyzer.setOptions(this.options);
+    this.cssTokenProcessor.setOptions(this.options);
+    this.cssRulesAnalyzer.setOptions(this.options);
   }
 
   /**
@@ -149,7 +152,7 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
       this.extractAndNormalizeCssBlocks(htmlFiles, fileContents);
 
     // Step 3: Analyze CSS rules
-    const analysisResult = this.cssRuleAnalyzer.analyze(cssInputs);
+    const analysisResult = this.cssRulesAnalyzer.analyze(cssInputs);
 
     // Step 4: Consolidate duplicate styles
     const consolidatedStyles = this.getConsolidatedStyles(
@@ -214,14 +217,14 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
         styleBlocks.forEach((block) => {
           // Tokenize and process the CSS block
           const tokens = new CssTokenizer().tokenize(block);
-          const processedTokens = this.cssProcessor.execute(
+          const processedTokens = this.cssTokenProcessor.execute(
             tokens,
             this.options,
           );
 
           // Use the CssTokenProcessor's `serialize` method to reconstruct valid CSS rules
           const normalizedRules =
-            this.cssRuleAnalyzer.minifyRules(processedTokens);
+            this.cssRulesAnalyzer.minifyRules(processedTokens);
 
           normalizedRules.forEach((rule) => {
             const completeRule = rule; // Ensure proper CSS syntax

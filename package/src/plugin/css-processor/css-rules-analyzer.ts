@@ -9,7 +9,7 @@ import { TokenProcessorStrategyOptions } from './strategies/token-processor-stra
 /**
  * Class for analyzing and identifying unique and duplicate CSS rules.
  */
-export class CssRuleAnalyzer {
+export class CssRulesAnalyzer {
   private options: Required<TokenProcessorStrategyOptions>;
   private cssProcessor: CssTokenProcessor;
 
