@@ -18,17 +18,17 @@
       "types": "./dist/types/plugin/index.d.ts",
       "default": "./dist/plugin/index.esm.js"
     },
-    "./sanitizer": {
-      "types": "./dist/types/plugin/sanitizer.d.ts",
-      "default": "./dist/plugin/sanitizer.esm.js"
+    "./components": {
+      "types": "./dist/types/components/index.d.ts",
+      "default": "./dist/components/vtp-vue-components.es.js"
     },
     "./highlighter": {
       "types": "./dist/types/highlighter.d.ts",
       "default": "./dist/highlighter.esm.js"
     },
-    "./components": {
-      "types": "./dist/types/components/index.d.ts",
-      "default": "./dist/components/vtp-vue-components.es.js"
+    "./sanitizer": {
+      "types": "./dist/types/sanitizer.d.ts",
+      "default": "./dist/sanitizer.esm.js"
     },
     "./script-manager": {
       "types": "./dist/types/script-manager.d.ts",
@@ -57,6 +57,9 @@
       ],
       "highlighter": [
         "./dist/types/highlighter.d.ts"
+      ],
+      "sanitizer": [
+        "./dist/types/sanitizer.d.ts"
       ],
       "script-manager": [
         "./dist/types/script-manager.d.ts"

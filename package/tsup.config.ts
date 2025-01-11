@@ -5,6 +5,7 @@ export default defineConfig({
     'src/internals/css-processor/**/*.ts',
     'src/plugin/**/*.ts',
     'src/highlighter.ts',
+    'src/sanitizer.ts',
     'src/script-manager.ts',
     'src/types.ts',
   ],
