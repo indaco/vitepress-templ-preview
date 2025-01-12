@@ -1,17 +1,4 @@
-/**
- * Represents a user message with a headline and message content.
- */
-export interface VTPMessage {
-  /**
-   * The headline of the message.
-   */
-  headline: string;
-
-  /**
-   * The content of the message.
-   */
-  message: string;
-}
+import type { VTPMessage } from './types';
 
 export const UserMessages: Record<string, VTPMessage> = {
   GENERIC_ERROR: {

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { platform } from 'os';
 import { execSync, spawnSync } from 'node:child_process';
-
+import type { VTPMessage } from '../types';
 import { Logger } from '../logger';
-import { UserMessages, VTPMessage } from '../messages';
+import { UserMessages } from '../messages';
 
 /**
  * Checks if the required binaries are installed on the system.

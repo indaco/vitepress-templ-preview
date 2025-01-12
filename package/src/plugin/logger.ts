@@ -1,5 +1,5 @@
 import ansis from 'ansis';
-import { VTPMessage } from './messages';
+import type { VTPMessage } from './types';
 
 export class Logger {
   static PREFIX = 'vitepress-templ-preview';

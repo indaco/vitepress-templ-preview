@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { UserMessages } from '../src/plugin/messages';
-import type { VTPMessage } from '../src/plugin/messages';
+import type { VTPMessage } from '../src/plugin/types';
 
 describe('UserMessages', () => {
   it('should have a valid headline and message for each message entry', () => {

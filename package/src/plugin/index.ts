@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PluginContext, VTPUserConfig } from '../types';
-import type { VTPMessage } from './messages';
+import type { VTPMessage } from './types';
 import path from 'node:path';
 import { Plugin, ResolvedConfig } from 'vite';
 import { createMarkdownRenderer, MarkdownRenderer } from 'vitepress';

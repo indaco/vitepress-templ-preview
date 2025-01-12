@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as path from 'node:path';
 import { Logger } from '../logger';
-import type { VTPMessage } from '../messages';
+import type { VTPMessage } from '../types';
 import { UserMessages } from '../messages';
 import { PluginConfig } from '../../types';
 import { ViteDevServer } from 'vite';
