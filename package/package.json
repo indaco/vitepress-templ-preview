@@ -43,14 +43,20 @@
   },
   "typesVersions": {
     ">4.0": {
-      "VTPCollapsible": [
-        "./dist/types/components/VTPCollapsible.vue.d.ts"
+      "VTPCard": [
+        "./dist/types/components/VTPCard.vue.d.ts"
       ],
-      "VTPPanel": [
-        "./dist/types/components/VTPPanel.vue.d.ts"
+      "VTPCodeToggle": [
+        "./dist/types/components/VTPCodeToggle.vue.d.ts"
+      ],
+      "VTPIconToggle": [
+        "./dist/types/components/VTPIconToggle.vue.d.ts"
       ],
       "VTPTabs": [
         "./dist/types/components/VTPTabs.vue.d.ts"
+      ],
+      "VTPToggle": [
+        "./dist/types/components/VTPToggle.vue.d.ts"
       ],
       "types": [
         "./dist/types/types.d.ts"
