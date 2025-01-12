@@ -45,9 +45,9 @@ Your `templ` code can include various elements like package declarations, import
 
 ### VTPCard
 
-| Prop             | Type      | Default | Description                                       |
-| :--------------- | :-------- | ------- | ------------------------------------------------- |
-| `isPreviewFirst` | _boolean_ | `true`  | Wheather or not show the preview before the code. |
+| Prop             | Type      | Default | Description                                      |
+| :--------------- | :-------- | ------- | ------------------------------------------------ |
+| `isPreviewFirst` | _boolean_ | `true`  | Whether or not show the preview before the code. |
 
 ::: details Screenshot
 

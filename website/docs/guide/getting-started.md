@@ -15,7 +15,7 @@ Assuming you chose to [scaffold](https://vitepress.dev/guide/getting-started#ins
 
 ## Installation
 
-Add `vitepress-templ-preview` to your VitePress project along with its peer dependecy `css-tree`, using one of the following commands:
+Add `vitepress-templ-preview` to your VitePress project along with its peer dependency `css-tree`, using one of the following commands:
 
 ::: code-group
 
