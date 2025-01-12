@@ -1,6 +1,6 @@
 {
   "name": "vitepress-templ-preview",
-  "version": "0.2.1-beta.2",
+  "version": "0.3.0-rc.0",
   "description": "A VitePress plugin to preview your templ components while documenting them.",
   "homepage": "https://vitepress-templ-preview.indaco.dev",
   "bugs": {
@@ -111,5 +111,9 @@
     "vue": "^3.5.13",
     "vue-tsc": "^2.2.0"
   },
-  "packageManager": "pnpm@9.15.3"
+  "peerDependencies": {
+    "css-tree": "^3.1.0"
+  },
+  "packageManager": "pnpm@9.15.3",
+  "sideEffect": false
 }

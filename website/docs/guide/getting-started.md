@@ -15,20 +15,20 @@ Assuming you chose to [scaffold](https://vitepress.dev/guide/getting-started#ins
 
 ## Installation
 
-Add `vitepress-templ-preview` to your VitePress project using one of the following commands:
+Add `vitepress-templ-preview` to your VitePress project along with its peer dependecy `css-tree`, using one of the following commands:
 
 ::: code-group
 
 ```bash [npm]
-npm add -D vitepress-templ-preview
+npm add -D vitepress-templ-preview css-tree
 ```
 
 ```bash [pnpm]
-pnpm add -D vitepress-templ-preview
+pnpm add -D vitepress-templ-preview css-tree
 ```
 
 ```bash [yarn]
-yarn add -D vitepress-templ-preview
+yarn add -D vitepress-templ-preview css-tree
 ```
 
 :::
