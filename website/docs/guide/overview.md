@@ -6,7 +6,7 @@
 
 ## 📦 What’s Inside?
 
-- **Vite plugin**: designed to handle templ components in your markdown files. his plugin processes custom tags and renders them as Vue components..
+- **Vite plugin**: designed to handle templ components in your markdown files. This plugin processes custom tags and renders them as Vue components.
 - **Vue components**: Predefined Vue components tailored to display both the highlighted source code and the rendered preview of the templ component.
 
 ## :sparkles: Features
