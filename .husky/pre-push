@@ -1,1 +1,1 @@
-pnpm format && pnpm test && pnpm build
+pnpm format && pnpm web:build

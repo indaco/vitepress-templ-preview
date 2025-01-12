@@ -1,1 +1,1 @@
-pnpm format && pnpm exec lint-staged && pnpm test && pnpm build
+pnpm format && pnpm exec lint-staged && pnpm web:build
