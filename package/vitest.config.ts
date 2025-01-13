@@ -9,7 +9,7 @@ export default defineConfig({
       provider: 'istanbul',
       reporter: ['html'],
       extension: ['.ts'],
-      exclude: ['./*.ts', 'src/components/**', 'src/plugin/**'],
+      exclude: ['./*.ts', 'src/components/**'],
     },
   },
 });

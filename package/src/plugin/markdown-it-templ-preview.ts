@@ -6,17 +6,14 @@ import type {
 } from '../types';
 import * as fs from 'node:fs';
 import MarkdownIt from 'markdown-it';
-import {
-  parseAttrs,
-  getAttributeOrElse,
-  generateTemplPreviewComponentHtml,
-  handleOpMode,
-} from './helpers/helpers';
 import type { StateCore, Token } from 'markdown-it/index.js';
 import { UserMessages } from './messages';
-import { escapeForJSON } from './helpers/strings';
+import { escapeForJSON, unescapeFromJSON } from './helpers/strings';
 import { Logger } from './logger';
 import { TagAttrs } from './types';
+import { getAttributeOrElse, parseAttrs } from './helpers/attributes';
+import { CodeExtractor } from './code-extractor';
+import { handleOpMode } from './helpers/paths';
 
 const TEMPL_DEMO_REGEX = /<templ-demo\s+([^>]+?)\/?>/;
 
@@ -150,6 +147,36 @@ function renderTemplPreview(
   };
 
   return generateTemplPreviewComponentHtml(md, componentProps, extractorOpts);
+}
+
+/**
+ * Generates the HTML for the templ preview component.
+ * @param md - The MarkdownIt instance.
+ * @param componentProps - The properties for the preview component.
+ * @param extractorOptions - The options for the code extractor.
+ * @returns The HTML string for the templ preview component.
+ */
+function generateTemplPreviewComponentHtml(
+  md: MarkdownIt,
+  componentProps: VTPComponentProps,
+  extractorOptions?: CodeExtractorOptions,
+): string {
+  // Decode the escape sequences in the codeContent
+  const decodedCodeContent = unescapeFromJSON(componentProps.codeContent);
+
+  const extractor = new CodeExtractor(decodedCodeContent, extractorOptions);
+  const templBlocks = extractor.extract();
+
+  const _props = {
+    codeContent: unescapeFromJSON(templBlocks[0]),
+    htmlContent: unescapeFromJSON(componentProps.htmlContent),
+    buttonStyle: md.utils.escapeHtml(componentProps.buttonStyle),
+    themes: componentProps.themes,
+    isPreviewFirst: componentProps.isPreviewFirst,
+    isPreviewOnly: componentProps.isPreviewOnly,
+  };
+
+  return `<VTPLivePreview v-bind='${JSON.stringify(_props)}'></VTPLivePreview>`;
 }
 
 export default function markdownItTemplPreviewPlugin(
