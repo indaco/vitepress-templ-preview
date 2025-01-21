@@ -81,9 +81,9 @@
   ],
   "scripts": {
     "build": "pnpm clean && pnpm test && pnpm build:plugin && pnpm build:components && pnpm postbuild",
-    "postbuild": "publint .",
     "build:components": "vue-tsc && vite build",
     "build:plugin": "tsup",
+    "postbuild": "publint .",
     "clean": "rimraf dist",
     "lint": "eslint --fix 'src/**/*.vue'",
     "prepublish": "pnpm build",
@@ -93,26 +93,26 @@
     "test:watch": "vitest watch"
   },
   "devDependencies": {
-    "@shikijs/markdown-it": "^1.26.1",
+    "@shikijs/markdown-it": "^2.0.3",
     "@types/css-tree": "^2.3.10",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^22.10.5",
+    "@types/node": "^22.10.7",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/coverage-istanbul": "^2.1.8",
     "@vitest/ui": "^2.1.8",
-    "ansis": "^3.8.1",
+    "ansis": "^3.9.0",
     "css-tree": "^3.1.0",
     "eslint": "^9.18.0",
     "eslint-plugin-vue": "^9.32.0",
     "markdown-it": "^14.1.0",
-    "publint": "^0.3.1",
+    "publint": "^0.3.2",
     "rimraf": "^6.0.1",
-    "shiki": "^1.26.1",
+    "shiki": "^2.0.3",
     "tsup": "^8.3.5",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.19.1",
+    "typescript-eslint": "^8.21.0",
     "vite": "5.4.11",
-    "vitepress": "^1.5.0",
+    "vitepress": "^1.6.1",
     "vitest": "^2.1.8",
     "vue": "^3.5.13",
     "vue-tsc": "^2.2.0"
@@ -120,6 +120,6 @@
   "peerDependencies": {
     "css-tree": "^3.1.0"
   },
-  "packageManager": "pnpm@9.15.3",
+  "packageManager": "pnpm@9.15.4",
   "sideEffect": false
 }

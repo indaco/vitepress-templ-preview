@@ -131,7 +131,14 @@ export default defineConfig({
     config(md) {
       md.use(groupIconMdPlugin);
     },
-    codeTransformers: [transformerNotationDiff(), transformerNotationFocus()],
+    codeTransformers: [
+      transformerNotationDiff({
+        matchAlgorithm: 'v3',
+      }),
+      transformerNotationFocus({
+        matchAlgorithm: 'v3',
+      }),
+    ],
   },
   vite: {
     plugins: [
