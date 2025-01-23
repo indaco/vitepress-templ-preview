@@ -103,7 +103,7 @@ export default defineConfig({
 ```
 
 > [!IMPORTANT]
-> Additionally, `renderForLocalSearch` accepts a fourth parameter to specify the `inputDir`, if it has been set in the plugin options. For details, refer to the [Plugin Options](/customization/plugin-options).
+> Additionally, `sanitizeMarkdownForSearch` accepts a fourth parameter to specify the `inputDir`, if it has been set in the plugin options. For details, refer to the [Plugin Options](/customization/plugin-options).
 
 ## Templ Project Setup
 
