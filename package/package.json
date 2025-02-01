@@ -96,7 +96,7 @@
     "@shikijs/markdown-it": "^2.1.0",
     "@types/css-tree": "^2.3.10",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^22.10.9",
+    "@types/node": "^22.13.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/coverage-istanbul": "^2.1.8",
     "@vitest/ui": "^2.1.8",
