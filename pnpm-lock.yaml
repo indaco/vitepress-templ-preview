@@ -70,8 +70,8 @@ importers:
         specifier: ^2.1.8
         version: 2.1.8(vitest@2.1.8)
       ansis:
-        specifier: ^3.9.0
-        version: 3.9.0
+        specifier: ^3.10.0
+        version: 3.10.0
       css-tree:
         specifier: ^3.1.0
         version: 3.1.0
@@ -1301,8 +1301,8 @@ packages:
     resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
     engines: {node: '>=12'}
 
-  ansis@3.9.0:
-    resolution: {integrity: sha512-PcDrVe15ldexeZMsVLBAzBwF2KhZgaU0R+CHxH+x5kqn/pO+UWVBZJ+NEXMPpEOLUFeNsnNdoWYc2gwO+MVkDg==}
+  ansis@3.10.0:
+    resolution: {integrity: sha512-hxDKLYT7hy3Y4sF3HxI926A3urzPxi73mZBB629m9bCVF+NyKNxbwCqqm+C/YrGPtxLwnl6d8/ZASCsz6SyvJA==}
     engines: {node: '>=16'}
 
   any-promise@1.3.0:
@@ -4065,7 +4065,7 @@ snapshots:
 
   ansi-styles@6.2.1: {}
 
-  ansis@3.9.0: {}
+  ansis@3.10.0: {}
 
   any-promise@1.3.0: {}
 
