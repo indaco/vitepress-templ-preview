@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { platform } from 'os';
-import { execSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import type { Command } from '../command-builder';
 import type { VTPMessage } from '../types';
 import { Logger } from '../logger';
 import { UserMessages } from '../messages';
@@ -31,20 +31,27 @@ export function checkBinaries(binaries: string[]): void {
 }
 
 /**
- * Executes a command synchronously.
- * @param command - The command string to execute.
+ * Executes a structured command synchronously without spawning a shell.
+ * @param command - The structured command to execute.
  */
-export function executeCommandSync(command: string): void {
-  Logger.info(UserMessages.EXEC_SYSTEM_CMD, command);
+export function executeCommand(command: Command): void {
+  Logger.info(
+    UserMessages.EXEC_SYSTEM_CMD,
+    `${command.bin} ${command.args.join(' ')}`,
+  );
   try {
-    const stdout = execSync(command, { stdio: 'pipe' });
+    const stdout = execFileSync(command.bin, command.args, {
+      cwd: command.cwd,
+      stdio: 'pipe',
+    });
     if (stdout.toLocaleString() != '')
       Logger.info(<VTPMessage>{ message: stdout.toLocaleString() });
-  } catch (error: any) {
-    Logger.error(UserMessages.EXEC_SYSTEM_CMD_ERROR, error.message);
-    if (error.stderr) {
-      Logger.error(UserMessages.GENERIC_ERROR, error.stderr.toString());
+  } catch (error: unknown) {
+    const err = error as Error & { stderr?: Buffer };
+    Logger.error(UserMessages.EXEC_SYSTEM_CMD_ERROR, err.message);
+    if (err.stderr) {
+      Logger.error(UserMessages.GENERIC_ERROR, err.stderr.toString());
     }
-    throw error; // Re-throw the error to ensure it can be handled by the caller if necessary
+    throw error;
   }
 }

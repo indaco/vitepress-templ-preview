@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as path from 'node:path';
 import { Logger } from '../logger';
 import type { VTPMessage } from '../types';

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PluginContext, VTPUserConfig } from '../types';
 import type { VTPMessage } from './types';
 import path from 'node:path';
@@ -11,7 +10,7 @@ import HtmlStylesOptimizer from './optimizer/styles-optimizer';
 import HtmlScriptsOptimizer from './optimizer/scripts-optimizer';
 import { BundledTheme } from 'shiki';
 import { TemplTaskRunner } from './templ-runner';
-import { executeCommandSync } from './helpers/os';
+import { executeCommand } from './helpers/os';
 import { ConfigResolver } from './config';
 import { CommandBuilder } from './command-builder';
 import { MarkdownProcessor } from './md-processor';
@@ -57,6 +56,7 @@ async function viteTemplPreviewPlugin(
       serverCommand = config.command;
       taskRunner = new TemplTaskRunner(serverRoot, resolvedOptions);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const vitepressConfig = (config as any).vitepress;
       if (!vitepressConfig) {
         Logger.errorHighlighted(UserMessages.GENERIC_ERROR);
@@ -136,7 +136,7 @@ async function viteTemplPreviewPlugin(
             serverRoot,
             resolvedOptions,
           );
-          executeCommandSync(cmd);
+          executeCommand(cmd);
 
           // Consolidate html style and script tags across static-templ generated html files
           optimizeAssets(stylesOptimizer, scriptsOptimizer);
@@ -149,7 +149,7 @@ async function viteTemplPreviewPlugin(
           );
 
           // Cache updated and client reloaded
-          cacheService.handleFileChange(server, file);
+          cacheService.handleFileChange(file);
         }
         return modules;
       }

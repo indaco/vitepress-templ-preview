@@ -16,11 +16,13 @@ export class MarkdownProcessor {
 
   /**
    * Transforms Markdown content if it contains templ-demo.
+   * Uses renderAsync when available (VitePress 2.x) to avoid corrupting
+   * the shared async highlight placeholder state.
    */
-  public transform(
+  public async transform(
     code: string,
     id: string,
-  ): { code: string; map: null } | undefined {
+  ): Promise<{ code: string; map: null } | undefined> {
     if (!id.endsWith('.md')) return;
     if (!this.TEMPL_DEMO_REGEX.test(code)) return;
 
@@ -33,7 +35,14 @@ export class MarkdownProcessor {
 
     markdownItTemplPreviewPlugin(this.renderer, this.context, id);
 
-    const rendered = this.renderer.render(code);
+    // VitePress 2.x uses markdown-it-async with renderAsync for code highlighting.
+    // Using sync render() on the shared instance corrupts highlight placeholder state.
+    const md = this.renderer as MarkdownRenderer & {
+      renderAsync?: (src: string, env?: unknown) => Promise<string>;
+    };
+    const rendered = md.renderAsync
+      ? await md.renderAsync(code)
+      : md.render(code);
 
     if (!rendered.includes('VTPLivePreview')) return;
     return { code: rendered, map: null };
