@@ -1,5 +1,5 @@
 import { PluginConfig } from '../types';
-import { checkBinaries, executeCommandSync } from './helpers/os';
+import { checkBinaries, executeCommand } from './helpers/os';
 import { CommandBuilder } from './command-builder';
 
 export class TemplTaskRunner {
@@ -15,15 +15,15 @@ export class TemplTaskRunner {
     this.ensureBinaries();
     const { staticCmd, templCmd } = this.buildCommand();
 
-    if (!this.options.runTemplGenerate) {
-      executeCommandSync(templCmd);
+    if (this.options.runTemplGenerate) {
+      executeCommand(templCmd);
     }
-    executeCommandSync(staticCmd);
+    executeCommand(staticCmd);
   }
 
   private ensureBinaries() {
     checkBinaries([TemplTaskRunner.STATIC_TEMPL_BIN]);
-    if (!this.options.runTemplGenerate) {
+    if (this.options.runTemplGenerate) {
       checkBinaries([TemplTaskRunner.TEMPL_BIN]);
     }
   }
