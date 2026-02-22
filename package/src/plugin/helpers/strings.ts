@@ -1,6 +1,5 @@
 /**
- * Escapes special characters in a string to make it safe for inclusion in a JSON string,
- * including replacing single quotes with escaped double quotes.
+ * Escapes special characters in a string to make it safe for inclusion in a JSON string.
  *
  * @param {string} str - The input string to be escaped.
  * @returns {string} - The escaped string, safe for inclusion in JSON.
@@ -14,7 +13,7 @@ export function escapeForJSON(str: string): string {
   return str
     .replace(/\\/g, '\\\\') // Escape backslashes
     .replace(/"/g, '\\"') // Escape double quotes
-    .replace(/'/g, '\\"') // Replace single quotes with escaped double quotes
+    .replace(/'/g, '\\u0027') // Escape single quotes as unicode
     .replace(/\n/g, '\\n') // Escape newlines
     .replace(/\r/g, '\\r') // Escape carriage returns
     .replace(/\t/g, '\\t') // Escape tabs
@@ -38,6 +37,7 @@ export function unescapeFromJSON(str: string): string {
   return str
     .replace(/\\u003C/g, '<') // Unescape less-than sign
     .replace(/\\u003E/g, '>') // Unescape greater-than sign
+    .replace(/\\u0027/g, "'") // Unescape single quotes
     .replace(/\\n/g, '\n')
     .replace(/\\r/g, '\r') // Unescape carriage returns
     .replace(/\\t/g, '\t')
