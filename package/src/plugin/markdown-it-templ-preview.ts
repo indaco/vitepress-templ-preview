@@ -99,20 +99,17 @@ function renderTemplPreview(
 
   // Options for code extractor
   const extractorOpts: CodeExtractorOptions = {
-    goExportedOnly: Boolean(
-      getAttributeOrElse(token, 'data-exported-only', 'false', true),
+    goExportedOnly: getAttributeOrElse(
+      token,
+      'data-exported-only',
+      'false',
+      true,
     ),
-    goPackage: Boolean(
-      getAttributeOrElse(token, 'data-go-package', 'true', true),
-    ),
-    goImports: Boolean(
-      getAttributeOrElse(token, 'data-go-imports', 'true', true),
-    ),
-    goConsts: Boolean(
-      getAttributeOrElse(token, 'data-go-consts', 'false', true),
-    ),
-    goVars: Boolean(getAttributeOrElse(token, 'data-go-vars', 'false', true)),
-    goTypes: Boolean(getAttributeOrElse(token, 'data-go-types', 'false', true)),
+    goPackage: getAttributeOrElse(token, 'data-go-package', 'true', true),
+    goImports: getAttributeOrElse(token, 'data-go-imports', 'true', true),
+    goConsts: getAttributeOrElse(token, 'data-go-consts', 'false', true),
+    goVars: getAttributeOrElse(token, 'data-go-vars', 'false', true),
+    goTypes: getAttributeOrElse(token, 'data-go-types', 'false', true),
   };
 
   const resolvedPaths = handleOpMode(id, serverRoot, pluginOptions, srcValue);
@@ -142,8 +139,8 @@ function renderTemplPreview(
     htmlContent: escapeForJSON(htmlContent),
     buttonStyle: buttonStyleValue,
     themes: theme,
-    isPreviewFirst: Boolean(isPreviewFirstValue),
-    isPreviewOnly: Boolean(isPreviewOnlyValue),
+    isPreviewFirst: isPreviewFirstValue,
+    isPreviewOnly: isPreviewOnlyValue,
   };
 
   return generateTemplPreviewComponentHtml(md, componentProps, extractorOpts);
@@ -157,7 +154,7 @@ function renderTemplPreview(
  * @returns The HTML string for the templ preview component.
  */
 function generateTemplPreviewComponentHtml(
-  md: MarkdownIt,
+  md: MarkdownRenderer,
   componentProps: VTPComponentProps,
   extractorOptions?: CodeExtractorOptions,
 ): string {
@@ -176,15 +173,27 @@ function generateTemplPreviewComponentHtml(
     isPreviewOnly: componentProps.isPreviewOnly,
   };
 
-  return `<VTPLivePreview v-bind='${JSON.stringify(_props)}'></VTPLivePreview>`;
+  // Escape single quotes as HTML character references so they don't
+  // break the single-quoted v-bind attribute wrapper.
+  const jsonProps = JSON.stringify(_props).replace(/'/g, '&#39;');
+  return `<VTPLivePreview v-bind='${jsonProps}'></VTPLivePreview>`;
 }
 
 export default function markdownItTemplPreviewPlugin(
-  md: MarkdownIt,
+  md: MarkdownRenderer,
   context: PluginContext,
   id: string,
 ) {
-  md.core.ruler.push('templ_demo', processTokens);
+  // Only register the core rule once per MarkdownRenderer instance
+  const existingRules = (
+    md.core.ruler as unknown as {
+      __rules__: { name: string }[];
+    }
+  ).__rules__;
+  if (!existingRules.some((r) => r.name === 'templ_demo')) {
+    md.core.ruler.push('templ_demo', processTokens);
+  }
+
   md.renderer.rules.templ_demo = (tokens, idx) =>
     renderTemplPreview(context.serverCommand, tokens, idx, context, id);
 }
