@@ -243,6 +243,73 @@ templ GreetingsDemo() {
     expect(normalizeString(result[0])).toEqual(normalizeString(expected));
   });
 
+  it('should handle templ blocks with nested braces (if/for statements)', () => {
+    const codeWithNestedBraces = `
+package main
+
+templ Page(items []string) {
+  <div>
+    if len(items) > 0 {
+      <ul>
+        for _, item := range items {
+          <li>{ item }</li>
+        }
+      </ul>
+    } else {
+      <p>No items</p>
+    }
+  </div>
+}
+
+templ Header(title string) {
+  <h1>{ title }</h1>
+}
+`;
+    const extractor = new CodeExtractor(codeWithNestedBraces, {
+      goPackage: false,
+      goImports: false,
+    });
+    const result = extractor.extract();
+    const normalizedResult = normalizeString(result[0]);
+
+    // Both templ blocks should be extracted fully
+    expect(normalizedResult).toContain('templ Page(items []string)');
+    expect(normalizedResult).toContain('if len(items) > 0');
+    expect(normalizedResult).toContain('for _, item := range items');
+    expect(normalizedResult).toContain('templ Header(title string)');
+  });
+
+  it('should handle exported-only templ blocks with nested braces', () => {
+    const code = `
+package main
+
+templ inner() {
+  <span>inner</span>
+}
+
+templ Outer() {
+  <div>
+    if true {
+      @inner()
+    }
+  </div>
+}
+`;
+    const extractor = new CodeExtractor(code, {
+      goExportedOnly: true,
+      goPackage: false,
+      goImports: false,
+    });
+    const result = extractor.extract();
+    const normalizedResult = normalizeString(result[0]);
+
+    // Only exported templ block should appear
+    expect(normalizedResult).not.toContain('templ inner()');
+    expect(normalizedResult).toContain('templ Outer()');
+    expect(normalizedResult).toContain('if true');
+    expect(normalizedResult).toContain('@inner()');
+  });
+
   it('should include package, multiline imports only but exported all templ blocks', () => {
     const codeWithMultilineImports = `
 package main

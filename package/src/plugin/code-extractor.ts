@@ -24,9 +24,9 @@ export class CodeExtractor {
   private static readonly typeRegex =
     /type\s+(?:\([^)]*\)|\w+\s+struct\s+\{[^}]*\}|[^\n;]+;)/gs;
   private static readonly exportedTemplRegex =
-    /templ\s+([A-Z][a-zA-Z]*)\s*\([^)]*\)\s*\{[^}]*\}/gs;
+    /templ\s+([A-Z][a-zA-Z]*)\s*\([^)]*\)\s*\{/g;
   private static readonly allTemplRegex =
-    /templ\s+\w+\s*\([^)]*\)\s*\{[^}]*\}/gs;
+    /templ\s+\w+\s*\([^)]*\)\s*\{/g;
 
   /**
    * Constructs a CodeExtractor instance.
