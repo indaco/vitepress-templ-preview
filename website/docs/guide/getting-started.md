@@ -36,7 +36,7 @@ yarn add -D vitepress-templ-preview css-tree
 ## VitePress configuration
 
 1. Configure the plugin in your VitePress project by editing the VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
-2. Register the rendering component: choose a predefined Vue component or [Use a custom component](/customization/rendering-components); Create or edit `.vitepress/theme/index.js` or `.vitepress/theme/index.ts`
+2. Register the rendering component by choosing a predefined Vue component or [using a custom one](/customization/rendering-components). Create or edit `.vitepress/theme/index.js` (or `.vitepress/theme/index.ts`)
 
 ::: code-group
 
@@ -74,7 +74,7 @@ export default {
 :::
 
 > [!INFO]
-> Please, refer to the [Plugin Options](/customization/plugin-options) to see the available options for the plugin.
+> See [Plugin Options](/customization/plugin-options) for available configuration.
 
 ### Search
 
@@ -107,7 +107,7 @@ export default defineConfig({
 
 ## Templ Project Setup
 
-1. Initialize a new Go project within the VitePress project root folder `docs` as you would for a normal `templ` project. Refer to the [official doc](https://templ.guide/quick-start/creating-a-simple-templ-component).
+1. Initialize a new Go project in the `docs` folder.
 
    ```bash
    cd docs
@@ -117,7 +117,6 @@ export default defineConfig({
 
 2. Create a `components` folder within `./docs`.
 3. Create a `hello` folder to store both the markdown and the `templ` files for the demos:
-
    - Create an `index.md` file
    - Create a `hello-demo.templ` file with some `templ` code:
 
@@ -197,4 +196,4 @@ yarn docs:dev
 
 Visit the page for the **hello** component you just created.
 
-Your project is now up and running. Enjoy! :heart:
+Your project is now up and running.

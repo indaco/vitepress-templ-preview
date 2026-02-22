@@ -1,6 +1,6 @@
 # Markdown Extension Examples
 
-This page demonstrates some of the built-in markdown extensions provided by VitePress.
+This page demonstrates templ syntax highlighting and some built-in markdown extensions provided by VitePress.
 
 !!! This content will be wrapped in a custom block.
 
