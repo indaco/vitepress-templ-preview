@@ -21,9 +21,7 @@ function createMockEnv(
  */
 function createMockMd(renderImpl?: (src: string, env: unknown) => string) {
   return {
-    render:
-      renderImpl ??
-      vi.fn((src: string) => `<rendered>${src}</rendered>`),
+    render: renderImpl ?? vi.fn((src: string) => `<rendered>${src}</rendered>`),
   } as unknown as Parameters<typeof sanitizeMarkdownForSearch>[2];
 }
 

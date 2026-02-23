@@ -104,10 +104,7 @@ export class CacheService {
    * @param file - The file path that triggered the change.
    * @param delay - Delay in milliseconds before handling the file change.
    */
-  public handleFileChange(
-    file: string,
-    delay: number = 500,
-  ): void {
+  public handleFileChange(file: string, delay: number = 500): void {
     // Clear any pending timer to avoid firing on a disposed server
     if (this.pendingTimer) {
       clearTimeout(this.pendingTimer);

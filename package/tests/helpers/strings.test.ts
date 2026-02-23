@@ -25,7 +25,7 @@ describe('escapeForJSON', () => {
     const input = "it's a test with 'quotes'";
     const result = escapeForJSON(input);
 
-    expect(result).toBe("it\\u0027s a test with \\u0027quotes\\u0027");
+    expect(result).toBe('it\\u0027s a test with \\u0027quotes\\u0027');
     // Round-trip should restore the original
     expect(unescapeFromJSON(result)).toBe(input);
   });
@@ -57,7 +57,7 @@ describe('unescapeFromJSON', () => {
   });
 
   it('should unescape single quotes from unicode', () => {
-    const input = "it\\u0027s a test";
+    const input = 'it\\u0027s a test';
     const result = unescapeFromJSON(input);
 
     expect(result).toBe("it's a test");
