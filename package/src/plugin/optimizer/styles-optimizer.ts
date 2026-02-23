@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readDirectoriesRecursive } from '../helpers/fs';
 import { CssRulesAnalyzer } from '../css-processor/css-rules-analyzer';
 import {
   CssTokenProcessor,
@@ -96,11 +97,20 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
         inputDirectory,
         options,
       );
-    } else if (options) {
-      // Update the instance with new options if already initialized
-      HtmlStylesOptimizer.instance.updateOptions(options);
+    } else {
+      HtmlStylesOptimizer.instance.inputDirectory = inputDirectory;
+      if (options) {
+        HtmlStylesOptimizer.instance.updateOptions(options);
+      }
     }
     return HtmlStylesOptimizer.instance;
+  }
+
+  /**
+   * Resets the singleton instance. Useful for testing and config reload.
+   */
+  public static resetInstance(): void {
+    HtmlStylesOptimizer.instance = undefined!;
   }
 
   /**
@@ -108,7 +118,7 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
    * @param {TokenProcessorStrategyOptions} options - New options to update.
    */
   public updateOptions(options: TokenProcessorStrategyOptions): void {
-    this.mergeOptions(options);
+    this.options = this.mergeOptions(options);
     this.cssTokenProcessor.setOptions(this.options);
     this.cssRulesAnalyzer.setOptions(this.options);
   }
@@ -117,7 +127,7 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
    * Main entry point to optimize styles in all relevant HTML files.
    */
   public run(): void {
-    const directories = this.readDirectoriesRecursive(this.inputDirectory);
+    const directories = readDirectoriesRecursive(this.inputDirectory);
 
     directories.forEach((dir) => {
       const htmlFiles = this.readHtmlFiles(dir);
@@ -177,9 +187,15 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
    * @returns {Map<string, string>} - Map of file paths to their content.
    */
   private loadFileContents(htmlFiles: string[]): Map<string, string> {
-    return new Map(
-      htmlFiles.map((file) => [file, fs.readFileSync(file, 'utf-8')]),
-    );
+    const contents = new Map<string, string>();
+    for (const file of htmlFiles) {
+      try {
+        contents.set(file, fs.readFileSync(file, 'utf-8'));
+      } catch {
+        // File may have been removed between listing and reading (watch mode race)
+      }
+    }
+    return contents;
   }
 
   /**
@@ -322,7 +338,15 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
     htmlFiles.forEach((file, index) => {
       const fileUniqueStyles = uniqueStyles.get(file) || [];
       const fileConsolidatedStyles = consolidatedStyles.get(file) || [];
-      const htmlContent = fs.readFileSync(file, 'utf-8');
+
+      let htmlContent: string;
+      try {
+        htmlContent = fs.readFileSync(file, 'utf-8');
+      } catch {
+        // File may have been removed between listing and reading (watch mode race)
+        return;
+      }
+
       const htmlWithoutStyleTags = this.removeStyleTags(htmlContent);
 
       let stylesToInject = '';
@@ -347,7 +371,11 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
       const updatedContent =
         message + stylesToInject + htmlWithoutStyleTags.trim();
 
-      fs.writeFileSync(file, updatedContent);
+      try {
+        fs.writeFileSync(file, updatedContent);
+      } catch {
+        // File may have been removed or locked (watch mode race)
+      }
     });
   }
 
@@ -383,31 +411,6 @@ class HtmlStylesOptimizer implements HtmlTagOptimizer {
       .replace(HtmlStylesOptimizer.STYLE_TAG_REGEX, '')
       .trim()
       .replace(/^\s*$(?:\r\n?|\n)/gm, '');
-  }
-
-  /**
-   * Recursively reads all subdirectories from the specified directory.
-   * @param {string} dir - The directory to read.
-   * @returns {string[]} - Array of all directories including the root directory.
-   */
-  private readDirectoriesRecursive(dir: string): string[] {
-    const stack = [dir];
-    const results: string[] = [];
-
-    while (stack.length) {
-      const currentDir = stack.pop()!;
-      results.push(currentDir);
-
-      const entries = fs.readdirSync(currentDir);
-      entries.forEach((entry) => {
-        const entryPath = path.join(currentDir, entry);
-        if (fs.statSync(entryPath).isDirectory()) {
-          stack.push(entryPath);
-        }
-      });
-    }
-
-    return results;
   }
 
   /**

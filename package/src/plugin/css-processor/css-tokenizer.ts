@@ -56,6 +56,8 @@ export class CssTokenizer {
    * @returns {Token[]} - The list of generated tokens.
    */
   tokenize(css: string): Token[] {
+    this.tokens = [];
+
     const ast = parse(css, {
       positions: true,
     });
@@ -194,59 +196,46 @@ export class CssTokenizer {
    * @param {csstree.Atrule} node - The at-rule node.
    * @returns {Token} - The generated token.
    */
-  private createAtRuleToken(node: Atrule): Token {
+  private createAtRuleToken(node: Atrule): AtRuleToken {
     const prelude = node.prelude ? generate(node.prelude) : '';
-    return this.createToken('at-rule', `@${node.name} ${prelude}`.trim(), {
-      name: node.name,
-      prelude,
-    });
+    return {
+      type: 'at-rule',
+      value: `@${node.name} ${prelude}`.trim(),
+      details: { name: node.name, prelude },
+      children: [],
+    };
   }
 
   /**
    * Creates a token for a rule node.
    *
    * @param {csstree.Rule} node - The rule node.
-   * @returns {Token} - The generated token.
+   * @returns {RuleToken} - The generated token.
    */
-  private createRuleToken(node: Rule): Token {
+  private createRuleToken(node: Rule): RuleToken {
     let selector = generate(node.prelude);
     // Normalize spaces after commas in lists for pseudo-classes
     selector = selector.replace(/,\s*/g, ', ');
 
-    return this.createToken('rule', selector, { selector });
+    return {
+      type: 'rule',
+      value: selector,
+      details: { selector },
+      children: [],
+    };
   }
 
   /**
    * Creates a token for a declaration node.
    *
    * @param {csstree.Declaration} node - The declaration node.
-   * @returns {Token} - The generated token.
+   * @returns {DeclarationToken} - The generated token.
    */
-  private createDeclarationToken(node: Declaration): Token {
-    return this.createToken(
-      'declaration',
-      `${node.property}: ${generate(node.value)};`,
-      { property: node.property, value: generate(node.value) },
-    );
-  }
-
-  /**
-   * Creates a token with the given type and details.
-   *
-   * @param {'rule' | 'at-rule' | 'declaration'} type - The token type.
-   * @param {string} value - The serialized value of the token.
-   * @param {Details} details - The token details.
-   * @returns {Token} - The created token.
-   */
-  private createToken(
-    type: 'rule' | 'at-rule' | 'declaration',
-    value: string,
-    details: Details,
-  ): Token {
+  private createDeclarationToken(node: Declaration): DeclarationToken {
     return {
-      type,
-      value,
-      details,
+      type: 'declaration',
+      value: `${node.property}: ${generate(node.value)};`,
+      details: { property: node.property, value: generate(node.value) },
       children: [],
     };
   }

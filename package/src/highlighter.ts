@@ -1,5 +1,16 @@
 import { Ref, ref } from 'vue';
-import { BundledTheme, createHighlighter } from 'shiki';
+import {
+  BundledLanguage,
+  BundledTheme,
+  createHighlighter,
+  HighlighterGeneric,
+} from 'shiki';
+
+/** Cached highlighter instance, shared across all uses. */
+let cachedHighlighter: HighlighterGeneric<
+  BundledLanguage,
+  BundledTheme
+> | null = null;
 
 /**
  * The return type of the `useHighlighter` function.
@@ -34,12 +45,23 @@ export function useHighlighter(): UseHighlighterReturn {
     codeContent: string,
     themes: { light: BundledTheme; dark: BundledTheme },
   ): Promise<void> {
-    const highlighter = await createHighlighter({
-      langs: [],
-      themes: Object.values(themes),
-    });
+    if (!cachedHighlighter) {
+      cachedHighlighter = await createHighlighter({
+        langs: [],
+        themes: Object.values(themes),
+      });
+      await cachedHighlighter.loadLanguage('templ');
+    }
 
-    await highlighter.loadLanguage('templ');
+    const highlighter = cachedHighlighter;
+
+    // Ensure requested themes are loaded
+    const loadedThemes = highlighter.getLoadedThemes();
+    for (const theme of Object.values(themes)) {
+      if (!loadedThemes.includes(theme)) {
+        await highlighter.loadTheme(theme);
+      }
+    }
 
     highlightedCode.value = highlighter.codeToHtml(codeContent, {
       lang: 'templ',

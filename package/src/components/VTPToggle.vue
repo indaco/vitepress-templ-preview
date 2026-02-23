@@ -10,10 +10,8 @@ export interface VTPToggleButtonProps extends VTPComponentProps {
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, getCurrentInstance, defineProps } from 'vue';
-import { normalizeQuotes } from './index';
-import { TemplScriptManager } from '../script-manager';
-import { useHighlighter } from '../highlighter';
+import { ref } from 'vue';
+import { useTemplPreview } from '../composables/useTemplPreview';
 import VTPCard from './VTPCard.vue';
 import ComponentPreviewer from './ComponentPreviewer.vue';
 import ComponentCoder from './ComponentCoder.vue';
@@ -25,29 +23,13 @@ const props = withDefaults(defineProps<VTPToggleButtonProps>(), {
   activeColor: 'var(--vp-button-brand-bg)',
 });
 
+const { sanitizedHtmlContent, highlightedCode, uid } = useTemplPreview(props);
 const activeTab = ref<'preview' | 'code'>('preview');
-const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
-const scriptManager = TemplScriptManager.getInstance();
-const { highlightedCode, highlightCode } = useHighlighter();
-
-// Access the current instance to generate a unique ID
-const instance = getCurrentInstance();
-const uid = instance
-  ? instance.uid.toString()
-  : Math.random().toString(36).substring(2, 11);
 
 // Toggle between "preview" and "code" tabs
 const toggleCodeVisibility = () => {
   activeTab.value = activeTab.value === 'preview' ? 'code' : 'preview';
 };
-
-onMounted(async () => {
-  await highlightCode(props.codeContent, props.themes);
-
-  nextTick(() => {
-    scriptManager.executeScriptsTick();
-  });
-});
 </script>
 
 <template>
@@ -57,8 +39,14 @@ onMounted(async () => {
       <div class="tabs" role="tablist">
         <div
           class="toggle-container"
+          role="switch"
+          tabindex="0"
+          :aria-checked="activeTab === 'code'"
+          :aria-label="props.label"
           :class="{ 'is-checked': activeTab === 'code' }"
           @click="toggleCodeVisibility"
+          @keydown.enter.prevent="toggleCodeVisibility"
+          @keydown.space.prevent="toggleCodeVisibility"
         >
           <span v-if="props.showLabel" class="toggle-label">
             {{ props.label }}

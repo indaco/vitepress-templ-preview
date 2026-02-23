@@ -1,16 +1,8 @@
 <script setup lang="ts">
-import { defineProps, watch, ref } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps<{ content: string }>();
-const internalContent = ref(props.content);
-
-// Watch for changes in the content prop and update internalContent
-watch(
-  () => props.content,
-  (newContent) => {
-    internalContent.value = newContent;
-  },
-);
+const internalContent = computed(() => props.content);
 </script>
 
 <template>

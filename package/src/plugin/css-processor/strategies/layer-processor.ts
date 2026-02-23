@@ -1,5 +1,5 @@
 import { DEFAULT_TOKEN_PROCESSOR_OPTIONS } from '../css-token-processor';
-import { Token } from '../css-tokenizer';
+import type { Token, AtRuleToken } from '../css-tokenizer';
 import {
   TokenProcessorStrategy,
   TokenProcessorStrategyOptions,
@@ -58,6 +58,13 @@ export class LayerProcessor implements TokenProcessorStrategy {
   }
 
   /**
+   * Type predicate that identifies `@layer` at-rule tokens.
+   */
+  private isLayerAtRule(token: Token): token is AtRuleToken {
+    return token.type === 'at-rule' && token.details.name === 'layer';
+  }
+
+  /**
    * Extracts the content of `@layer` rules, excluding the `@layer` declarations.
    *
    * @param {Token[]} tokens - The tokens to filter.
@@ -66,15 +73,14 @@ export class LayerProcessor implements TokenProcessorStrategy {
   private extractLayerContents(tokens: Token[]): Token[] {
     const result: Token[] = [];
 
-    tokens.forEach((token) => {
-      if (token.type === 'at-rule' && token.details.name === 'layer') {
+    for (const token of tokens) {
+      if (this.isLayerAtRule(token)) {
         // Flatten the children of the @layer rule into the result
         result.push(...token.children);
       } else {
-        // Add other tokens as-is
         result.push(token);
       }
-    });
+    }
 
     return result;
   }
@@ -87,12 +93,7 @@ export class LayerProcessor implements TokenProcessorStrategy {
    */
   private discardLayerDeclarations(tokens: Token[]): Token[] {
     return tokens.filter(
-      (token) =>
-        !(
-          token.type === 'at-rule' &&
-          token.details.name === 'layer' &&
-          token.children.length === 0
-        ),
+      (token) => !(this.isLayerAtRule(token) && token.children.length === 0),
     );
   }
 
