@@ -1,24 +1,25 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 
 export default defineConfig({
   entry: [
-    'src/internals/css-processor/**/*.ts',
     'src/plugin/**/*.ts',
     'src/highlighter.ts',
     'src/sanitizer.ts',
     'src/script-manager.ts',
     'src/types.ts',
   ],
-  outExtension({ format }) {
+  format: 'esm',
+  outExtensions() {
     return {
-      js: `.${format}.js`,
+      js: '.esm.js',
     };
   },
-  format: ['esm'],
   dts: false,
-  splitting: false,
   sourcemap: false,
   clean: false,
   minify: true,
+  hash: false,
+  fixedExtension: false,
+  inlineOnly: false,
   external: ['markdown-it', 'shiki', 'vue', 'vitepress'],
 });
