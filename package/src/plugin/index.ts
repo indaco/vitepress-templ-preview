@@ -86,12 +86,12 @@ async function viteTemplPreviewPlugin(
         pluginOptions: {
           ...resolvedOptions,
           inputDir: path.join(
-            resolvedOptions.goProjectDir!,
-            resolvedOptions.inputDir!,
+            resolvedOptions.goProjectDir,
+            resolvedOptions.inputDir,
           ),
           outputDir: path.join(
-            resolvedOptions.goProjectDir!,
-            resolvedOptions.outputDir!,
+            resolvedOptions.goProjectDir,
+            resolvedOptions.outputDir,
           ),
         },
         theme: { ...DefaultThemes, ...userThemes },

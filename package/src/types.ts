@@ -1,5 +1,5 @@
-import MarkdownIt from 'markdown-it';
 import { BundledTheme } from 'shiki';
+import { MarkdownRenderer } from 'vitepress';
 import { CacheService } from './plugin/cache-service/cache-service';
 
 /**
@@ -73,7 +73,7 @@ export interface PluginContext {
   /**
    * MarkdownIt instance for processing Markdown content.
    */
-  md: MarkdownIt;
+  md: MarkdownRenderer;
 
   /**
    * The root directory of the Vite server.
@@ -88,7 +88,7 @@ export interface PluginContext {
   /**
    * Options provided to the plugin.
    */
-  pluginOptions: Partial<PluginConfig>;
+  pluginOptions: PluginConfig;
 
   /**
    * Theme configuration for light and dark modes.
