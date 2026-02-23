@@ -1,4 +1,4 @@
-import { Token } from './css-tokenizer';
+import type { Token } from './css-tokenizer';
 import { TokenProcessorStrategyOptions } from './strategies/token-processor-strategy';
 
 /**

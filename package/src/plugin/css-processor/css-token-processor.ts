@@ -1,6 +1,6 @@
 import { CssSerializer } from './css-serializer';
 import { CssStringifier } from './css-stringifier';
-import { Token } from './css-tokenizer';
+import type { Token } from './css-tokenizer';
 import {
   TokenProcessorStrategy,
   TokenProcessorStrategyOptions,
@@ -67,12 +67,14 @@ export class CssTokenProcessor implements CssSerializer {
       throw new Error('No strategy set. Please add at least one strategy.');
     }
 
-    this.options = options ? this.mergeOptions(options) : this.options;
+    const effectiveOptions = options
+      ? this.mergeOptions(options)
+      : this.options;
 
     // Process tokens through all strategies
     return this.strategies.reduce(
       (processedTokens, strategy) =>
-        strategy.execute(processedTokens, this.options),
+        strategy.execute(processedTokens, effectiveOptions),
       tokens,
     );
   }
@@ -88,13 +90,15 @@ export class CssTokenProcessor implements CssSerializer {
     tokens: Token[],
     options?: TokenProcessorStrategyOptions,
   ): string {
-    this.options = options ? this.mergeOptions(options) : this.options;
+    const effectiveOptions = options
+      ? this.mergeOptions(options)
+      : this.options;
 
     if (tokens.length === 0) {
       return '';
     }
 
-    return CssStringifier.serializeTokens(tokens, this.options.minify);
+    return CssStringifier.serializeTokens(tokens, effectiveOptions.minify);
   }
 
   /**

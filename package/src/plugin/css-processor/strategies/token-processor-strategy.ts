@@ -1,4 +1,4 @@
-import { Token } from '../css-tokenizer';
+import type { Token } from '../css-tokenizer';
 
 /**
  * Options for customizing the behavior of a token processor strategy.
