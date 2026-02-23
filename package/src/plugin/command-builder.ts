@@ -44,7 +44,7 @@ export class CommandBuilder {
       String(options.mode),
       '-i',
       String(options.inputDir),
-      `-g=${options.runTemplGenerate}`,
+      `-g=false`,
       `-d=${options.debug}`,
     ];
 

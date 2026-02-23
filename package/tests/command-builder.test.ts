@@ -36,7 +36,7 @@ describe('CommandBuilder', () => {
       );
       expect(command).toEqual({
         bin: 'static-templ',
-        args: ['-m', 'inline', '-i', 'demos', '-g=true', '-d=false'],
+        args: ['-m', 'inline', '-i', 'demos', '-g=false', '-d=false'],
         cwd: '/path/to/server/my-go-project',
       });
     });
@@ -54,7 +54,7 @@ describe('CommandBuilder', () => {
           'bundle',
           '-i',
           'demos',
-          '-g=true',
+          '-g=false',
           '-d=false',
           '-o',
           'output',
@@ -71,7 +71,7 @@ describe('CommandBuilder', () => {
       );
       expect(command).toEqual({
         bin: 'static-templ',
-        args: ['-m', 'inline', '-i', 'demos', '-g=true', '-d=true'],
+        args: ['-m', 'inline', '-i', 'demos', '-g=false', '-d=true'],
         cwd: '/path/to/server/my-go-project',
       });
     });
@@ -106,7 +106,7 @@ describe('CommandBuilder', () => {
           'bundle',
           '-i',
           'demos',
-          '-g=true',
+          '-g=false',
           '-d=true',
           '-o',
           'output',
