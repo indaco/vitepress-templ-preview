@@ -16,6 +16,7 @@ export class CacheService {
   private fileCache: FileCache;
   private fileWatcher: FileWatcher;
   private moduleInvalidator: ModuleInvalidator;
+  private pendingTimer: ReturnType<typeof setTimeout> | null = null;
 
   /**
    * Creates an instance of CacheService with a specified cache size.
@@ -32,14 +33,14 @@ export class CacheService {
    * Updates the cache for specified directories and invalidates Vite modules.
    * It handles HTML and templ file caching and triggers module reloading in Vite.
    *
-   * @param {any} server - The Vite server instance.
+   * @param {ViteDevServer} server - The Vite server instance.
    * @param {string} serverRoot - The root directory of the server.
    * @param {PluginConfig} finalOptions - The plugin configuration options.
    * @param {boolean} [isFirstServerRun=true] - Indicates if this is the first run of the server. Defaults to true.
    * @returns {Promise<void>} - A promise that resolves when the cache is updated and modules are invalidated.
    */
   async updateCacheAndInvalidate(
-    server: any,
+    server: ViteDevServer,
     serverRoot: string,
     finalOptions: PluginConfig,
     isFirstServerRun: boolean = true,
@@ -47,13 +48,13 @@ export class CacheService {
     // Resolve paths
     const resolvedFinalOptions: Partial<PluginConfig> = {
       goProjectDir: finalOptions.goProjectDir,
-      inputDir: path.join(finalOptions.goProjectDir, finalOptions.inputDir!),
-      outputDir: path.join(finalOptions.goProjectDir, finalOptions.outputDir!),
+      inputDir: path.join(finalOptions.goProjectDir, finalOptions.inputDir),
+      outputDir: path.join(finalOptions.goProjectDir, finalOptions.outputDir),
     };
 
     const templResolvedPath = path.resolve(
       serverRoot,
-      resolvedFinalOptions.inputDir!,
+      resolvedFinalOptions.inputDir ?? '',
     );
 
     let htmlResolvedPath = '';
@@ -104,23 +105,33 @@ export class CacheService {
    * @param delay - Delay in milliseconds before handling the file change.
    */
   public handleFileChange(
-    server: ViteDevServer,
     file: string,
     delay: number = 500,
   ): void {
-    setTimeout(() => {
-      this.watchFileChanges(file, file);
+    // Clear any pending timer to avoid firing on a disposed server
+    if (this.pendingTimer) {
+      clearTimeout(this.pendingTimer);
+    }
 
-      // Send a full-reload event to the client
-      server.ws.send({
-        type: 'full-reload',
-      });
+    this.pendingTimer = setTimeout(() => {
+      this.pendingTimer = null;
+      this.watchFileChanges(file, file);
     }, delay);
 
     Logger.info(<VTPMessage>{
       headline: 'Cache updated and client reloaded for file:',
       message: file,
     });
+  }
+
+  /**
+   * Clears any pending timers. Call this when the server is shutting down.
+   */
+  public dispose(): void {
+    if (this.pendingTimer) {
+      clearTimeout(this.pendingTimer);
+      this.pendingTimer = null;
+    }
   }
   /**
    * Clears the entire file cache.
