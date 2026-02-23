@@ -5,7 +5,7 @@ import type {
   CodeExtractorOptions,
 } from '../types';
 import * as fs from 'node:fs';
-import MarkdownIt from 'markdown-it';
+import type { MarkdownRenderer } from 'vitepress';
 import type { StateCore, Token } from 'markdown-it/index.js';
 import { UserMessages } from './messages';
 import { escapeForJSON, unescapeFromJSON } from './helpers/strings';
