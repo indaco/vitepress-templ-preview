@@ -5,6 +5,7 @@
 export class TemplScriptManager {
   private static instance: TemplScriptManager;
   private domContentLoadedRegex: RegExp;
+  private observer: MutationObserver | null = null;
 
   private constructor() {
     this.domContentLoadedRegex =
@@ -25,19 +26,32 @@ export class TemplScriptManager {
    * Initializes the observer and executes scripts within the initial content.
    */
   public executeScriptsTick(): void {
+    // Disconnect any previous observer to avoid accumulation
+    this.disconnect();
+
     const previewContent = document.querySelector(
       '.preview-content',
     ) as HTMLElement;
     if (previewContent) {
       // Observe changes to the preview-content element
-      const observer = new MutationObserver((mutations) =>
+      this.observer = new MutationObserver((mutations) =>
         this.handleMutations(mutations),
       );
 
-      observer.observe(previewContent, { childList: true, subtree: true });
+      this.observer.observe(previewContent, { childList: true, subtree: true });
 
       // Execute scripts in initial content
       this.executeScripts(previewContent);
+    }
+  }
+
+  /**
+   * Disconnects the current MutationObserver to prevent accumulation.
+   */
+  public disconnect(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+      this.observer = null;
     }
   }
 
