@@ -2,7 +2,7 @@
 
 ## Vitepress project
 
-If you are planning to use this plugin, you likely already have a VitePress project. If not, check [here](https://vitepress.dev/guide/getting-started) and follow the instruction to get started.
+If you do not have a VitePress project yet, follow the [getting started guide](https://vitepress.dev/guide/getting-started).
 
 ## static-templ
 
@@ -14,7 +14,7 @@ go install github.com/nokacper24/static-templ@latest
 
 ## templ
 
-If you are planning to use this plugin, `templ` is likely already in your toolbox. If not, you should consider adding it.
+Install `templ` if it is not already in your toolbox.
 
 ```bash
 go install github.com/a-h/templ/cmd/templ@latest

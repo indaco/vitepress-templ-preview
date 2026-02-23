@@ -4,9 +4,9 @@ import {
   injectNPMPackageVersion,
 } from '../src/plugins/injectVersion';
 
-import type { VTPUserConfig } from 'vitepress-templ-preview/types';
 import viteTemplPreviewPlugin from 'vitepress-templ-preview';
 import { sanitizeMarkdownForSearch } from 'vitepress-templ-preview/sanitizer';
+import type { VTPUserConfig } from 'vitepress-templ-preview/types';
 
 import {
   transformerNotationDiff,
@@ -17,8 +17,12 @@ import {
   groupIconVitePlugin,
 } from 'vitepress-plugin-group-icons';
 
+import { nav } from './nav';
+import { sidebar } from './sidebar';
+
 const vtpOptions: VTPUserConfig = {
   inputDir: 'examples',
+  runTemplGenerate: true,
 };
 
 const pkgVersion = getVersionFromPackageJson();
@@ -42,71 +46,22 @@ export default defineConfig({
   sitemap: {
     hostname: 'https://vitepress-templ-preview.indaco.dev',
   },
+  // Use .html on URLs
+  cleanUrls: false,
   themeConfig: {
     search: {
       provider: 'local',
       options: {
+        detailedView: true,
         _render(src, env, md) {
           return sanitizeMarkdownForSearch(src, env, md, vtpOptions.inputDir!);
         },
       },
     },
     // https://vitepress.dev/reference/default-theme-config
-    nav: [
-      { text: 'Home', link: '/' },
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Hello Templ', link: '/examples/hello' },
-          { text: 'Button', link: '/examples/button' },
-          { text: 'Alert', link: '/examples/alert' },
-        ],
-      },
-      {
-        text: pkgVersion.replace(/\"/g, ''),
-        items: [
-          {
-            text: 'Changelog',
-            link: 'https://github.com/indaco/vitepress-templ-preview/blob/main/CHANGELOG.md',
-            target: '_blank',
-          },
-        ],
-      },
-    ],
+    nav: nav,
 
-    sidebar: [
-      {
-        text: 'Guide',
-        collapsed: false,
-        items: [
-          { text: 'Overview', link: '/guide/overview' },
-          { text: 'Motivation', link: '/guide/motivation' },
-          { text: 'Prerequisites', link: '/guide/prerequisites' },
-          { text: 'Getting Started', link: '/guide/getting-started' },
-        ],
-      },
-      {
-        text: 'Examples',
-        collapsed: false,
-        items: [
-          { text: 'Hello Templ', link: '/examples/hello/' },
-          { text: 'Button', link: '/examples/button/' },
-          { text: 'Alert', link: '/examples/alert/' },
-          { text: 'Markdown Examples', link: '/examples/markdown-examples' },
-        ],
-      },
-      {
-        text: 'Customization',
-        collapsed: false,
-        items: [
-          { text: 'Plugin Options', link: '/customization/plugin-options' },
-          {
-            text: 'Rendering Components',
-            link: '/customization/rendering-components',
-          },
-        ],
-      },
-    ],
+    sidebar: sidebar,
 
     socialLinks: [
       {
@@ -121,13 +76,15 @@ export default defineConfig({
     },
 
     footer: {
-      message:
-        'Released under the <a href="https://github.com/indaco/vitepress-templ-preview#license">MIT License</a>.',
+      message: 'Released under the MIT License</a>.',
       copyright:
-        'Copyright © 2024 <a href="https://github.com/indaco">Mirco Veltri</a>.<br><span style="color: var(--vp-c-text-3); font-size: 12px;">The vitepress-templ-preview logo is a combination of elements from the Templ logo and the VitePress logo.<br/>All rights and licenses for these logos are owned by their respective creators.</span>',
+        "Copyright © 2024 - current <a href='https://github.com/indaco' target='_blank'>indaco</a> .<br><span style='color: var(--vp-c-text-3); font-size: 12px;'>The vitepress-templ-preview logo is a combination of elements from the Templ logo and the VitePress logo.<br/>All rights and licenses for these logos are owned by their respective creators.</span>",
     },
   },
   markdown: {
+    image: {
+      lazyLoading: true,
+    },
     config(md) {
       md.use(groupIconMdPlugin);
     },

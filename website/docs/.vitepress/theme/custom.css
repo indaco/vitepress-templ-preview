@@ -1,0 +1,67 @@
+/**
+ * VitePress theme derived from the project logo colors:
+ *   Purple  #BD34FE  (primary brand)
+ *   Cyan    #41D1FF  (accent)
+ *   Yellow  #FFDD35  (highlight)
+ */
+
+/* ------------------------------------------------------------------ */
+/*  Brand palette                                                      */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --vp-c-brand-1: #9333ea;
+  --vp-c-brand-2: #7e22ce;
+  --vp-c-brand-3: #6b21a8;
+  --vp-c-brand-soft: rgba(147, 51, 234, 0.14);
+}
+
+.dark {
+  --vp-c-brand-1: #c084fc;
+  --vp-c-brand-2: #a855f7;
+  --vp-c-brand-3: #9333ea;
+  --vp-c-brand-soft: rgba(192, 132, 252, 0.16);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Home hero                                                          */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(
+    120deg,
+    #BD34FE 30%,
+    #41D1FF
+  );
+
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+}
+
+.dark {
+  --vp-home-hero-image-background-image: none;
+  --vp-home-hero-image-filter: none;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Button overrides                                                   */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #fff;
+  --vp-button-brand-bg: #9333ea;
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #fff;
+  --vp-button-brand-hover-bg: #7e22ce;
+  --vp-button-brand-active-border: transparent;
+  --vp-button-brand-active-text: #fff;
+  --vp-button-brand-active-bg: #6b21a8;
+}
+
+.dark {
+  --vp-button-brand-bg: #a855f7;
+  --vp-button-brand-hover-bg: #9333ea;
+  --vp-button-brand-active-bg: #7e22ce;
+}

@@ -1,40 +1,34 @@
 <style type="text/css">
-  .alert {
-    width: 100%;
-    padding: 1rem;
-    color: #173418;
-    position: relative;
-    border-radius: 0.24rem;
-  }
+            .alert {
+                width: 100%;
+                padding: 1rem;
+                color: #173418;
+                position: relative;
+                border-radius: 0.24rem;
+            }
 
-  .alert h3 {
-    margin: 0;
-    width: fit-content;
-  }
+            .alert h3 {
+                margin: 0;
+                width: fit-content;
+            }
 
-  .alert.success {
-    background-color: #4caf50;
-  }
+            .alert.success {
+                background-color: #4CAF50;
+            }
 
-  .closebtn {
-    color: #edf7ee;
-    font-weight: bold;
-    float: right;
-    cursor: pointer;
-    border-radius: 100vh;
-  }
+            .closebtn {
+                color: #EDF7EE;
+                font-weight: bold;
+                float: right;
+                cursor: pointer;
+                border-radius: 100vh;
+            }
 
-  .closebtn:hover {
-    color: #2e6930;
-  }
-</style>
-<script type="text/javascript">
-  function closeAlert(element) {
-    element.parentElement.style.display = 'none';
-  }
-</script>
-<div class="alert success">
-  <span class="closebtn" onclick="closeAlert(this)">x</span>
-  <h3>Success</h3>
-  <p>Files were successfully uploaded</p>
-</div>
+            .closebtn:hover {
+                color: #2E6930;
+            }
+        </style><script type="text/javascript">
+            function closeAlert(element) {
+                element.parentElement.style.display = 'none';
+            };
+        </script><div class="alert success"><span class="closebtn" onclick="closeAlert(this)">x</span><h3>Success</h3><p>Files were successfully uploaded</p></div>

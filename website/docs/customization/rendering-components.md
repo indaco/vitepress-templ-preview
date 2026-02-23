@@ -34,7 +34,7 @@ Your `templ` code can include various elements like package declarations, import
 
 | Option           | Type      | Default | Description                                                   |
 | :--------------- | :-------- | :------ | ------------------------------------------------------------- |
-| `goExportedOnly` | _boolean_ | `false` | Whether or not include exported functions only.               |
+| `goExportedOnly` | _boolean_ | `false` | Whether to include exported functions only.                   |
 | `goPackage`      | _boolean_ | `true`  | Include the `package` statement in the extracted code blocks. |
 | `goImports`      | _boolean_ | `true`  | Include `import` statements in the extracted code blocks.     |
 | `goConsts`       | _boolean_ | `false` | Include `const` declarations in the extracted code blocks.    |
@@ -45,9 +45,9 @@ Your `templ` code can include various elements like package declarations, import
 
 ### VTPCard
 
-| Prop             | Type      | Default | Description                                      |
-| :--------------- | :-------- | ------- | ------------------------------------------------ |
-| `isPreviewFirst` | _boolean_ | `true`  | Whether or not show the preview before the code. |
+| Prop             | Type      | Default | Description                                  |
+| :--------------- | :-------- | ------- | -------------------------------------------- |
+| `isPreviewFirst` | _boolean_ | `true`  | Whether to show the preview before the code. |
 
 ::: details Screenshot
 
@@ -99,9 +99,9 @@ Your `templ` code can include various elements like package declarations, import
 
 ## Preview-Only Mode
 
-The `vitepress-templ-preview` plugin provides essential source code highlighting capabilities to ensure `templ` source code is displayed correctly. To maintain a lightweight profile, the plugin does not include extensive code highlighting features. If you need advanced highlighting while still previewing the component, use the `data-preview-only="true"` attribute. This allows you to leverage the capabilities of shikijs and vitepress, such as adding @shikijs/transformers to your project.
+The plugin includes basic syntax highlighting for templ code. For advanced highlighting (e.g., using `@shikijs/transformers`), set `data-preview-only="true"` to delegate highlighting to Shiki and VitePress.
 
-In some cases, you may want to preview only the `templ` component on specific pages. The `data-preview-only` attribute is applied at the tag level, giving you precise control over where the component preview is displayed. This flexibility ensures that you can manage previews on a per-page basis, optimizing the performance and appearance of your site.
+Use `data-preview-only` per tag to control which previews hide the code panel.
 
 ::: details Example
 
