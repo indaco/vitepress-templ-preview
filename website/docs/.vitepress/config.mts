@@ -22,6 +22,7 @@ import { sidebar } from './sidebar';
 
 const vtpOptions: VTPUserConfig = {
   inputDir: 'examples',
+  runTemplGenerate: true,
 };
 
 const pkgVersion = getVersionFromPackageJson();
