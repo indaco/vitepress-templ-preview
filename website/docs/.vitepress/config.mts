@@ -76,9 +76,9 @@ export default defineConfig({
     },
 
     footer: {
-      message: 'Released under the MIT License</a>.',
+      message: 'Released under the MIT License.',
       copyright:
-        "Copyright © 2024 - current <a href='https://github.com/indaco' target='_blank'>indaco</a> .<br><span style='color: var(--vp-c-text-3); font-size: 12px;'>The vitepress-templ-preview logo is a combination of elements from the Templ logo and the VitePress logo.<br/>All rights and licenses for these logos are owned by their respective creators.</span>",
+        "Copyright © 2024-present by <a href='https://github.com/indaco' target='_blank'>indaco</a>.<br><span style='color: var(--vp-c-text-3); font-size: 12px;'>The vitepress-templ-preview logo is a combination of elements from the Templ logo and the VitePress logo.<br/>All rights and licenses for these logos are owned by their respective creators.</span>",
     },
   },
   markdown: {
