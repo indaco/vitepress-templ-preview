@@ -1,4 +1,9 @@
-import { Token } from './css-tokenizer';
+import type {
+  Token,
+  RuleToken,
+  AtRuleToken,
+  DeclarationToken,
+} from './css-tokenizer';
 
 /**
  * A utility class for converting CSS tokens back into a CSS string.
@@ -91,11 +96,11 @@ export class CssStringifier {
    * @returns {string} - The serialized rule string.
    */
   private static serializeRule(
-    token: Token,
+    token: RuleToken,
     minify: boolean,
     indentationLevel: number,
   ): string {
-    const selector = token.details.selector ?? '';
+    const selector = token.details.selector;
     const indent = minify ? '' : '  '.repeat(indentationLevel);
     const children = token.children
       ?.map((child) => this.processToken(child, minify, indentationLevel + 1))
@@ -113,7 +118,7 @@ export class CssStringifier {
    * @returns {string} - The serialized declaration string.
    */
   private static serializeDeclaration(
-    token: Token,
+    token: DeclarationToken,
     minify: boolean,
     indentationLevel: number,
   ): string {
@@ -133,7 +138,7 @@ export class CssStringifier {
    * @returns {string} - The serialized at-rule string.
    */
   private static serializeAtRule(
-    token: Token,
+    token: AtRuleToken,
     minify: boolean,
     indentationLevel: number,
   ): string {

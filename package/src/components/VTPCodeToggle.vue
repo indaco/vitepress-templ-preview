@@ -5,10 +5,8 @@ type VTPCodeToggleProps = VTPComponentProps;
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { normalizeQuotes } from './index';
-import { TemplScriptManager } from '../script-manager';
-import { useHighlighter } from '../highlighter';
+import { ref } from 'vue';
+import { useTemplPreview } from '../composables/useTemplPreview';
 import CodeIcon from './icons/CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
 import ComponentPreviewer from './ComponentPreviewer.vue';
@@ -16,27 +14,11 @@ import ComponentCoder from './ComponentCoder.vue';
 
 const props = defineProps<VTPCodeToggleProps>();
 const isCodeSectionVisible = ref(false);
-const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
-const scriptManager = TemplScriptManager.getInstance();
-const { highlightedCode, highlightCode } = useHighlighter();
-
-// Access the current instance to generate a unique ID
-const instance = getCurrentInstance();
-const uid = instance
-  ? instance.uid.toString()
-  : Math.random().toString(36).substring(2, 11);
+const { sanitizedHtmlContent, highlightedCode, uid } = useTemplPreview(props);
 
 function toggleCodeSection(): void {
   isCodeSectionVisible.value = !isCodeSectionVisible.value;
 }
-
-onMounted(async () => {
-  await highlightCode(props.codeContent, props.themes);
-
-  nextTick(() => {
-    scriptManager.executeScriptsTick();
-  });
-});
 </script>
 
 <template>
@@ -46,6 +28,7 @@ onMounted(async () => {
       <ComponentPreviewer :content="sanitizedHtmlContent" />
       <div class="code-section">
         <button
+          type="button"
           :class="`button-${props.buttonStyle}`"
           :aria-controls="'code-content-' + uid"
           aria-label="view the source code"

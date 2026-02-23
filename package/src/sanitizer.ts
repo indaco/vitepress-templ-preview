@@ -1,12 +1,11 @@
-import type MarkdownIt from 'markdown-it';
-import { MarkdownEnv } from 'vitepress';
+import { type MarkdownEnv, type MarkdownRenderer } from 'vitepress';
 
 type Awaitable<T> = T | Promise<T>;
 
 export const sanitizeMarkdownForSearch: (
   src: string,
   env: MarkdownEnv,
-  md: MarkdownIt,
+  md: MarkdownRenderer,
   inputDir?: string,
 ) => Awaitable<string> = (src, env, md, inputDir) => {
   if (env.frontmatter?.search === false) return '';

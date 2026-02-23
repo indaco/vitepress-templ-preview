@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readDirectoriesRecursive } from '../helpers/fs';
 import { HtmlTagOptimizer } from './optimizer';
 
 /**
@@ -39,15 +40,24 @@ class HtmlScriptsOptimizer implements HtmlTagOptimizer {
   public static getInstance(inputDirectory: string): HtmlScriptsOptimizer {
     if (!HtmlScriptsOptimizer.instance) {
       HtmlScriptsOptimizer.instance = new HtmlScriptsOptimizer(inputDirectory);
+    } else {
+      HtmlScriptsOptimizer.instance.inputDirectory = inputDirectory;
     }
     return HtmlScriptsOptimizer.instance;
+  }
+
+  /**
+   * Resets the singleton instance. Useful for testing and config reload.
+   */
+  public static resetInstance(): void {
+    HtmlScriptsOptimizer.instance = undefined!;
   }
 
   /**
    * Main function to optimize scripts by deduplicating and consolidating script tags across multiple HTML files.
    */
   public run(): void {
-    const directories = this.readDirectoriesRecursive(this.inputDirectory);
+    const directories = readDirectoriesRecursive(this.inputDirectory);
 
     directories.forEach((dir) => {
       const htmlFiles = this.readHtmlFiles(dir);
@@ -73,7 +83,13 @@ class HtmlScriptsOptimizer implements HtmlTagOptimizer {
     const fileContents = new Map<string, string>();
 
     htmlFiles.forEach((file) => {
-      const htmlContent = fs.readFileSync(file, 'utf-8');
+      let htmlContent: string;
+      try {
+        htmlContent = fs.readFileSync(file, 'utf-8');
+      } catch {
+        // File may have been removed between listing and reading (watch mode race)
+        return;
+      }
       fileContents.set(file, htmlContent);
 
       const scriptTags = this.extractScriptTags(htmlContent);
@@ -107,7 +123,12 @@ class HtmlScriptsOptimizer implements HtmlTagOptimizer {
           HtmlScriptsOptimizer.DUPLICATED_SCRIPTS_FOUND_MSG + htmlContent;
       }
 
-      fs.writeFileSync(file, htmlContent);
+      try {
+        fs.writeFileSync(file, htmlContent);
+      } catch {
+        // File may have been removed or locked (watch mode race)
+        return;
+      }
 
       if (isFirstFile) {
         this.insertAllScriptTags(file, Array.from(allScriptTags));
@@ -148,7 +169,14 @@ class HtmlScriptsOptimizer implements HtmlTagOptimizer {
   private insertAllScriptTags(filePath: string, scriptTags: string[]): void {
     if (scriptTags.length === 0) return;
 
-    const htmlContent = fs.readFileSync(filePath, 'utf-8');
+    let htmlContent: string;
+    try {
+      htmlContent = fs.readFileSync(filePath, 'utf-8');
+    } catch {
+      // File may have been removed between processing and insertion (watch mode race)
+      return;
+    }
+
     const newScriptContent = `<script type="text/javascript">\n${scriptTags.join(
       '\n',
     )}\n</script>\n`;
@@ -158,25 +186,11 @@ class HtmlScriptsOptimizer implements HtmlTagOptimizer {
       newScriptContent +
       htmlContent;
 
-    fs.writeFileSync(filePath, updatedContent);
-  }
-
-  /**
-   * Recursively reads all directories from the specified directory.
-   * @param {string} dir - The directory to read subdirectories from.
-   * @returns {string[]} - An array of directory paths.
-   */
-  private readDirectoriesRecursive(dir: string): string[] {
-    let results: string[] = [dir];
-    const list = fs.readdirSync(dir);
-    list.forEach((file) => {
-      const filePath = path.join(dir, file);
-      const stat = fs.statSync(filePath);
-      if (stat && stat.isDirectory()) {
-        results = results.concat(this.readDirectoriesRecursive(filePath));
-      }
-    });
-    return results;
+    try {
+      fs.writeFileSync(filePath, updatedContent);
+    } catch {
+      // File may have been removed or locked (watch mode race)
+    }
   }
 
   /**

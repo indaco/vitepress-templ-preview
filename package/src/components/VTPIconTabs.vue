@@ -5,10 +5,8 @@ type VTPIconTabsProps = VTPComponentProps;
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, computed, getCurrentInstance } from 'vue';
-import { normalizeQuotes } from './index';
-import { TemplScriptManager } from '../script-manager';
-import { useHighlighter } from '../highlighter';
+import { ref, computed } from 'vue';
+import { useTemplPreview } from '../composables/useTemplPreview';
 import ViewIcon from './icons/ViewIcon.vue';
 import CodeIcon from './icons/CodeIcon.vue';
 import VTPCard from './VTPCard.vue';
@@ -16,42 +14,31 @@ import ComponentPreviewer from './ComponentPreviewer.vue';
 import ComponentCoder from './ComponentCoder.vue';
 
 const props = defineProps<VTPIconTabsProps>();
-const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
-const scriptManager = TemplScriptManager.getInstance();
-const activeTab = ref('preview');
-const { highlightedCode, highlightCode } = useHighlighter();
+const { sanitizedHtmlContent, highlightedCode, uid } = useTemplPreview(props);
+const activeTab = ref<'preview' | 'code'>('preview');
 
-// Access the current instance to generate a unique ID
-const instance = getCurrentInstance();
-const uid = instance
-  ? instance.uid.toString()
-  : Math.random().toString(36).substring(2, 11);
+const previewFillColor = computed(() =>
+  activeTab.value === 'preview'
+    ? 'var(--vp-button-brand-text)'
+    : 'var(--vp-button-alt-text)',
+);
+const codeFillColor = computed(() =>
+  activeTab.value === 'code'
+    ? 'var(--vp-button-brand-text)'
+    : 'var(--vp-button-alt-text)',
+);
 
-const fillColor = (tab: string) => {
-  return computed(() => {
-    return activeTab.value === tab
-      ? 'var(--vp-button-brand-text)'
-      : 'var(--vp-button-alt-text)';
-  });
-};
-
-const previewFillColor = fillColor('preview');
-const codeFillColor = fillColor('code');
-
-// Handle keyboard navigation
-const handleKeydown = (event: KeyboardEvent, tab: string) => {
+// Handle keyboard navigation (Enter/Space to activate, Arrow keys to switch)
+const handleKeydown = (event: KeyboardEvent, tab: 'preview' | 'code') => {
   if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
     activeTab.value = tab;
   }
+  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+    event.preventDefault();
+    activeTab.value = activeTab.value === 'preview' ? 'code' : 'preview';
+  }
 };
-
-onMounted(async () => {
-  await highlightCode(props.codeContent, props.themes);
-
-  nextTick(() => {
-    scriptManager.executeScriptsTick();
-  });
-});
 </script>
 
 <template>
@@ -60,6 +47,7 @@ onMounted(async () => {
     <div class="wrapper">
       <div class="tabs" role="tablist">
         <button
+          type="button"
           :id="'tab-preview-' + uid"
           role="tab"
           :aria-selected="activeTab === 'preview'"
@@ -75,6 +63,7 @@ onMounted(async () => {
           </slot>
         </button>
         <button
+          type="button"
           :id="'tab-code-' + uid"
           role="tab"
           :aria-selected="activeTab === 'code'"

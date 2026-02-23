@@ -23,6 +23,7 @@ describe('HtmlScriptsOptimizer', () => {
   });
 
   afterEach(() => {
+    HtmlScriptsOptimizer.resetInstance();
     cleanTempDir(tempDir);
   });
 
