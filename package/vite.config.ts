@@ -28,6 +28,7 @@ export default defineConfig({
           vue: 'Vue',
           shiki: 'shiki',
         },
+        assetFileNames: 'style[extname]',
       },
     },
     outDir: 'dist/components',

@@ -5,40 +5,27 @@ type VTPTabsProps = VTPComponentProps;
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, getCurrentInstance } from 'vue';
-import { normalizeQuotes } from './index';
-import { TemplScriptManager } from '../script-manager';
-import { useHighlighter } from '../highlighter';
+import { ref } from 'vue';
+import { useTemplPreview } from '../composables/useTemplPreview';
 import VTPCard from './VTPCard.vue';
 import ComponentPreviewer from './ComponentPreviewer.vue';
 import ComponentCoder from './ComponentCoder.vue';
 
 const props = defineProps<VTPTabsProps>();
-const sanitizedHtmlContent = normalizeQuotes(props.htmlContent);
-const { highlightedCode, highlightCode } = useHighlighter();
-const scriptManager = TemplScriptManager.getInstance();
-const activeTab = ref('preview');
+const { sanitizedHtmlContent, highlightedCode, uid } = useTemplPreview(props);
+const activeTab = ref<'preview' | 'code'>('preview');
 
-// Access the current instance to generate a unique ID
-const instance = getCurrentInstance();
-const uid = instance
-  ? instance.uid.toString()
-  : Math.random().toString(36).substring(2, 11);
-
-// Handle keyboard navigation
-const handleKeydown = (event: KeyboardEvent, tab: string) => {
+// Handle keyboard navigation (Enter/Space to activate, Arrow keys to switch)
+const handleKeydown = (event: KeyboardEvent, tab: 'preview' | 'code') => {
   if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
     activeTab.value = tab;
   }
+  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+    event.preventDefault();
+    activeTab.value = activeTab.value === 'preview' ? 'code' : 'preview';
+  }
 };
-
-onMounted(async () => {
-  await highlightCode(props.codeContent, props.themes);
-
-  nextTick(() => {
-    scriptManager.executeScriptsTick();
-  });
-});
 </script>
 
 <template>
@@ -47,6 +34,7 @@ onMounted(async () => {
     <div class="wrapper">
       <div class="tabs" role="tablist">
         <button
+          type="button"
           :id="'tab-preview-' + uid"
           role="tab"
           :aria-selected="activeTab === 'preview'"
@@ -60,6 +48,7 @@ onMounted(async () => {
           Preview
         </button>
         <button
+          type="button"
           :id="'tab-code-' + uid"
           role="tab"
           :aria-selected="activeTab === 'code'"
@@ -128,6 +117,11 @@ button.active {
 button:not(.active):hover {
   color: var(--vp-button-alt-hover-text);
   background-color: var(--vp-c-bg-soft);
+}
+
+button:focus-visible {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
 }
 
 .tab-content {
