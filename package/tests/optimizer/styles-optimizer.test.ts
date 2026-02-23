@@ -28,6 +28,7 @@ describe('HtmlStylesOptimizer - baseline', () => {
   });
 
   afterEach(() => {
+    HtmlStylesOptimizer.resetInstance();
     cleanTempDir(tempDir);
   });
 
@@ -307,6 +308,7 @@ describe('HtmlStylesOptimizer - Complex CSS', () => {
   });
 
   afterEach(() => {
+    HtmlStylesOptimizer.resetInstance();
     cleanTempDir(tempDir);
   });
 
