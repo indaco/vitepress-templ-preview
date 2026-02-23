@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ViteDevServer } from 'vite';
 
 /**
  * Handle module invalidation in the Vite server and tracks watched files for changes.
@@ -18,9 +18,9 @@ export class ModuleInvalidator {
   /**
    * Invalidates Vite server modules for all tracked files.
    *
-   * @param {any} server - The Vite server instance.
+   * @param {ViteDevServer} server - The Vite server instance.
    */
-  invalidateModules(server: any): void {
+  invalidateModules(server: ViteDevServer): void {
     for (const fileSet of this.watchedFiles.values()) {
       fileSet.forEach((mdFile) => {
         const module = server.moduleGraph.getModuleById(mdFile);

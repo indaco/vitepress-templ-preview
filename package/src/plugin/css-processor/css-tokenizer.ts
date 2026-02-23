@@ -2,30 +2,43 @@ import type { CssNode, Rule, Atrule, Declaration } from 'css-tree';
 import { parse, walk, generate } from 'css-tree';
 
 /**
- * Type for specific keys used in token details.
+ * Base fields shared by all token types.
  */
-type DetailsKeys = 'property' | 'value' | 'name';
-
-/**
- * Type for token details, supporting specific and additional contextual keys.
- */
-type Details = {
-  [K in DetailsKeys]?: string;
-} & Record<Exclude<string, DetailsKeys>, string>;
-
-/**
- * Represents a token generated during the CSS parsing process.
- */
-export type Token = {
-  /** The type of token ('rule', 'at-rule', or 'declaration'). */
-  type: 'rule' | 'at-rule' | 'declaration';
+interface BaseToken {
   /** The serialized value of the token. */
   value: string;
-  /** Additional contextual details about the token. */
-  details: Details;
   /** Nested tokens for hierarchical structures. */
   children: Token[];
-};
+}
+
+/**
+ * Token representing a CSS rule (selector block).
+ */
+export interface RuleToken extends BaseToken {
+  type: 'rule';
+  details: { selector: string };
+}
+
+/**
+ * Token representing a CSS at-rule (@media, @layer, etc.).
+ */
+export interface AtRuleToken extends BaseToken {
+  type: 'at-rule';
+  details: { name: string; prelude: string };
+}
+
+/**
+ * Token representing a CSS declaration (property: value).
+ */
+export interface DeclarationToken extends BaseToken {
+  type: 'declaration';
+  details: { property: string; value: string };
+}
+
+/**
+ * Discriminated union of all CSS token types.
+ */
+export type Token = RuleToken | AtRuleToken | DeclarationToken;
 
 /**
  * Tokenizer class for parsing CSS into structured tokens using csstree.

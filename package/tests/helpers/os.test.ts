@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { checkBinaries, executeCommandSync } from '../../src/plugin/helpers/os';
+import { checkBinaries, executeCommand } from '../../src/plugin/helpers/os';
 import { Logger } from '../../src/plugin/logger';
 import { platform } from 'os';
-import { spawnSync, execSync } from 'node:child_process';
+import { spawnSync, execFileSync } from 'node:child_process';
+import type { Command } from '../../src/plugin/command-builder';
 
 // Correctly mock os, child_process, and logger modules using Vitest's recommendations
 vi.mock('os', () => ({
@@ -12,7 +12,7 @@ vi.mock('os', () => ({
 
 vi.mock('node:child_process', () => ({
   spawnSync: vi.fn(),
-  execSync: vi.fn(),
+  execFileSync: vi.fn(),
 }));
 
 vi.mock('../../src/plugin/logger', async () => {
@@ -33,7 +33,9 @@ describe('checkBinaries', () => {
 
   it('should successfully check for binaries on a non-Windows system', () => {
     vi.mocked(platform).mockReturnValue('linux');
-    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
+    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as ReturnType<
+      typeof spawnSync
+    >);
 
     checkBinaries(['node', 'npm']);
 
@@ -44,7 +46,9 @@ describe('checkBinaries', () => {
 
   it('should successfully check for binaries on Windows system', () => {
     vi.mocked(platform).mockReturnValue('win32');
-    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as any);
+    vi.mocked(spawnSync).mockReturnValue({ status: 0 } as ReturnType<
+      typeof spawnSync
+    >);
 
     checkBinaries(['node', 'npm']);
 
@@ -55,7 +59,9 @@ describe('checkBinaries', () => {
 
   it('should throw an error if a binary is not found', () => {
     vi.mocked(platform).mockReturnValue('linux');
-    vi.mocked(spawnSync).mockReturnValue({ status: 1 } as any);
+    vi.mocked(spawnSync).mockReturnValue({ status: 1 } as ReturnType<
+      typeof spawnSync
+    >);
 
     expect(() => checkBinaries(['nonexistent-binary'])).toThrowError(
       '[vitepress-templ-preview] Command Not Found: The specified command is not installed or was not found in the system PATH. "nonexistent-binary"',
@@ -68,27 +74,32 @@ describe('checkBinaries', () => {
   });
 });
 
-describe('executeCommandSync', () => {
+describe('executeCommand', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should execute a command and log the output', () => {
-    vi.mocked(execSync).mockReturnValue(Buffer.from('command output'));
+  it('should execute a structured command and log the output', () => {
+    vi.mocked(execFileSync).mockReturnValue(Buffer.from('command output'));
 
-    executeCommandSync('echo hello');
+    const cmd: Command = { bin: 'echo', args: ['hello'], cwd: '/tmp' };
+    executeCommand(cmd);
 
-    expect(execSync).toHaveBeenCalledWith('echo hello', { stdio: 'pipe' });
+    expect(execFileSync).toHaveBeenCalledWith('echo', ['hello'], {
+      cwd: '/tmp',
+      stdio: 'pipe',
+    });
     expect(Logger.info).toHaveBeenCalledWith({ message: 'command output' });
   });
 
-  it('should handle errors thrown by execSync', () => {
+  it('should handle errors thrown by execFileSync', () => {
     const error = new Error('command failed');
-    vi.mocked(execSync).mockImplementation(() => {
+    vi.mocked(execFileSync).mockImplementation(() => {
       throw Object.assign(error, { stderr: Buffer.from('error details') });
     });
 
-    expect(() => executeCommandSync('false')).toThrowError('command failed');
+    const cmd: Command = { bin: 'false', args: [], cwd: '/tmp' };
+    expect(() => executeCommand(cmd)).toThrowError('command failed');
 
     expect(Logger.error).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -108,10 +119,11 @@ describe('executeCommandSync', () => {
     );
   });
 
-  it('should handle execSync without stdout', () => {
-    vi.mocked(execSync).mockReturnValue(Buffer.from(''));
+  it('should handle execFileSync without stdout', () => {
+    vi.mocked(execFileSync).mockReturnValue(Buffer.from(''));
 
-    executeCommandSync('echo hello');
+    const cmd: Command = { bin: 'echo', args: ['hello'], cwd: '/tmp' };
+    executeCommand(cmd);
 
     expect(Logger.info).not.toHaveBeenCalledWith({ message: '' });
   });

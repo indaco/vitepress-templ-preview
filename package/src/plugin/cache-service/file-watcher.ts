@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FileCache } from './file-cache';
 import * as fsp from 'node:fs/promises';
 import path from 'node:path';
@@ -39,8 +38,9 @@ export class FileWatcher {
           }
         }),
       );
-    } catch (err: any) {
-      Logger.error(UserMessages.READING_DIR_ERROR, err.message);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      Logger.error(UserMessages.READING_DIR_ERROR, message);
     }
   }
 }

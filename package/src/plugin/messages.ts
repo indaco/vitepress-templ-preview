@@ -1,6 +1,6 @@
 import type { VTPMessage } from './types';
 
-export const UserMessages: Record<string, VTPMessage> = {
+export const UserMessages = {
   GENERIC_ERROR: {
     headline: 'Error',
     message: 'An unexpected error occurred. Please try again later.',
@@ -85,4 +85,4 @@ export default defineConfig({
     message:
       'Consolidating JavaScript files to avoid duplications and improve performance.',
   },
-};
+} as const satisfies Record<string, VTPMessage>;

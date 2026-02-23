@@ -109,4 +109,29 @@ describe('FileCache', () => {
       fileCache.loadCacheFromFile('/path/to/invalid-cache-file.json'),
     ).rejects.toThrow('File not found');
   });
+
+  it('should promote accessed entries (LRU) so they are not evicted first', async () => {
+    await fileCache.updateCacheForFile('/path/to/file1.html', 'File 1 content');
+    await fileCache.updateCacheForFile('/path/to/file2.html', 'File 2 content');
+    await fileCache.updateCacheForFile('/path/to/file3.html', 'File 3 content');
+
+    // Access file1 to promote it to most-recently-used
+    fileCache.getCacheContent('/path/to/file1.html', 'default');
+
+    // Adding file4 should evict file2 (least recently used), not file1
+    await fileCache.updateCacheForFile('/path/to/file4.html', 'File 4 content');
+
+    expect(fileCache.getCacheContent('/path/to/file1.html', 'default')).toBe(
+      'File 1 content',
+    );
+    expect(fileCache.getCacheContent('/path/to/file2.html', 'default')).toBe(
+      'default',
+    ); // file2 evicted
+    expect(fileCache.getCacheContent('/path/to/file3.html', 'default')).toBe(
+      'File 3 content',
+    );
+    expect(fileCache.getCacheContent('/path/to/file4.html', 'default')).toBe(
+      'File 4 content',
+    );
+  });
 });

@@ -47,6 +47,9 @@ export class FileCache {
   getCacheContent(filePath: string, defaultContent: string): string {
     const cachedFile = this.cache.get(filePath);
     if (cachedFile) {
+      // Promote to most-recently-used by re-inserting
+      this.cache.delete(filePath);
+      this.cache.set(filePath, cachedFile);
       return cachedFile.content;
     }
     return defaultContent;
@@ -88,7 +91,19 @@ export class FileCache {
    */
   async loadCacheFromFile(filePath: string): Promise<void> {
     const data = await fsp.readFile(filePath, 'utf8');
-    const entries = JSON.parse(data);
+    const parsed: unknown = JSON.parse(data);
+    if (!Array.isArray(parsed)) {
+      throw new Error('Invalid cache file: expected an array of entries');
+    }
+    const entries: [string, CachedFile][] = parsed.filter(
+      (entry): entry is [string, CachedFile] =>
+        Array.isArray(entry) &&
+        entry.length === 2 &&
+        typeof entry[0] === 'string' &&
+        typeof entry[1] === 'object' &&
+        entry[1] !== null &&
+        typeof entry[1].content === 'string',
+    );
     this.cache = new Map(entries);
   }
 }
