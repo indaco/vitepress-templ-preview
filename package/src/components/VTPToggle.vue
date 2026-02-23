@@ -57,8 +57,14 @@ onMounted(async () => {
       <div class="tabs" role="tablist">
         <div
           class="toggle-container"
+          role="switch"
+          tabindex="0"
+          :aria-checked="activeTab === 'code'"
+          :aria-label="props.label"
           :class="{ 'is-checked': activeTab === 'code' }"
           @click="toggleCodeVisibility"
+          @keydown.enter.prevent="toggleCodeVisibility"
+          @keydown.space.prevent="toggleCodeVisibility"
         >
           <span v-if="props.showLabel" class="toggle-label">
             {{ props.label }}
