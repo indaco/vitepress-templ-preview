@@ -3,7 +3,7 @@ import {
   CssTokenProcessor,
   DEFAULT_TOKEN_PROCESSOR_OPTIONS,
 } from './css-token-processor';
-import { CssTokenizer, Token } from './css-tokenizer';
+import { CssTokenizer, type Token } from './css-tokenizer';
 import { TokenProcessorStrategyOptions } from './strategies/token-processor-strategy';
 
 /**
@@ -85,7 +85,7 @@ export class CssRulesAnalyzer {
     };
   }
 
-  minifyRules(tokens: Token[]): string[] {
+  public minifyRules(tokens: Token[]): string[] {
     const rules: string[] = [];
     tokens.forEach((token) => rules.push(this.cssProcessor.minify([token])));
     return rules;
