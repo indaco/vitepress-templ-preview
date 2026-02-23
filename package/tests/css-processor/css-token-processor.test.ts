@@ -113,7 +113,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         },
       ]);
 
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual('h1{font-size:2rem;}.btn{padding:1rem;}');
     });
 
@@ -127,7 +127,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
 
       expect(cssOutput).toEqual('h1{font-size:2rem;}');
     });
@@ -140,7 +140,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
       `;
       const tokens = tokenizer.tokenize(css);
       const result = cssProcessor.execute(tokens, { minify: true });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
 
       expect(cssOutput).toEqual(
         '@layer reset{h1{font-size:2rem;}}@layer utilities{.btn{padding:1rem;}}',
@@ -154,7 +154,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         @media (max-width: 600px) { .class1 { color: red; } }`;
       const tokens = tokenizer.tokenize(css);
       const result = cssProcessor.execute(tokens, { minify: true });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `@media (max-width:600px){.class1{color:red;}}`,
       );
@@ -169,7 +169,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `h1{font-size:2rem;}@media (max-width:600px){.class1{color:red;}}`,
       );
@@ -179,7 +179,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
       const css = '@layer reset { h1 { font-size: 2rem; } } @layer base;';
       const tokens = tokenizer.tokenize(css);
       const result = cssProcessor.execute(tokens, { minify: true });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual('@layer reset{h1{font-size:2rem;}}');
     });
 
@@ -220,7 +220,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         'h1{font-size:2rem;}.btn{padding:1rem;}body{background-color:#fff;}',
       );
@@ -257,7 +257,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `.class1{color:red;}.class2{color:blue;}.class3{color:green;}`,
       );
@@ -276,7 +276,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `*, *:before, *:after{box-sizing:border-box;border:0;}`,
       );
@@ -291,7 +291,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `*, *:before, *:after{box-sizing:border-box;border:0;border-style:solid;}`,
       );
@@ -306,7 +306,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `*, *:before, *:after{box-sizing:border-box;border:0;border-style:solid;}`,
       );
@@ -321,7 +321,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `
 *, *:before, *:after{box-sizing:border-box;border:0;border-style:solid;}:root{--hs-c-white: 1 0 0;--hs-c-black: 0 0 0;--hs-transparent: oklch(0 0 0 / 0);--hs-opacity: 1;--hs-font-mono: ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;}`.trim(),
@@ -335,7 +335,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
         extractFromLayers: true,
         minify: true,
       });
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
       expect(cssOutput).toEqual(
         `
 .main-class :is(blockquote, dl, dd, h1, h2, h3, h4, h5, h6, figure, p, pre){margin:0;}.main-class :is(h1, h2, h3, h4, h5, h6, p){overflow-wrap:break-word;}.main-class :is(h1, h2, h3, h4, h5, h6){word-break:break-word;text-wrap:balance;}.main-class a{text-decoration:none;}
@@ -362,7 +362,7 @@ describe('CssTokenProcessor and LayerProcessor', () => {
       const tokens = tokenizer.tokenize(css);
       const result = cssProcessor.execute(tokens, { minify: true });
 
-      const cssOutput = cssProcessor.serialize(result);
+      const cssOutput = cssProcessor.serialize(result, { minify: true });
 
       expect(cssOutput).toEqual('');
     });
