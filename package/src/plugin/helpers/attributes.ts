@@ -15,16 +15,24 @@ export function parseAttrs(attrsString: string): TagAttrs {
   return attrs;
 }
 
-export /**
+/**
  * Retrieves the value of a specific attribute from the token.
- *
- * @param {Token} token - The markdown-it token.
- * @param {string} attrName - The name of the attribute.
- * @param {string} defaultValue - The default value if the attribute is not found.
- * @param {boolean} [parseJson=false] - Whether to parse the attribute value as JSON.
- * @returns {string | boolean} - The attribute value or the default value.
+ * When parseJson is true, parses the value as JSON and returns a boolean.
+ * When parseJson is false or omitted, returns the raw string value.
  */
-function getAttributeOrElse(
+export function getAttributeOrElse(
+  token: Token,
+  attrName: string,
+  defaultValue: string,
+  parseJson: true,
+): boolean;
+export function getAttributeOrElse(
+  token: Token,
+  attrName: string,
+  defaultValue: string,
+  parseJson?: false,
+): string;
+export function getAttributeOrElse(
   token: Token,
   attrName: string,
   defaultValue: string,

@@ -15,37 +15,52 @@ describe('CommandBuilder', () => {
   };
 
   describe('buildTemplGenerateCommand', () => {
-    it('should build the correct command for generating HTML files using `templ`', () => {
+    it('should return structured command for templ generate', () => {
       const command = CommandBuilder.buildTemplGenerateCommand(
         serverRoot,
         baseOptions,
       );
-      expect(command).toBe(
-        'cd /path/to/server/my-go-project && templ generate .',
-      );
+      expect(command).toEqual({
+        bin: 'templ',
+        args: ['generate', '.'],
+        cwd: '/path/to/server/my-go-project',
+      });
     });
   });
 
   describe('buildStaticTemplCommand', () => {
-    it('should build the correct command for inline mode', () => {
+    it('should return structured command for inline mode', () => {
       const command = CommandBuilder.buildStaticTemplCommand(
         serverRoot,
         baseOptions,
       );
-      expect(command).toBe(
-        'cd /path/to/server/my-go-project && static-templ -m inline -i demos -g=true -d=false',
-      );
+      expect(command).toEqual({
+        bin: 'static-templ',
+        args: ['-m', 'inline', '-i', 'demos', '-g=true', '-d=false'],
+        cwd: '/path/to/server/my-go-project',
+      });
     });
 
-    it('should build the correct command for bundle mode', () => {
+    it('should include -o flag for bundle mode', () => {
       const bundleOptions: PluginConfig = { ...baseOptions, mode: 'bundle' };
       const command = CommandBuilder.buildStaticTemplCommand(
         serverRoot,
         bundleOptions,
       );
-      expect(command).toBe(
-        'cd /path/to/server/my-go-project && static-templ -m bundle -i demos -g=true -d=false -o output',
-      );
+      expect(command).toEqual({
+        bin: 'static-templ',
+        args: [
+          '-m',
+          'bundle',
+          '-i',
+          'demos',
+          '-g=true',
+          '-d=false',
+          '-o',
+          'output',
+        ],
+        cwd: '/path/to/server/my-go-project',
+      });
     });
 
     it('should include debug flag when set to true', () => {
@@ -54,9 +69,11 @@ describe('CommandBuilder', () => {
         serverRoot,
         debugOptions,
       );
-      expect(command).toBe(
-        'cd /path/to/server/my-go-project && static-templ -m inline -i demos -g=true -d=true',
-      );
+      expect(command).toEqual({
+        bin: 'static-templ',
+        args: ['-m', 'inline', '-i', 'demos', '-g=true', '-d=true'],
+        cwd: '/path/to/server/my-go-project',
+      });
     });
 
     it('should include runTemplGenerate flag when set to false', () => {
@@ -65,12 +82,14 @@ describe('CommandBuilder', () => {
         serverRoot,
         noGenerateOptions,
       );
-      expect(command).toBe(
-        'cd /path/to/server/my-go-project && static-templ -m inline -i demos -g=false -d=false',
-      );
+      expect(command).toEqual({
+        bin: 'static-templ',
+        args: ['-m', 'inline', '-i', 'demos', '-g=false', '-d=false'],
+        cwd: '/path/to/server/my-go-project',
+      });
     });
 
-    it('should build the correct command for bundle mode with debug enabled', () => {
+    it('should return structured command for bundle mode with debug enabled', () => {
       const debugBundleOptions: PluginConfig = {
         ...baseOptions,
         mode: 'bundle',
@@ -80,9 +99,20 @@ describe('CommandBuilder', () => {
         serverRoot,
         debugBundleOptions,
       );
-      expect(command).toBe(
-        'cd /path/to/server/my-go-project && static-templ -m bundle -i demos -g=true -d=true -o output',
-      );
+      expect(command).toEqual({
+        bin: 'static-templ',
+        args: [
+          '-m',
+          'bundle',
+          '-i',
+          'demos',
+          '-g=true',
+          '-d=true',
+          '-o',
+          'output',
+        ],
+        cwd: '/path/to/server/my-go-project',
+      });
     });
   });
 });
