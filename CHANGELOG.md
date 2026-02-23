@@ -4,6 +4,58 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). The changelog is generated and managed by [sley](https://github.com/indaco/sley).
 
+## v0.4.0 - 2026-02-23
+
+### 🚀 Enhancements
+
+- **website:** add brand theme with purple/cyan/yellow palette ([8d61efb](https://github.com/indaco/vitepress-templ-preview/commit/8d61efb))
+- **website:** add custom homepage features ([0f72c42](https://github.com/indaco/vitepress-templ-preview/commit/0f72c42))
+
+### 🩹 Fixes
+
+- prevent static-templ from overwriting system templ generate output ([c42afc8](https://github.com/indaco/vitepress-templ-preview/commit/c42afc8)) ([#77](https://github.com/indaco/vitepress-templ-preview/pull/77))
+- critical bugs in shell execution, JSON escaping, attribute parsing, and templ runner ([d285941](https://github.com/indaco/vitepress-templ-preview/commit/d285941)) ([#74](https://github.com/indaco/vitepress-templ-preview/pull/74))
+
+### 💅 Refactors
+
+- **website:** extract nav and sidebar config to dedicated files ([69498f2](https://github.com/indaco/vitepress-templ-preview/commit/69498f2))
+- singleton lifecycle, composable extraction, and observer cleanup ([4b18f72](https://github.com/indaco/vitepress-templ-preview/commit/4b18f72)) ([#76](https://github.com/indaco/vitepress-templ-preview/pull/76))
+- improve type safety across plugin core ([9cf9bc6](https://github.com/indaco/vitepress-templ-preview/commit/9cf9bc6)) ([#75](https://github.com/indaco/vitepress-templ-preview/pull/75))
+
+### 📖 Documentation
+
+- **website:** update guide, examples, and customization pages ([903529f](https://github.com/indaco/vitepress-templ-preview/commit/903529f))
+- **website:** fix getting-started.md function name in Search section ([513214a](https://github.com/indaco/vitepress-templ-preview/commit/513214a))
+
+### 🏡 Chores
+
+- **docs:** enable templated example generation in site config ([48d969b](https://github.com/indaco/vitepress-templ-preview/commit/48d969b))
+- **website:** update Go module deps and component versions ([279476e](https://github.com/indaco/vitepress-templ-preview/commit/279476e))
+- **examples:** update bundle-mode deps ([ae43d26](https://github.com/indaco/vitepress-templ-preview/commit/ae43d26)) ([#70](https://github.com/indaco/vitepress-templ-preview/pull/70))
+
+### 📦 Build
+
+- migrate plugin bundler from tsup to tsdown ([5f7f88d](https://github.com/indaco/vitepress-templ-preview/commit/5f7f88d)) ([#69](https://github.com/indaco/vitepress-templ-preview/pull/69))
+- update dev deps ([083d47c](https://github.com/indaco/vitepress-templ-preview/commit/083d47c))
+- update pnpm to v10.13.1 ([960670a](https://github.com/indaco/vitepress-templ-preview/commit/960670a))
+- update vite to v5.4.16 ([944332d](https://github.com/indaco/vitepress-templ-preview/commit/944332d))
+- update dev deps ([4433635](https://github.com/indaco/vitepress-templ-preview/commit/4433635))
+- **deps-dev:** bump vitest from 2.1.8 to 2.1.9 ([1575ddb](https://github.com/indaco/vitepress-templ-preview/commit/1575ddb)) ([#49](https://github.com/indaco/vitepress-templ-preview/pull/49))
+- **deps-dev:** bump ansis from 3.9.0 to 3.10.0 ([0b9e253](https://github.com/indaco/vitepress-templ-preview/commit/0b9e253)) ([#46](https://github.com/indaco/vitepress-templ-preview/pull/46))
+- **deps-dev:** bump tsup from 8.3.5 to 8.3.6 ([886da08](https://github.com/indaco/vitepress-templ-preview/commit/886da08)) ([#45](https://github.com/indaco/vitepress-templ-preview/pull/45))
+- **deps-dev:** bump @types/node from 22.10.9 to 22.13.1 ([4fae58a](https://github.com/indaco/vitepress-templ-preview/commit/4fae58a)) ([#50](https://github.com/indaco/vitepress-templ-preview/pull/50))
+- **deps-dev:** bump eslint from 9.18.0 to 9.19.0 ([f737e14](https://github.com/indaco/vitepress-templ-preview/commit/f737e14)) ([#47](https://github.com/indaco/vitepress-templ-preview/pull/47))
+- update dev deps ([3ee42d1](https://github.com/indaco/vitepress-templ-preview/commit/3ee42d1))
+- **deps-dev:** bump vite from 5.4.11 to 5.4.12 ([6b7bd30](https://github.com/indaco/vitepress-templ-preview/commit/6b7bd30)) ([#43](https://github.com/indaco/vitepress-templ-preview/pull/43))
+- update dev deps ([0051775](https://github.com/indaco/vitepress-templ-preview/commit/0051775))
+
+**Full Changelog:** [v0.3.0...v0.4.0](https://github.com/indaco/vitepress-templ-preview/compare/v0.3.0...v0.4.0)
+
+### ❤️ Contributors
+
+- [@indaco](https://github.com/indaco)
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
 ## v0.3.0 - 2025-01-12
 
 [compare changes](https://github.com/indaco/vitepress-templ-preview/compare/v0.2.0...v0.3.0)
