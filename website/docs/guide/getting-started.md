@@ -1,6 +1,6 @@
-# Quick Start
+# Getting Started
 
-Assuming you chose to [scaffold](https://vitepress.dev/guide/getting-started#installation) the VitePress project in `./docs`, the initial generated file structure should look like this:
+Assuming you [scaffolded](https://vitepress.dev/guide/getting-started#installation) the VitePress project in `./docs`, the initial structure should look like this:
 
 ```bash
 .
@@ -15,7 +15,7 @@ Assuming you chose to [scaffold](https://vitepress.dev/guide/getting-started#ins
 
 ## Installation
 
-Add `vitepress-templ-preview` to your VitePress project along with its peer dependency `css-tree`, using one of the following commands:
+Add `vitepress-templ-preview` and its peer dependency `css-tree` to your project:
 
 ::: code-group
 
@@ -33,10 +33,10 @@ yarn add -D vitepress-templ-preview css-tree
 
 :::
 
-## VitePress configuration
+## VitePress Configuration
 
-1. Configure the plugin in your VitePress project by editing the VitePress config file (`.vitepress/config.js` or `.vitepress/config.mts`)
-2. Register the rendering component by choosing a predefined Vue component or [using a custom one](/customization/rendering-components). Create or edit `.vitepress/theme/index.js` (or `.vitepress/theme/index.ts`)
+1. Register the plugin in `.vitepress/config.mts`.
+2. Register a rendering component in `.vitepress/theme/index.ts` — either a [predefined one](/configuration/rendering-components.html) or a custom component.
 
 ::: code-group
 
@@ -74,13 +74,11 @@ export default {
 :::
 
 > [!INFO]
-> See [Plugin Options](/customization/plugin-options) for available configuration.
+> See [Plugin Options](/configuration/plugin-options.html) for available configuration.
 
 ### Search
 
-Define a custom `_render` function to preprocess the Markdown content and remove `<templ-demo>` tags from the Markdown source to prevent build errors.
-
-The `vitepress-templ-preview` plugin provides a `sanitizeMarkdownForSearch` helper to streamline this process.
+The plugin provides a `sanitizeMarkdownForSearch` helper that strips `<templ-demo>` tags from the markdown source to prevent build errors with VitePress local search.
 
 ```ts [config.mts]
 import { sanitizeMarkdownForSearch } from 'vitepress-templ-preview/sanitizer'; // [!code ++]
@@ -103,11 +101,11 @@ export default defineConfig({
 ```
 
 > [!IMPORTANT]
-> Additionally, `sanitizeMarkdownForSearch` accepts a fourth parameter to specify the `inputDir`, if it has been set in the plugin options. For details, refer to the [Plugin Options](/customization/plugin-options).
+> `sanitizeMarkdownForSearch` accepts a fourth parameter for `inputDir`, if it has been set in the plugin options. See [Plugin Options](/configuration/plugin-options.html).
 
 ## Templ Project Setup
 
-1. Initialize a new Go project in the `docs` folder.
+1. Initialize a Go module in the `docs` folder:
 
    ```bash
    cd docs
@@ -115,24 +113,21 @@ export default defineConfig({
    go get github.com/a-h/templ
    ```
 
-2. Create a `components` folder within `./docs`.
-3. Create a `hello` folder to store both the markdown and the `templ` files for the demos:
-   - Create an `index.md` file
-   - Create a `hello-demo.templ` file with some `templ` code:
+2. Create a `components/hello` folder with an `index.md` and a `hello-demo.templ` file:
 
-     ```templ
-     package hello
+   ```templ
+   package hello
 
-     templ HelloDemo() {
-       @hello("World!!!")
-     }
+   templ HelloDemo() {
+     @hello("World!!!")
+   }
 
-     templ hello(name string) {
-       <div>Hello, { name }</div>
-     }
-     ```
+   templ hello(name string) {
+     <div>Hello, { name }</div>
+   }
+   ```
 
-Your project structure should look like this:
+Your project structure should now look like this:
 
 ```bash{8-13}
 .
@@ -153,30 +148,22 @@ Your project structure should look like this:
 
 ## Embed in Markdown
 
-To embed and preview a `templ` component in your markdown files, use the `templ-demo` tag.
+Use the `templ-demo` tag to embed and preview a templ component in your markdown files.
 
-Edit the `components/hello/index.md` file by adding:
-
-```html
-<templ-demo src="hello-demo"></templ-demo>
-```
-
-Alternatively, you can use the self-closing format:
+Edit `components/hello/index.md`:
 
 ```html
 <templ-demo src="hello-demo" />
 ```
 
 > [!IMPORTANT]
-> The `src` property is the only mandatory attribute. It must be set to the `templ` file name **without** the extension.
+> The `src` attribute is required. Set it to the templ file name **without** the extension.
 
-For more information on the available options for rendering components via the custom `templ-demo` tag, refer to the [Rendering Components documentation](/customization/rendering-components).
+For more options, see [Rendering Components](/configuration/rendering-components.html).
 
-## Run the project
+## Run the Project
 
-Based on your initial configuration, the npm scripts might already be set in the `package.json` file.
-
-To start the local dev server, use one of the following commands:
+Start the local dev server:
 
 ::: code-group
 
@@ -194,6 +181,4 @@ yarn docs:dev
 
 :::
 
-Visit the page for the **hello** component you just created.
-
-Your project is now up and running.
+Visit the page for the **hello** component you just created. Your project is now up and running.

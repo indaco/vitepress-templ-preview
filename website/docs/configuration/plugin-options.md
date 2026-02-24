@@ -91,7 +91,7 @@ The following table lists the configurable options for the `viteTemplPreviewPlug
 
 | Option             | Type      | Default      | Description                                                                                                 |
 | :----------------- | :-------- | :----------- | ----------------------------------------------------------------------------------------------------------- |
-| `goProjectDir`     | _string_  | `.`          | The base directory where your Go `templ` project is located. Defaults to the VitePress project root folder. |
+| `goProjectDir`     | _string_  | `""`         | The base directory where your Go `templ` project is located. Defaults to the VitePress project root folder. |
 | `mode`             | _string_  | `inline`     | The working mode for the plugin: `inline` or `bundle`.                                                      |
 | `inputDir`         | _string_  | `components` | The directory relative to `goProjectDir` where your `.templ` files are located.                             |
 | `outputDir`        | _string_  | `output`     | The directory relative to `goProjectDir` where the generated HTML files will be placed.                     |

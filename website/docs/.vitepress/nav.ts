@@ -7,12 +7,12 @@ export const nav: DefaultTheme.Config['nav'] = [
   { text: 'Home', link: '/' },
   { text: 'Guide', link: '/guide/overview' },
   {
-    text: 'Customization',
+    text: 'Configuration',
     items: [
-      { text: 'Plugin Options', link: '/customization/plugin-options' },
+      { text: 'Plugin Options', link: '/configuration/plugin-options' },
       {
         text: 'Rendering Components',
-        link: '/customization/rendering-components',
+        link: '/configuration/rendering-components',
       },
     ],
   },

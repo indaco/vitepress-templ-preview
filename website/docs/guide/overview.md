@@ -2,17 +2,17 @@
 
 <VersionBadge />
 
-`vitepress-templ-preview` offers a solution for [templ](https://templ.guide/) component previews within [VitePress](https://vitepress.dev/) projects.
+`vitepress-templ-preview` enables live previews of [templ](https://templ.guide/) components directly within [VitePress](https://vitepress.dev/) projects.
 
-## 📦 What’s Inside?
+## What's Inside?
 
-- **Vite plugin**: designed to handle templ components in your markdown files. This plugin processes custom tags and renders them as Vue components.
-- **Vue components**: Predefined Vue components tailored to display both the highlighted source code and the rendered preview of the templ component.
+- **Vite plugin** — processes custom tags in your markdown files and renders templ components as Vue components.
+- **Vue components** — predefined components to display both the highlighted source code and the rendered preview.
 
-## :sparkles: Features
+## Features
 
-- **Templ Syntax Highlighting**: syntax highlighting for `templ` using [shiki](https://shiki.style).
-- **Automatic Generation**: Runs `templ generate` command via `static-templ-plus`, removing the need to run the command manually. This feature can be disabled, allowing you to run the templ generate command manually.
-- **Hot Reloading**: Automatically triggers the `templ generate` command and refreshes the page to display the updated content.
-- **File Content Caching**: Efficiently caches file contents to improve performance and reduce redundant file reads.
-- **Flexible Vue Components**: Includes predefined Vue components for rendering previews, with the option to use custom components.
+- **Templ Syntax Highlighting** using [Shiki](https://shiki.style).
+- **Automatic Generation** — runs `templ generate` via `static-templ` automatically. Can be disabled for manual control.
+- **Hot Reloading** — re-generates and refreshes the page on templ file changes.
+- **File Content Caching** — caches file contents to reduce redundant reads and improve performance.
+- **Flexible Vue Components** — includes predefined rendering components, with support for custom ones.

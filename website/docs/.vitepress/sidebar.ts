@@ -22,13 +22,13 @@ export const sidebar: DefaultTheme.Config['sidebar'] = [
     ],
   },
   {
-    text: 'Customization',
+    text: 'Configuration',
     collapsed: false,
     items: [
-      { text: 'Plugin Options', link: '/customization/plugin-options' },
+      { text: 'Plugin Options', link: '/configuration/plugin-options' },
       {
         text: 'Rendering Components',
-        link: '/customization/rendering-components',
+        link: '/configuration/rendering-components',
       },
     ],
   },
