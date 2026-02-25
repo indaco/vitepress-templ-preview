@@ -18,7 +18,6 @@ export const sidebar: DefaultTheme.Config['sidebar'] = [
       { text: 'Hello Templ', link: '/examples/hello/' },
       { text: 'Button', link: '/examples/button/' },
       { text: 'Alert', link: '/examples/alert/' },
-      { text: 'Markdown Examples', link: '/examples/markdown-examples' },
     ],
   },
   {
