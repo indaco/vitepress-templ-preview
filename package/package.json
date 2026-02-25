@@ -94,7 +94,7 @@
     "test:watch": "vitest watch"
   },
   "devDependencies": {
-    "@shikijs/markdown-it": "^2.5.0",
+    "@shikijs/markdown-it": "^3.23.0",
     "@types/css-tree": "^2.3.11",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.13",
