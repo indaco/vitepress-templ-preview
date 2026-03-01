@@ -21,7 +21,7 @@
     "shiki": "^3.22.0",
     "vitepress": "^2.0.0-alpha.16",
     "vitepress-plugin-group-icons": "^1.7.1",
-    "vue": "^3.5.18"
+    "vue": "^3.5.29"
   },
   "packageManager": "pnpm@10.30.1"
 }
