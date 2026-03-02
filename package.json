@@ -14,14 +14,14 @@
     "web:preview": "pnpm run web:build && pnpm --filter='docs-web' run docs:preview"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.2",
+    "lint-staged": "^16.3.1",
     "prettier": "^3.8.1",
-    "prettier-plugin-packagejson": "^2.5.22"
+    "prettier-plugin-packagejson": "^3.0.0"
   },
-  "packageManager": "pnpm@10.30.1",
+  "packageManager": "pnpm@10.30.3",
   "engines": {
     "node": ">=24.0.0",
     "npm": ">=10.0.0"
