@@ -5,6 +5,7 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
+    "rootDir": "./src",
     "outDir": "dist",
     "declaration": true,
     "emitDeclarationOnly": true,
