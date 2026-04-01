@@ -109,8 +109,8 @@ importers:
         specifier: ^8.0.3
         version: 8.0.3(@emnapi/core@1.8.1)(@emnapi/runtime@1.8.1)(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(yaml@2.8.3)
       vitepress:
-        specifier: 2.0.0-alpha.16
-        version: 2.0.0-alpha.16(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(postcss@8.5.8)(typescript@6.0.2)(yaml@2.8.3)
+        specifier: 2.0.0-alpha.17
+        version: 2.0.0-alpha.17(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(postcss@8.5.8)(typescript@6.0.2)(yaml@2.8.3)
       vitest:
         specifier: ^4.1.2
         version: 4.1.2(@types/node@24.12.0)(@vitest/ui@4.1.2)(vite@8.0.3(@emnapi/core@1.8.1)(@emnapi/runtime@1.8.1)(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(yaml@2.8.3))
@@ -1571,9 +1571,6 @@ packages:
   flatted@3.4.2:
     resolution: {integrity: sha512-PjDse7RzhcPkIJwy5t7KPWQSZ9cAbzQXcafsetQoD7sOJRQlGikNbx7yZp2OotDnJyrDcbyRq3Ttb18iYOqkxA==}
 
-  focus-trap@7.8.0:
-    resolution: {integrity: sha512-/yNdlIkpWbM0ptxno3ONTuf+2g318kh2ez3KSeZN5dZ8YC6AAmgeWz+GasYYiBJPFaYcSAPeu4GfhUaChzIJXA==}
-
   focus-trap@8.0.1:
     resolution: {integrity: sha512-9ptSG6z51YQOstI/oN4XuVGP/03u2nh0g//qz7L6zX0i6PZiPnkcf3GenXq7N2hZnASXaMxTPpbKwdI+PFvxlw==}
 
@@ -2483,21 +2480,6 @@ packages:
       vite: '>=3'
     peerDependenciesMeta:
       vite:
-        optional: true
-
-  vitepress@2.0.0-alpha.16:
-    resolution: {integrity: sha512-w1nwsefDVIsje7BZr2tsKxkZutDGjG0YoQ2yxO7+a9tvYVqfljYbwj5LMYkPy8Tb7YbPwa22HtIhk62jbrvuEQ==}
-    hasBin: true
-    peerDependencies:
-      markdown-it-mathjax3: ^4
-      oxc-minify: '*'
-      postcss: ^8
-    peerDependenciesMeta:
-      markdown-it-mathjax3:
-        optional: true
-      oxc-minify:
-        optional: true
-      postcss:
         optional: true
 
   vitepress@2.0.0-alpha.17:
@@ -3619,14 +3601,6 @@ snapshots:
       '@vueuse/shared': 14.2.1(vue@3.5.31(typescript@6.0.2))
       vue: 3.5.31(typescript@6.0.2)
 
-  '@vueuse/integrations@14.2.1(focus-trap@7.8.0)(vue@3.5.31(typescript@6.0.2))':
-    dependencies:
-      '@vueuse/core': 14.2.1(vue@3.5.31(typescript@6.0.2))
-      '@vueuse/shared': 14.2.1(vue@3.5.31(typescript@6.0.2))
-      vue: 3.5.31(typescript@6.0.2)
-    optionalDependencies:
-      focus-trap: 7.8.0
-
   '@vueuse/integrations@14.2.1(focus-trap@8.0.1)(vue@3.5.31(typescript@6.0.2))':
     dependencies:
       '@vueuse/core': 14.2.1(vue@3.5.31(typescript@6.0.2))
@@ -4006,10 +3980,6 @@ snapshots:
       keyv: 4.5.4
 
   flatted@3.4.2: {}
-
-  focus-trap@7.8.0:
-    dependencies:
-      tabbable: 6.4.0
 
   focus-trap@8.0.1:
     dependencies:
@@ -4865,54 +4835,6 @@ snapshots:
       '@iconify/utils': 3.1.0
     optionalDependencies:
       vite: 8.0.3(@emnapi/core@1.8.1)(@emnapi/runtime@1.8.1)(@types/node@24.12.0)(esbuild@0.27.4)(jiti@2.6.1)(yaml@2.8.3)
-
-  vitepress@2.0.0-alpha.16(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(postcss@8.5.8)(typescript@6.0.2)(yaml@2.8.3):
-    dependencies:
-      '@docsearch/css': 4.6.2
-      '@docsearch/js': 4.6.2
-      '@docsearch/sidepanel-js': 4.6.2
-      '@iconify-json/simple-icons': 1.2.76
-      '@shikijs/core': 3.23.0
-      '@shikijs/transformers': 3.23.0
-      '@shikijs/types': 3.23.0
-      '@types/markdown-it': 14.1.2
-      '@vitejs/plugin-vue': 6.0.5(vite@7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3))(vue@3.5.31(typescript@6.0.2))
-      '@vue/devtools-api': 8.1.1
-      '@vue/shared': 3.5.31
-      '@vueuse/core': 14.2.1(vue@3.5.31(typescript@6.0.2))
-      '@vueuse/integrations': 14.2.1(focus-trap@7.8.0)(vue@3.5.31(typescript@6.0.2))
-      focus-trap: 7.8.0
-      mark.js: 8.11.1
-      minisearch: 7.2.0
-      shiki: 3.23.0
-      vite: 7.3.1(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3)
-      vue: 3.5.31(typescript@6.0.2)
-    optionalDependencies:
-      postcss: 8.5.8
-    transitivePeerDependencies:
-      - '@types/node'
-      - async-validator
-      - axios
-      - change-case
-      - drauu
-      - fuse.js
-      - idb-keyval
-      - jiti
-      - jwt-decode
-      - less
-      - lightningcss
-      - nprogress
-      - qrcode
-      - sass
-      - sass-embedded
-      - sortablejs
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - typescript
-      - universal-cookie
-      - yaml
 
   vitepress@2.0.0-alpha.17(@types/node@24.12.0)(jiti@2.6.1)(lightningcss@1.32.0)(postcss@8.5.8)(typescript@6.0.2)(yaml@2.8.3):
     dependencies:
