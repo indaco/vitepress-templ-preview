@@ -1,6 +1,6 @@
 {
   "name": "docs-web",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "Docs website for vitepress-templ-preview plugin",
   "keywords": [],

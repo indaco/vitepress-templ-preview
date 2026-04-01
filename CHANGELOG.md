@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). The changelog is generated and managed by [sley](https://github.com/indaco/sley).
 
+## v0.4.1 - 2026-04-01
+
+### 🩹 Fixes
+
+- add explicit rootDir for TypeScript 6 compatibility ([b89fdf1](https://github.com/indaco/vitepress-templ-preview/commit/b89fdf1))
+- **website:** footer text ([021dcac](https://github.com/indaco/vitepress-templ-preview/commit/021dcac))
+
+### 📖 Documentation
+
+- **website:** cleanup documentation pages ([d62cbfa](https://github.com/indaco/vitepress-templ-preview/commit/d62cbfa))
+
+### 🏡 Chores
+
+- **website:** regenerate templ example outputs ([17bcb23](https://github.com/indaco/vitepress-templ-preview/commit/17bcb23))
+- bump deps across monorepo ([22a4b8e](https://github.com/indaco/vitepress-templ-preview/commit/22a4b8e))
+- update dev deps ([9fe1524](https://github.com/indaco/vitepress-templ-preview/commit/9fe1524))
+- **website:** remove standard VitePress markdown example page ([019aa9d](https://github.com/indaco/vitepress-templ-preview/commit/019aa9d))
+- **package:** update dev deps ([0808174](https://github.com/indaco/vitepress-templ-preview/commit/0808174))
+
+**Full Changelog:** [v0.4.0...v0.4.1](https://github.com/indaco/vitepress-templ-preview/compare/v0.4.0...v0.4.1)
+
+### ❤️ Contributors
+
+- indaco ([@indaco](https://github.com/indaco))
+
 ## v0.4.0 - 2026-02-23
 
 ### 🚀 Enhancements
