@@ -16,12 +16,12 @@
     "vitepress-templ-preview": "workspace:*"
   },
   "devDependencies": {
-    "@shikijs/transformers": "^4.0.2",
-    "@types/node": "^24.12.0",
-    "shiki": "^4.0.2",
+    "@shikijs/transformers": "^4.3.0",
+    "@types/node": "^24.13.2",
+    "shiki": "^4.3.0",
     "vitepress": "2.0.0-alpha.17",
-    "vitepress-plugin-group-icons": "^1.7.3",
-    "vue": "^3.5.31"
+    "vitepress-plugin-group-icons": "^1.7.5",
+    "vue": "^3.5.39"
   },
   "packageManager": "pnpm@10.30.3"
 }
